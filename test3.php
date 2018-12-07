@@ -1,0 +1,1 @@
+<h3><?php echo $array['GetCustomReportResponse']['GetCustomReportResult']['aCIP']['bRecordList']['bRecord']['0']['bGrade'];?></h3>
