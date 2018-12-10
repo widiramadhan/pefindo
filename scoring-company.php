@@ -281,7 +281,7 @@ $(document).ready(function(){
 						<?php require_once("pages/company/tab-hubungan-company.php");?>
 					</div>
 					<div id="permintaan-informasi" class="tab-pane fade">
-						<?php require_once("pages/company/tab-permintaan-informasi-company.php");?>
+						<?php require_once("pages/company/tab-permintaan-info-company.php");?>
 					</div>
 					<div id="pengaduan" class="tab-pane fade">
 						<?php require_once("pages/company/tab-pengaduan-company.php");?>
