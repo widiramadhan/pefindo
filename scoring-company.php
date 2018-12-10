@@ -332,7 +332,7 @@ $data = sqlsrv_fetch_array($exec);
 </div>
 <?php
 $callCIP3 = "{call SP_GET_TAB_SKOR_PS_TBL_CIP_COMPANY(?)}";
-$paramsCIP3 = array(array($id, SQLSRV_PARAM_IN),array("1", SQLSRV_PARAM_IN));
+$paramsCIP3 = array(array($id, SQLSRV_PARAM_IN),array($dataCIPCOM['M_CIP_ID'], SQLSRV_PARAM_IN));
 ?>
 <script type="text/javascript">
 	$(window).on("load", function(){
