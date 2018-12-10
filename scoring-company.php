@@ -196,8 +196,15 @@ $data = sqlsrv_fetch_array($exec);
 	<div class="col-md-12">
 		<div class="card">
 			<div class="header">
-				<h4 class="title">Scoring Report</h4>
-				<p class="category">Sistem Informasi Debitur</p>
+				<div class="pull-left">
+					<h4 class="title">Scoring Report</h4>
+					<p class="category">Sistem Informasi Debitur</p>
+				</div>
+				<div class="pull-right">
+					<a href="pages/getPDF.php?id=<?php echo $id;?>" target="_blank" class="btn btn-danger"><i class="fa fa-file-pdf-o"></i> Export Report to PDF</a>&nbsp;
+					<a href="pages/getExcel.php?id=<?php echo $id;?>" target="_blank" class="btn btn-success"><i class="fa fa-file-excel-o"></i> Export Summary to Excel</a>
+				</div>
+				<div style="clear:both;"></div>
 			</div>
 			<div class="content">
 				<div id="accordion">
