@@ -154,6 +154,7 @@ if($request == "individual"){
 		$mappingId = $dataMappingId['PEFINDO_MAPPING_ID'];
 		
 		/* ================= proses simpan ke database ================= */		
+		/* CIP */ require_once("pages/company/save-data/save-data-cip.php");
 		/* CIQ */ require_once("pages/company/save-data/save-data-ciq.php");
 		/* COLLATERALS */ require_once("pages/company/save-data/save-data-collaterals.php");
 		/* COMPANY */ require_once("pages/company/save-data/save-data-company.php");	
