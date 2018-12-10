@@ -186,6 +186,12 @@ $(document).ready(function(){
   });
 });
 </script>
+<?php
+$callSP = "{call SP_GET_MASTER_COMPANY(?)}";
+$params = array(array($id, SQLSRV_PARAM_IN));
+$exec = sqlsrv_query( $conn, $callSP, $params) or die( print_r( sqlsrv_errors(), true));
+$data = sqlsrv_fetch_array($exec);
+?>
 <div class="row">
 	<div class="col-md-12">
 		<div class="card">
@@ -198,7 +204,7 @@ $(document).ready(function(){
 					<div class="card">
 						<div class="header">
 							<div class="pull-left">
-								<p class="name text-danger"><?php echo $array['GetCustomReportResponse']['GetCustomReportResult']['aCompany']['bGeneral']['bCompanyName'];?></p>
+								<p class="name text-danger"><?php echo $data['COMPANY'];?></p>
 							</div>
 							<div class="pull-right">
 								<a class="card-link" data-toggle="collapse" href="#collapseOne">
@@ -213,15 +219,15 @@ $(document).ready(function(){
 									<tbody>
 										<tr>
 											<td>NPWP</td>
-											<td><?php echo $array['GetCustomReportResponse']['GetCustomReportResult']['aCompany']['bIdentifications']['bNPWP'];?></td>
+											<td><?php echo $data['NPWP'];?></td>
 											<td>Pefindo ID</td>
-											<td><?php echo $array['GetCustomReportResponse']['GetCustomReportResult']['aCompany']['bIdentifications']['bPefindoId'];?></td>
+											<td><?php echo $data['PEFINDO_ID'];?></td>
 										</tr>
 										<tr>
 											<td>Status</td>
-											<td><?php echo $array['GetCustomReportResponse']['GetCustomReportResult']['aCompany']['bGeneral']['bLegalForm'];?></td>
+											<td><?php echo $data['LEGAL_FORM'];?></td>
 											<td rowspan="2" style="vertical-align:top;">Establishment</td>
-											<td rowspan="2" style="vertical-align:top;"><?php echo date('Y-m-d', strtotime($array['GetCustomReportResponse']['GetCustomReportResult']['aCompany']['bGeneral']['bEstablishmentDate']));?></td>
+											<td rowspan="2" style="vertical-align:top;"><?php echo $data['ESTABILISHMENT_DATE']->format('Y-m-d');?></td>
 										</tr>
 										<tr>
 											<td>Credit Data Available</td>
@@ -250,7 +256,7 @@ $(document).ready(function(){
 				</ul>
 				<br>
 				<div class="tab-content">
-					<div id="dashboard" class="tab-pane fade">
+					<div id="dashboard" class="tab-pane fade in active">
 						<?php require_once("pages/company/tab-dashboard-company.php");?>
 					</div>
 					<div id="informasi-perusahaan" class="tab-pane fade">
@@ -298,6 +304,10 @@ $(document).ready(function(){
 		</div>
 	</div>
 </div>
+<?php
+$callCIP3 = "{call SP_GET_TAB_SKOR_PS_TBL_CIP_COMPANY(?)}";
+$paramsCIP3 = array(array($id, SQLSRV_PARAM_IN),array($dataCIP['M_CIP_ID'], SQLSRV_PARAM_IN));
+?>
 <script>
 	Highcharts.chart('container', {
 		credits: {
@@ -319,7 +329,7 @@ $(document).ready(function(){
 			}
 		},
 		xAxis: {
-			categories: [<?php for ($x = 11; $x <= 11 && $x >= 0; $x--) {  echo '"' . date('m/Y', strtotime($array['GetCustomReportResponse']['GetCustomReportResult']['aCIP']['bRecordList']['bRecord'][$x]['bDate'])) . '",';}?>]																
+			categories: [<?php $execCIP3 = sqlsrv_query( $conn, $callCIP3, $paramsCIP3) or die( print_r( sqlsrv_errors(), true)); while($dataCIP3 = sqlsrv_fetch_array($execCIP3)){echo "'".$dataCIP3['DATE']->format('m/Y')."',";}?>]																
 		},
 		legend: {
 			layout: 'vertical',
@@ -328,7 +338,7 @@ $(document).ready(function(){
 		},
 		series: [{
 			name: 'Pefindo Score',
-			data: [<?php for ($x = 11; $x <= 11 && $x >= 0; $x--) { echo $array['GetCustomReportResponse']['GetCustomReportResult']['aCIP']['bRecordList']['bRecord'][$x]['bScore'].",";}?>]
+			data: [<?php $execCIP3 = sqlsrv_query( $conn, $callCIP3, $paramsCIP3) or die( print_r( sqlsrv_errors(), true)); while($dataCIP3 = sqlsrv_fetch_array($execCIP3)){echo $dataCIP3['SCORE'].",";}?>]
 		}],
 		responsive: {
 			rules: [{
