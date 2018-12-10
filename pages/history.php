@@ -40,7 +40,7 @@
 						<td class="td-center"><?php echo $data['CREATE_DATE']->format("d-m-Y");?></td>
 						<td class="td-center">
 							<a href="index.php?page=scoring-individual&id=<?php echo $data['PEFINDO_ID'];?>" class="btn btn-primary btn-sm" title="detail"><i class="fa fa-eye"></i></a>
-							<a href="history-delete.php?id=<?php echo $data['PEFINDO_MAPPING_ID'];?>&type=<?php echo $data['CUST_TYPE'];?>" class="btn btn-danger btn-sm" title="delete"><i class="fa fa-trash-o"></i></a>
+							<a href="pages/history-delete.php?id=<?php echo $data['PEFINDO_MAPPING_ID'];?>&type=<?php echo $data['CUST_TYPE'];?>" class="btn btn-danger btn-sm" title="delete"><i class="fa fa-trash-o"></i></a>
 						</td>
 					</tr>
 					<?php
