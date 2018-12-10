@@ -164,6 +164,24 @@ ul > li > .active > a:focus {
 .bg-td{
 	background-color:#f9f9f9;
 }
+
+.loader {
+    position: fixed;
+    left: 0px;
+    top: 0px;
+    width: 100%;
+    height: 100%;
+    z-index: 99999999999999999999999999999;
+    background: url('assets/img/loading.gif') 50% 50% no-repeat rgb(255,255,255);
+    opacity: 1;
+}
+tr.header{
+    cursor:pointer;
+	display: table-row;
+}
+tr.child {
+    display: none;
+}
 </style>
 <script src="assets/js/jquery.3.2.1.min.js" type="text/javascript"></script>
 <script src="https://code.highcharts.com/highcharts.js"></script>
@@ -192,6 +210,7 @@ $params = array(array($id, SQLSRV_PARAM_IN));
 $exec = sqlsrv_query( $conn, $callSP, $params) or die( print_r( sqlsrv_errors(), true));
 $data = sqlsrv_fetch_array($exec);
 ?>
+<div class="loader" id="loader"></div>
 <div class="row">
 	<div class="col-md-12">
 		<div class="card">
@@ -313,8 +332,15 @@ $data = sqlsrv_fetch_array($exec);
 </div>
 <?php
 $callCIP3 = "{call SP_GET_TAB_SKOR_PS_TBL_CIP_COMPANY(?)}";
-$paramsCIP3 = array(array($id, SQLSRV_PARAM_IN),array($dataCIP['M_CIP_ID'], SQLSRV_PARAM_IN));
+$paramsCIP3 = array(array($id, SQLSRV_PARAM_IN),array("1", SQLSRV_PARAM_IN));
 ?>
+<script type="text/javascript">
+	$(window).on("load", function(){
+		setTimeout(function(){
+			$("#loader").fadeOut("slow");
+		}, 2000);
+	});
+</script>
 <script>
 	Highcharts.chart('container', {
 		credits: {
@@ -363,4 +389,12 @@ $paramsCIP3 = array(array($id, SQLSRV_PARAM_IN),array($dataCIP['M_CIP_ID'], SQLS
 		}
 
 	});
+</script>
+
+<script>
+$('tr.header').click(function(){
+    $(this).nextUntil('tr.header').css('display', function(i,v){
+        return this.style.display === 'table-row' ? 'none' : 'table-row';
+    });
+});
 </script>

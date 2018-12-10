@@ -1,15 +1,3 @@
-<style>
-tr.header{
-    cursor:pointer;
-}
-.header .sign:after{
-  content:"+";
-  display:inline-block;      
-}
-.header.expand .sign:after{
-  content:"-";
- }
- </style>
 <?php
 /* select table COLLATERALS_SUMMARY */
 $callCOLSUM = "{call SP_GET_TAB_AGUNAN_TBL_COLLATERALS_SUMMARY(?)}";

@@ -1,12 +1,3 @@
-<style>
-tr.header{
-    cursor:pointer;
-	display: table-row;
-}
-tr.child {
-    display: none;
-}
-</style>
 <div class="card">
 	<div class="header"><p class="name">Daftar Fasilitas</p></div>
 	<div class="content">

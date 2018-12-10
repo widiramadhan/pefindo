@@ -147,6 +147,13 @@ ul > li > .active > a:focus {
     background: url('assets/img/loading.gif') 50% 50% no-repeat rgb(255,255,255);
     opacity: 1;
 }
+tr.header{
+    cursor:pointer;
+	display: table-row;
+}
+tr.child {
+    display: none;
+}
 </style>
 <script src="assets/js/jquery.3.2.1.min.js" type="text/javascript"></script>
 <script src="https://code.highcharts.com/highcharts.js"></script>
@@ -349,4 +356,12 @@ $paramsCIP3 = array(array($id, SQLSRV_PARAM_IN),array($dataCIP['M_CIP_ID'], SQLS
 		}
 
 	});
+</script>
+
+<script>
+$('tr.header').click(function(){
+    $(this).nextUntil('tr.header').css('display', function(i,v){
+        return this.style.display === 'table-row' ? 'none' : 'table-row';
+    });
+});
 </script>
