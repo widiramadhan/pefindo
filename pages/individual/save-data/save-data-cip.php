@@ -20,8 +20,8 @@ if(isset($array['GetCustomReportResponse']['GetCustomReportResult']['aCIP']['bRe
 	$execCIP = sqlsrv_query( $conn, $callCIP, $paramsCIP) or die( print_r( sqlsrv_errors(), true));
 	
 	/* Reason List */
-	$callGetCIP = "{call SP_GET_ID_M_CIP(?)}";
-	$paramsGetCIP = array(array($pefindoId, SQLSRV_PARAM_IN));
+	$callGetCIP = "{call SP_GET_ID_M_CIP(?,?)}";
+	$paramsGetCIP = array(array($mappingId, SQLSRV_PARAM_IN),array($pefindoId, SQLSRV_PARAM_IN));
 	$execGetCIP = sqlsrv_query( $conn, $callGetCIP, $paramsGetCIP) or die( print_r( sqlsrv_errors(), true));
 	$rowGetCIP = sqlsrv_fetch_array($execGetCIP);
 	$cipId = $rowGetCIP['M_CIP_ID'];
@@ -79,8 +79,8 @@ if(isset($array['GetCustomReportResponse']['GetCustomReportResult']['aCIP']['bRe
 		$execCIP = sqlsrv_query( $conn, $callCIP, $paramsCIP) or die( print_r( sqlsrv_errors(), true));
 		
 		/* Reason List */
-		$callGetCIP = "{call SP_GET_ID_M_CIP(?)}";
-		$paramsGetCIP = array(array($pefindoId, SQLSRV_PARAM_IN));
+		$callGetCIP = "{call SP_GET_ID_M_CIP(?,?)}";
+		$paramsGetCIP = array(array($mappingId, SQLSRV_PARAM_IN),array($pefindoId, SQLSRV_PARAM_IN));
 		$execGetCIP = sqlsrv_query( $conn, $callGetCIP, $paramsGetCIP) or die( print_r( sqlsrv_errors(), true));
 		$rowGetCIP = sqlsrv_fetch_array($execGetCIP);
 		$cipId = $rowGetCIP['M_CIP_ID'];

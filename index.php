@@ -56,7 +56,7 @@ require_once("config/connection.php");
                     </a>
                 </li>
 				<li>
-                    <a href="index.php?page=log">
+                    <a href="index.php?page=history">
                         <i class="pe-7s-note"></i>
                         <p>History</p>
                     </a>

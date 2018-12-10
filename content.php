@@ -27,8 +27,8 @@ switch ($current_page) {
 	require_once('scoring-company.php');
 	break;
 	
-	case 'log':
-	require_once('pages/log.php');
+	case 'history':
+	require_once('pages/history.php');
 	break;
 	
 	case 'test':
