@@ -24,6 +24,11 @@
 <?php
 require_once("config/configuration.php");
 require_once("config/connection.php");
+if(isset($_GET['username'])){
+	$user=$_GET['username'];
+}else{
+	echo"<script>window.location='access-denied.php'</script>";
+}
 ?>
 <body>
 
@@ -38,25 +43,25 @@ require_once("config/connection.php");
 
             <ul class="nav">
                 <li>
-                    <a href="index.php">
+                    <a href="index.php?username=<?php echo $user;?>">
                         <i class="pe-7s-home"></i>
                         <p>Dashboard</p>
                     </a>
                 </li>
                 <li>
-                    <a href="index.php?page=individual">
+                    <a href="index.php?username=<?php echo $user;?>&page=individual">
                         <i class="pe-7s-user"></i>
                         <p>Individual</p>
                     </a>
                 </li>
                 <li>
-                    <a href="index.php?page=company">
+                    <a href="index.php?username=<?php echo $user;?>&page=company">
                         <i class="pe-7s-id"></i>
                         <p>Company</p>
                     </a>
                 </li>
 				<li>
-                    <a href="index.php?page=history">
+                    <a href="index.php?username=<?php echo $user;?>&page=history">
                         <i class="pe-7s-note"></i>
                         <p>History</p>
                     </a>
@@ -79,16 +84,11 @@ require_once("config/connection.php");
                 <div class="collapse navbar-collapse">
                     <ul class="nav navbar-nav navbar-right">
                         <li class="dropdown">
-                              <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                              <a href="">
                                     <p>
-										<i class="fa fa-user"></i> Default User <b class="caret"></b>
+										<i class="fa fa-user"></i> <?php echo $user;?>
 									</p>
-
                               </a>
-                              <ul class="dropdown-menu">
-                                <li><a href="#">Profile</a></li>
-                                <li><a href="#">Logout</a></li>
-                              </ul>
                         </li>
 						<li class="separator hidden-lg"></li>
                     </ul>

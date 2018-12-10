@@ -45,13 +45,13 @@
 								<?php 
 								if($data['CUST_TYPE']=="P"){
 								?>
-								<a href="index.php?page=scoring-individual&id=<?php echo $data['PEFINDO_ID'];?>" class="btn btn-primary btn-sm" title="detail"><i class="fa fa-eye"></i></a>
+								<a href="index.php?username=<?php echo $user;?>&page=scoring-individual&id=<?php echo $data['PEFINDO_ID'];?>" class="btn btn-primary btn-sm" title="detail"><i class="fa fa-eye"></i></a>
 								<?php }else{?>
-								<a href="index.php?page=scoring-company&id=<?php echo $data['PEFINDO_ID'];?>" class="btn btn-primary btn-sm" title="detail"><i class="fa fa-eye"></i></a>
+								<a href="index.php?username=<?php echo $user;?>&page=scoring-company&id=<?php echo $data['PEFINDO_ID'];?>" class="btn btn-primary btn-sm" title="detail"><i class="fa fa-eye"></i></a>
 								<?php
 								}
 								?>
-								<a href="pages/history-delete.php?id=<?php echo $data['PEFINDO_MAPPING_ID'];?>&type=<?php echo $data['CUST_TYPE'];?>" class="btn btn-danger btn-sm" title="delete"><i class="fa fa-trash-o"></i></a>
+								<a href="pages/history-delete.php?username=<?php echo $user;?>&id=<?php echo $data['PEFINDO_MAPPING_ID'];?>&type=<?php echo $data['CUST_TYPE'];?>" class="btn btn-danger btn-sm" title="delete"><i class="fa fa-trash-o"></i></a>
 							</td>
 						</tr>
 						<?php

@@ -62,7 +62,7 @@ curl_close($curl);
 
 if ($err) {
 	//echo "cURL Error #:" . $err;
-	echo"<script>window.location='index.php?page=error'</script>";
+	echo"<script>window.location='index.php?username=".$user."&page=error'</script>";
 } else {
 	$response = preg_replace("/(<\/?)(\w+):([^>]*>)/", "$1$2$3", $response);
 	$xml = new SimpleXMLElement($response);
@@ -148,7 +148,7 @@ if ($err) {
 							<td><?php echo date('d-m-Y', strtotime($array['SmartSearchIndividualResponse']['SmartSearchIndividualResult']['aIndividualRecords']['aSearchIndividualRecord']['aDateOfBirth']));?></td>
 							<td><?php echo $array['SmartSearchIndividualResponse']['SmartSearchIndividualResult']['aIndividualRecords']['aSearchIndividualRecord']['aAddress'];?></td>
 							<td>
-								<a href="check.php?request=individual&no=<?php echo $prospect;?>&id=<?php echo $array['SmartSearchIndividualResponse']['SmartSearchIndividualResult']['aIndividualRecords']['aSearchIndividualRecord']['aPefindoId'];?>" class="btn btn-success"><i class="fa fa-search"></i> Check Scoring</a>
+								<a href="check.php?username=<?php echo $user;?>&request=individual&no=<?php echo $prospect;?>&id=<?php echo $array['SmartSearchIndividualResponse']['SmartSearchIndividualResult']['aIndividualRecords']['aSearchIndividualRecord']['aPefindoId'];?>" class="btn btn-success"><i class="fa fa-search"></i> Check Scoring</a>
 							</td>
 						</tr>
 					<?php
@@ -164,7 +164,7 @@ if ($err) {
 							<td><?php echo date('d-m-Y', strtotime($item['aDateOfBirth']));?></td>
 							<td><?php echo $item['aAddress'];?></td>
 							<td>
-								<a href="check.php?request=individual&no=<?php echo $prospect;?>&id=<?php echo $item['aPefindoId'];?>" class="btn btn-success"><i class="fa fa-search"></i> Check Scoring</a>
+								<a href="check.php?username=<?php echo $user;?>&request=individual&no=<?php echo $prospect;?>&id=<?php echo $item['aPefindoId'];?>" class="btn btn-success"><i class="fa fa-search"></i> Check Scoring</a>
 							</td>
 						</tr>
 					<?php

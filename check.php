@@ -7,6 +7,7 @@ $pefindoId=$_GET['id'];
 $ps_no=$_GET['no'];
 $request=$_GET['request'];
 $date=date("Y-m-d");
+$user=$_GET['username'];
 
 
 if($request == "individual"){
@@ -20,7 +21,7 @@ if($request == "individual"){
 	
 	/* jika sudah ada tampilkan dari database */
 	if($check > 0){ 
-		echo"<script>window.location='index.php?page=scoring-individual&id=".$pefindoId."'</script>";
+		echo"<script>window.location='index.php?username=".$user."&page=scoring-individual&id=".$pefindoId."'</script>";
 	/* jika tidak ada, request ke Pefindo kemudian save ke database dan tampilkan dari database */
 	}else{
 		/* request ke pefindo menggunakan curl */
@@ -48,7 +49,7 @@ if($request == "individual"){
 		curl_close($curl);
 		if ($err) {
 			//echo "cURL Error #:" . $err;
-			echo"<script>window.location='index.php?page=error'</script>";
+			echo"<script>window.location='index.php?username=".$user."&page=error'</script>";
 		} else {
 			$response = preg_replace("/(<\/?)(\w+):([^>]*>)/", "$1$2$3", $response);
 			$xml = new SimpleXMLElement($response);
@@ -90,7 +91,7 @@ if($request == "individual"){
 		/* SECURITY */ require_once("pages/individual/save-data/save-data-security.php");	
 		/* SUBJECT INFO HISTORY */ require_once("pages/individual/save-data/save-data-subject-info-history.php");	
 		
-		echo"<script>window.location='index.php?page=scoring-individual&id=".$pefindoId."'</script>";	
+		echo"<script>window.location='index.php?username=".$user."&page=scoring-individual&id=".$pefindoId."'</script>";	
 	}
 }else{
 	/* cek ke database apakah id ini sudah ada didalam database ? */
@@ -104,7 +105,7 @@ if($request == "individual"){
 	
 	/* jika sudah ada tampilkan dari database */
 	if($check > 0){
-		echo"<script>window.location='index.php?page=scoring-company&id=".$pefindoId."'</script>";
+		echo"<script>window.location='index.php?username=".$user."&page=scoring-company&id=".$pefindoId."'</script>";
 	/* jika tidak ada request ke Pefindo kemudian save ke database dan tampilkan dari database */
 	}else{
 		/* request ke pefindo menggunakan curl */
@@ -132,7 +133,7 @@ if($request == "individual"){
 		curl_close($curl);
 		if ($err) {
 			//echo "cURL Error #:" . $err;
-			echo"<script>window.location='index.php?page=error'</script>";
+			echo"<script>window.location='index.php?username=".$user."&page=error'</script>";
 		} else {
 			$response = preg_replace("/(<\/?)(\w+):([^>]*>)/", "$1$2$3", $response);
 			$xml = new SimpleXMLElement($response);
@@ -174,7 +175,7 @@ if($request == "individual"){
 		/* SECURITY */ require_once("pages/company/save-data/save-data-security.php");	
 		/* SUBJECT INFO HISTORY */ require_once("pages/company/save-data/save-data-subject-info-history.php");	
 		
-		echo"<script>window.location='index.php?page=scoring-company&id=".$pefindoId."'</script>";	
+		echo"<script>window.location='index.php?username=".$user."&page=scoring-company&id=".$pefindoId."'</script>";	
 	}
 }
 ?>

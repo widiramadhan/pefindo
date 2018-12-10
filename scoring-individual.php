@@ -186,8 +186,8 @@ $(document).ready(function(){
 					<p class="category">Sistem Informasi Debitur</p>
 				</div>
 				<div class="pull-right">
-					<a href="pages/getPDF.php?id=<?php echo $id;?>&type=<?php echo $data['CUST_TYPE'];?>" target="_blank" class="btn btn-danger"><i class="fa fa-file-pdf-o"></i> Export Report to PDF</a>&nbsp;
-					<a href="pages/getExcel.php?id=<?php echo $id;?>" target="_blank" class="btn btn-success"><i class="fa fa-file-excel-o"></i> Export Summary to Excel</a>
+					<a href="pages/getPDF.php?username=<?php echo $user;?>&id=<?php echo $id;?>&type=<?php echo $data['CUST_TYPE'];?>" target="_blank" class="btn btn-danger"><i class="fa fa-file-pdf-o"></i> Export Report to PDF</a>&nbsp;
+					<a href="pages/getExcel.php?username=<?php echo $user;?>&id=<?php echo $id;?>" target="_blank" class="btn btn-success"><i class="fa fa-file-excel-o"></i> Export Summary to Excel</a>
 				</div>
 				<div style="clear:both;"></div>
 			</div>

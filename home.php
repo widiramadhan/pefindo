@@ -7,7 +7,10 @@
 			</div>
 			<div class="content all-icons">
 				<div class="row">
-					<div class="font-icon-list col-md-6">
+					<div style="text-align:center;font-size:48px;color:#EEE;margin-top:100px;margin-bottom:300px;">
+						THIS PAGE<br>UNDER MAINTENANCE
+					</div>
+					<!--<div class="font-icon-list col-md-6">
 						<div class="font-icon-detail">
 							<p>Request PerHari ini :</p>
 							<div style="font-size:42px;font-weight:bold;">201</div>
@@ -18,12 +21,12 @@
 							<p>Request PerBulan ini :</p>
 							<div style="font-size:42px;font-weight:bold;">9425</div>
 						</div>
-					</div>
+					</div>-->
 				</div>
 			</div>
-			<div class="content">
+			<!--<div class="content">
 				<div id="container" style="height:350px;"></div>
-			</div>
+			</div>-->
 		</div>
 	</div>
 </div>	

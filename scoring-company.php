@@ -4,39 +4,6 @@ $id=$_GET['id'];
 $date=date("Y-m-d");
 
 $curl = curl_init();
-
-curl_setopt_array($curl, array(
-  CURLOPT_URL => "https://cbs5bodemo2.pefindobirokredit.com/WsReport/v5.48/Service.svc",
-  CURLOPT_RETURNTRANSFER => true,
-  CURLOPT_ENCODING => "",
-  CURLOPT_MAXREDIRS => 10,
-  CURLOPT_TIMEOUT => 30,
-  CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-  CURLOPT_CUSTOMREQUEST => "POST",
-  CURLOPT_POSTFIELDS => "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\"\r\nxmlns:cb5=\"http://creditinfo.com/CB5\"\r\nxmlns:cus=\"http://creditinfo.com/CB5/v5.48/CustomReport\"\r\nxmlns:arr=\"http://schemas.microsoft.com/2003/10/Serialization/Arrays\">\r\n <soapenv:Header/>\r\n <soapenv:Body>\r\n <cb5:GetCustomReport>\r\n <cb5:parameters>\r\n <cus:Consent>true</cus:Consent>\r\n <cus:IDNumber>".$id."</cus:IDNumber>\r\n <cus:IDNumberType>PefindoId</cus:IDNumberType>\r\n <cus:InquiryReason>ProvidingFacilities</cus:InquiryReason>\r\n <cus:InquiryReasonText/>\r\n <cus:ReportDate>".$date."</cus:ReportDate>\r\n <cus:Sections>\r\n <!--Zero or more repetitions:-->\r\n <arr:string>SubjectInfo</arr:string>\r\n <arr:string>PEFINDOScore</arr:string>\r\n </cus:Sections>\r\n <cus:SubjectType>Company</cus:SubjectType>\r\n </cb5:parameters>\r\n </cb5:GetCustomReport>\r\n </soapenv:Body>\r\n</soapenv:Envelope>",
-  CURLOPT_HTTPHEADER => array(
-	"Authorization: Basic " . base64_encode("$username:$password"),
-    "Content-Type: text/xml",
-    "Postman-Token: ae0ace2e-aa92-4d66-8d14-d67edb42fa84",
-    "SOAPAction: http://creditinfo.com/CB5/IReportPublicServiceBase/GetCustomReport",
-    "cache-control: no-cache"
-  ),
-));
-$response = curl_exec($curl);
-$err = curl_error($curl);
-
-curl_close($curl);
-
-if ($err) {
-	//echo "cURL Error #:" . $err;
-	echo"<script>window.location='index.php?page=error'</script>";
-} else {
-	$response = preg_replace("/(<\/?)(\w+):([^>]*>)/", "$1$2$3", $response);
-	$xml = new SimpleXMLElement($response);
-	$body = $xml->xpath('//sBody')[0];
-	$array = json_decode(json_encode((array)$body), TRUE); 
-	//print_r($array);
-}
 ?>
 <style>
 a{
@@ -220,8 +187,8 @@ $data = sqlsrv_fetch_array($exec);
 					<p class="category">Sistem Informasi Debitur</p>
 				</div>
 				<div class="pull-right">
-					<a href="pages/getPDF.php?id=<?php echo $id;?>&type=<?php echo $data['CUST_TYPE'];?>"" target="_blank" class="btn btn-danger"><i class="fa fa-file-pdf-o"></i> Export Report to PDF</a>&nbsp;
-					<a href="pages/getExcel.php?id=<?php echo $id;?>" target="_blank" class="btn btn-success"><i class="fa fa-file-excel-o"></i> Export Summary to Excel</a>
+					<a href="pages/getPDF.php?username=<?php echo $user;?>&id=<?php echo $id;?>&type=<?php echo $data['CUST_TYPE'];?>"" target="_blank" class="btn btn-danger"><i class="fa fa-file-pdf-o"></i> Export Report to PDF</a>&nbsp;
+					<a href="pages/getExcel.php?username=<?php echo $user;?>&id=<?php echo $id;?>" target="_blank" class="btn btn-success"><i class="fa fa-file-excel-o"></i> Export Summary to Excel</a>
 				</div>
 				<div style="clear:both;"></div>
 			</div>

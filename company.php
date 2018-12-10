@@ -58,7 +58,7 @@ curl_close($curl);
 
 if ($err) {
 	//echo "cURL Error #:" . $err;
-	echo"<script>window.location='index.php?page=error'</script>";
+	echo"<script>window.location='index.php?username=".$user."&page=error'</script>";
 } else {
 	$response = preg_replace("/(<\/?)(\w+):([^>]*>)/", "$1$2$3", $response);
 	$xml = new SimpleXMLElement($response);
@@ -130,7 +130,7 @@ if ($err) {
 							<td><?php echo $array['SmartSearchCompanyResponse']['SmartSearchCompanyResult']['aCompanyRecords']['aSearchCompanyRecord']['aCompanyName'];?></td>
 							<td><?php echo $array['SmartSearchCompanyResponse']['SmartSearchCompanyResult']['aCompanyRecords']['aSearchCompanyRecord']['aAddress'];?></td>
 							<td>
-								<a href="check.php?request=company&no=<?php echo $prospect;?>&id=<?php echo $array['SmartSearchCompanyResponse']['SmartSearchCompanyResult']['aCompanyRecords']['aSearchCompanyRecord']['aPefindoId'];?>" class="btn btn-success"><i class="fa fa-search"></i> Check Scoring</a>
+								<a href="check.php?username=<?php echo $user;?>&request=company&no=<?php echo $prospect;?>&id=<?php echo $array['SmartSearchCompanyResponse']['SmartSearchCompanyResult']['aCompanyRecords']['aSearchCompanyRecord']['aPefindoId'];?>" class="btn btn-success"><i class="fa fa-search"></i> Check Scoring</a>
 							</td>
 						</tr>
 					<?php
@@ -145,7 +145,7 @@ if ($err) {
 							<td><?php echo $item['aCompanyName'];?></td>
 							<td><?php echo $item['aAddress'];?></td>
 							<td>
-								<a href="check.php?request=company&no=<?php echo $prospect;?>&id=<?php echo $item['aPefindoId'];?>" class="btn btn-success"><i class="fa fa-search"></i> Check Scoring</a>
+								<a href="check.php?username=<?php echo $user;?>&request=company&no=<?php echo $prospect;?>&id=<?php echo $item['aPefindoId'];?>" class="btn btn-success"><i class="fa fa-search"></i> Check Scoring</a>
 							</td>
 						</tr>
 					<?php
