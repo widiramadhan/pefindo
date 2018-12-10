@@ -1,7 +1,7 @@
 <?php 
 $pefindoId=$_GET['id'];
 
-require_once "../../assets/plugins/PHPExcel/Classes/PHPExcel.php"; 
+require_once "../assets/plugins/PHPExcel/Classes/PHPExcel.php"; 
 
 date_default_timezone_set("Asia/Jakarta");
 $date=date('Ymd');

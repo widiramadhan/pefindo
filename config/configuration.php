@@ -23,5 +23,8 @@ while($dataConfig = sqlsrv_fetch_array($execConfig)){
 	if($label == "GET_CUSTOM_REPORT"){
 		$getCustomReport = $dataConfig['VALUE'];
 	}
+	if($label == "GET_REPORT_PDF"){
+		$getReportPDF = $dataConfig['VALUE'];
+	}
 }
 ?>

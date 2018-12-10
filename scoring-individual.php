@@ -3,42 +3,6 @@ require_once("config/configuration.php");
 require_once("config/connection.php");
 $id=$_GET['id'];
 $date=date("Y-m-d");
-
-$curl = curl_init();
-
-curl_setopt_array($curl, array(
-  CURLOPT_URL => "https://cbs5bodemo2.pefindobirokredit.com/WsReport/v5.48/Service.svc",
-  CURLOPT_RETURNTRANSFER => true,
-  CURLOPT_ENCODING => "",
-  CURLOPT_MAXREDIRS => 10,
-  CURLOPT_TIMEOUT => 30,
-  CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-  CURLOPT_CUSTOMREQUEST => "POST",
-  CURLOPT_POSTFIELDS => "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\"\r\nxmlns:cb5=\"http://creditinfo.com/CB5\"\r\nxmlns:cus=\"http://creditinfo.com/CB5/v5.48/CustomReport\"\r\nxmlns:arr=\"http://schemas.microsoft.com/2003/10/Serialization/Arrays\">\r\n <soapenv:Header/>\r\n <soapenv:Body>\r\n <cb5:GetCustomReport>\r\n <cb5:parameters>\r\n <cus:Consent>true</cus:Consent>\r\n <cus:IDNumber>".$id."</cus:IDNumber>\r\n <cus:IDNumberType>PefindoId</cus:IDNumberType>\r\n <cus:InquiryReason>ProvidingFacilities</cus:InquiryReason>\r\n <cus:InquiryReasonText/>\r\n <cus:ReportDate>".$date."</cus:ReportDate>\r\n <cus:Sections>\r\n <!--Zero or more repetitions:-->\r\n <arr:string>SubjectInfo</arr:string>\r\n <arr:string>PEFINDOScore</arr:string>\r\n </cus:Sections>\r\n <cus:SubjectType>Individual</cus:SubjectType>\r\n </cb5:parameters>\r\n </cb5:GetCustomReport>\r\n </soapenv:Body>\r\n</soapenv:Envelope>",
-  CURLOPT_HTTPHEADER => array(
-	"Authorization: Basic " . base64_encode("$username:$password"),
-    "Content-Type: text/xml",
-    "Postman-Token: ae0ace2e-aa92-4d66-8d14-d67edb42fa84",
-    "SOAPAction: http://creditinfo.com/CB5/IReportPublicServiceBase/GetCustomReport",
-    "cache-control: no-cache"
-  ),
-));
-
-$response = curl_exec($curl);
-$err = curl_error($curl);
-
-curl_close($curl);
-
-if ($err) {
-	//echo "cURL Error #:" . $err;
-	echo"<script>window.location='index.php?page=error'</script>";
-} else {
-	$response = preg_replace("/(<\/?)(\w+):([^>]*>)/", "$1$2$3", $response);
-	$xml = new SimpleXMLElement($response);
-	$body = $xml->xpath('//sBody')[0];
-	$array = json_decode(json_encode((array)$body), TRUE); 
-	//print_r($array);
-}
 ?>
 <style>
 a{
@@ -313,9 +277,6 @@ $data = sqlsrv_fetch_array($exec);
 					</div>
 					<div id="pengaduan" class="tab-pane fade">
 						<?php require_once("pages/individual/tab-pengaduan.php");?>
-					</div>
-					<div id="all" class="tab-pane fade">
-						<?php require_once("pages/tab-test.php");?>
 					</div>
 					<div class="disclaimer">
 						<b>Disclaimer PBK</b><br>

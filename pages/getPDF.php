@@ -1,13 +1,13 @@
 <?php
-require_once("../../config/configuration.php");
-require_once("../../config/connection.php");
+require_once("../config/configuration.php");
+require_once("../config/connection.php");
 
 $pefindoId=$_GET['id'];
 
 $curl = curl_init();
 
 curl_setopt_array($curl, array(
-  CURLOPT_URL => "https://cbs5bodemo2.pefindobirokredit.com/WsReport/v5.48/Service.svc",
+  CURLOPT_URL => $pefindoURL,
   CURLOPT_RETURNTRANSFER => true,
   CURLOPT_ENCODING => "",
   CURLOPT_MAXREDIRS => 10,
@@ -19,7 +19,7 @@ curl_setopt_array($curl, array(
 	"Authorization: Basic " . base64_encode("$username:$password"),
     "Content-Type: text/xml",
     "Postman-Token: ae0ace2e-aa92-4d66-8d14-d67edb42fa84",
-    "SOAPAction: http://creditinfo.com/CB5/IReportPublicServiceBase/GetPdfReport",
+    "SOAPAction: ".$getReportPDF,
     "cache-control: no-cache"
   ),
 ));
@@ -31,7 +31,7 @@ curl_close($curl);
 
 if ($err) {
 	//echo "cURL Error #:" . $err;
-	echo"<script>window.location='index.php?page=error'</script>";
+	echo"<script>window.location='../index.php?page=error'</script>";
 } else {
 	header('Content-Type: application/zip');
 	header('Content-disposition: filename="PDFReportPefindo_'.$pefindoId.'.zip"');
