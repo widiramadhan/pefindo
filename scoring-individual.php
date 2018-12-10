@@ -3,6 +3,12 @@ require_once("config/configuration.php");
 require_once("config/connection.php");
 $id=$_GET['id'];
 $date=date("Y-m-d");
+
+$callSP = "{call SP_GET_MASTER_INDIVIDUAL(?)}";
+$params = array(array($id, SQLSRV_PARAM_IN));
+$exec = sqlsrv_query( $conn, $callSP, $params) or die( print_r( sqlsrv_errors(), true));
+$data = sqlsrv_fetch_array($exec);
+
 ?>
 <style>
 a{
@@ -163,12 +169,6 @@ $(document).ready(function(){
   });
 });
 </script>
-<?php
-$callSP = "{call SP_GET_MASTER_INDIVIDUAL(?)}";
-$params = array(array($id, SQLSRV_PARAM_IN));
-$exec = sqlsrv_query( $conn, $callSP, $params) or die( print_r( sqlsrv_errors(), true));
-$data = sqlsrv_fetch_array($exec);
-?>
 <div class="loader" id="loader"></div>
 <div class="row">
 	<div class="col-md-12">
@@ -179,7 +179,7 @@ $data = sqlsrv_fetch_array($exec);
 					<p class="category">Sistem Informasi Debitur</p>
 				</div>
 				<div class="pull-right">
-					<a href="pages/getPDF.php?id=<?php echo $id;?>" target="_blank" class="btn btn-danger"><i class="fa fa-file-pdf-o"></i> Export Report to PDF</a>&nbsp;
+					<a href="pages/getPDF.php?id=<?php echo $id;?>&type=<?php echo $data['CUST_TYPE'];?>" target="_blank" class="btn btn-danger"><i class="fa fa-file-pdf-o"></i> Export Report to PDF</a>&nbsp;
 					<a href="pages/getExcel.php?id=<?php echo $id;?>" target="_blank" class="btn btn-success"><i class="fa fa-file-excel-o"></i> Export Summary to Excel</a>
 				</div>
 				<div style="clear:both;"></div>
