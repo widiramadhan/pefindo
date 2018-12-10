@@ -160,18 +160,18 @@ if($request == "individual"){
 		/* CONTRACT OVERVIEW */ require_once("pages/company/save-data/save-data-contract-overview.php");
 		/* CONTRACT SUMMARY */ require_once("pages/company/save-data/save-data-contract-summary.php");
 		/* CONTRACT */ require_once("pages/company/save-data/save-data-contract.php");
-		/* CURRENT RELATIONS */ require_once("pages/company/save-data/save-data-current-relations.php");
-		/* DASHBOARD */ require_once("pages/company/save-data/save-data-dashboard.php");
-		/* DISPUTE */ require_once("pages/company/save-data/save-data-disputes.php");
-		/* FINANCIAL */ require_once("pages/company/save-data/save-data-financial.php");
-		/* INDIVIDUAL */ require_once("pages/company/save-data/save-data-individual.php");
-		/* INQUIRIES */ require_once("pages/company/save-data/save-data-inquiries.php");
-		/* INVOLVEMENT */ require_once("pages/company/save-data/save-data-involvement.php");
-		/* LIABILITIES */ require_once("pages/company/save-data/save-data-other-liabilities.php");
-		/* PARAMETERS */ require_once("pages/company/save-data/save-data-parameters.php");
-		/* REPORT INFO */ require_once("pages/company/save-data/save-data-report-info.php");
-		/* SECURITY */ require_once("pages/company/save-data/save-data-security.php");	
-		/* SUBJECT INFO HISTORY */ require_once("pages/company/save-data/save-data-subject-info-history.php");	
+		/* CURRENT RELATIONS */ //require_once("pages/company/save-data/save-data-current-relations.php");
+		/* DASHBOARD */ //require_once("pages/company/save-data/save-data-dashboard.php");
+		/* DISPUTE */ //require_once("pages/company/save-data/save-data-disputes.php");
+		/* FINANCIAL */ //require_once("pages/company/save-data/save-data-financial.php");
+		/* INDIVIDUAL */ //require_once("pages/company/save-data/save-data-individual.php");
+		/* INQUIRIES */ //require_once("pages/company/save-data/save-data-inquiries.php");
+		/* INVOLVEMENT */ //require_once("pages/company/save-data/save-data-involvement.php");
+		/* LIABILITIES */ //require_once("pages/company/save-data/save-data-other-liabilities.php");
+		/* PARAMETERS */ //require_once("pages/company/save-data/save-data-parameters.php");
+		/* REPORT INFO */ //require_once("pages/company/save-data/save-data-report-info.php");
+		/* SECURITY */ //require_once("pages/company/save-data/save-data-security.php");	
+		/* SUBJECT INFO HISTORY */ //require_once("pages/company/save-data/save-data-subject-info-history.php");	
 		
 		echo"<script>window.location='index.php?page=scoring-company&id=".$pefindoId."'</script>";	
 	}
