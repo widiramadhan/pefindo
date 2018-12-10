@@ -59,7 +59,7 @@ if(isset($array['GetCustomReportResponse']['GetCustomReportResult']['aCIP']['bRe
 	}
 }else{
 	foreach($array['GetCustomReportResponse']['GetCustomReportResult']['aCIP']['bRecordList']['bRecord'] as $item){
-		/* variable CIP */
+		/* variable CIP */ 
 		if($item['bDate']<>NULL){$dateCIP=$item['bDate'];}else{$dateCIP=NULL;}
 		if($item['bGrade']<>NULL){$gradeCIP=$item['bGrade'];}else{$gradeCIP=NULL;}
 		if($item['bProbabilityOfDefault']<>NULL){$probabilityCIP=$item['bProbabilityOfDefault'];}else{$probabilityCIP=NULL;}
