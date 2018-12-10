@@ -245,7 +245,7 @@ $(document).ready(function(){
 					<li><a data-toggle="tab" href="#tagihan-lainnya">Tagihan Lainnya</a></li>
 					<li><a data-toggle="tab" href="#penyertaan">Penyertaan</a></li>
 					<li><a data-toggle="tab" href="#hubungan">Hubungan</a></li>
-					<li><a data-toggle="tab" href="#permintaan-informasi">Permintaan Informasi</a></li>
+					<li><a data-toggle="tab" href="#permintaan">Permintaan Informasi</a></li>
 					<li><a data-toggle="tab" href="#pengaduan">Pengaduan</a></li>
 				</ul>
 				<br>
