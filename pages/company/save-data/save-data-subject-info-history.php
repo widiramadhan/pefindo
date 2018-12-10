@@ -5,8 +5,8 @@ $paramsSubInfoHistory = array(array($mappingId, SQLSRV_PARAM_IN),array($pefindoI
 $execSubInfoHistory = sqlsrv_query($conn, $callSubInfoHistory, $paramsSubInfoHistory) or die ( print_r( sqlsrv_errors(),true));
 
 /* Get subject info header */
-$callSubInfoHistoryID = "{call SP_GET_ID_M_SUBJECT_INFO_HISTORY_COMPANY(?)}";
-$paramsSubInfoHistoryID = array(array($pefindoId,SQLSRV_PARAM_IN));
+$callSubInfoHistoryID = "{call SP_GET_ID_M_SUBJECT_INFO_HISTORY_COMPANY(?,?)}";
+$paramsSubInfoHistoryID = array(array($mappingId,SQLSRV_PARAM_IN),array($pefindoId,SQLSRV_PARAM_IN));
 $execSubInfoHistoryID = sqlsrv_query($conn, $callSubInfoHistoryID, $paramsSubInfoHistoryID) or die ( print_r( sqlsrv_errors(),true));
 $dataSubInfoHis = sqlsrv_fetch_array($execSubInfoHistoryID);
 $subjectInfoId = $dataSubInfoHis['SUBJECT_INFO_HISTORY_ID'];

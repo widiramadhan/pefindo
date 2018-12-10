@@ -1,6 +1,5 @@
 <?php
 //Dashboard Company//
-
 if($array['GetCustomReportResponse']['GetCustomReportResult']['aDashboard']['bCIQ']['bFraudAlerts']<>NULL){$DashCIQFraudAlt=$array['GetCustomReportResponse']['GetCustomReportResult']['aDashboard']['bCIQ']['bFraudAlerts'];}else{$DashCIQFraudAlt=NULL;}	
 if($array['GetCustomReportResponse']['GetCustomReportResult']['aDashboard']['bCIQ']['bFraudAlertsThirdParty']<>NULL){$DashCIQFraudAltThirdParty=$array['GetCustomReportResponse']['GetCustomReportResult']['aDashboard']['bCIQ']['bFraudAlertsThirdParty'];}else{$DashCIQFraudAltThirdParty=NULL;}
 if(isset($array['GetCustomReportResponse']['GetCustomReportResult']['aDashboard']['bCollaterals']['bHighestCollateralValue']['cCurrency'])){
