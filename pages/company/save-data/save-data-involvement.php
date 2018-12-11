@@ -54,58 +54,60 @@ if(isset($array['GetCustomReportResponse']['GetCustomReportResult']['aInvolvemen
 						array($involmentTotAmountVal,SQLSRV_PARAM_IN));
 	$execInvolmentsList = sqlsrv_query($conn, $callInvolmentsList, $paramsInvolmentsList) or die ( print_r( sqlsrv_errors(),true));
 }else{
-	foreach($array['GetCustomReportResponse']['GetCustomReportResult']['aInvolvements']['bInvolvementList']['bInvolvement'] as $itemInvolvementList){
-		if($itemInvolvementList['bConditionDate']<>NULL){$involmentCondDate=$itemInvolvementList['bConditionDate'];}else{$involmentCondDate=NULL;}
-		if($itemInvolvementList['bContractCode']<>NULL){$involmentContractDate=$itemInvolvementList['bContractCode'];}else{$involmentContractDateDate=NULL;}
-		if($itemInvolvementList['bCreditor']<>NULL){$involmentCreditor=$itemInvolvementList['bCreditor'];}else{$involmentCreditor=NULL;}
-		if($itemInvolvementList['bCurrencyOfContract']<>NULL){$involmentCurrOfContract=$itemInvolvementList['bCurrencyOfContract'];}else{$involmentCurrOfContract=NULL;}
-		if($itemInvolvementList['bDefaultDate']<>NULL){$involmentDefaultDate=$itemInvolvementList['bDefaultDate'];}else{$involmentDefaultDate=NULL;}
-		if($itemInvolvementList['bDefaultReason']<>NULL){$involmentDefaultReason=$itemInvolvementList['bDefaultReason'];}else{$involmentDefaultReason=NULL;}
-		if($itemInvolvementList['bDefaultReasonDescription']<>NULL){$involmentDefaultReasonDesc=$itemInvolvementList['bDefaultReasonDescription'];}else{$involmentDefaultReasonDesc=NULL;}
-		if(isset($itemInvolvementList['bInitialTotalAmount']['cCurrency'])){
-			if($itemInvolvementList['bInitialTotalAmount']['cCurrency']<>NULL){$involmentInitTotAmountCur=$itemInvolvementList['bInitialTotalAmount']['cCurrency'];}else{$involmentInitTotAmountCur=NULL;}
-			if($itemInvolvementList['bInitialTotalAmount']['cValue']<>NULL){$involmentInitTotAmountVal=$itemInvolvementList['bInitialTotalAmount']['cValue'];}else{$involmentInitTotAmountVal=NULL;}	
-		}else{
-			$involmentInitTotAmountCur=NULL;
-			$involmentInitTotAmountVal=NULL;
+	if(isset($array['GetCustomReportResponse']['GetCustomReportResult']['aInvolvements']['bInvolvementList']['bInvolvement'])){
+		foreach($array['GetCustomReportResponse']['GetCustomReportResult']['aInvolvements']['bInvolvementList']['bInvolvement'] as $itemInvolvementList){
+			if($itemInvolvementList['bConditionDate']<>NULL){$involmentCondDate=$itemInvolvementList['bConditionDate'];}else{$involmentCondDate=NULL;}
+			if($itemInvolvementList['bContractCode']<>NULL){$involmentContractDate=$itemInvolvementList['bContractCode'];}else{$involmentContractDateDate=NULL;}
+			if($itemInvolvementList['bCreditor']<>NULL){$involmentCreditor=$itemInvolvementList['bCreditor'];}else{$involmentCreditor=NULL;}
+			if($itemInvolvementList['bCurrencyOfContract']<>NULL){$involmentCurrOfContract=$itemInvolvementList['bCurrencyOfContract'];}else{$involmentCurrOfContract=NULL;}
+			if($itemInvolvementList['bDefaultDate']<>NULL){$involmentDefaultDate=$itemInvolvementList['bDefaultDate'];}else{$involmentDefaultDate=NULL;}
+			if($itemInvolvementList['bDefaultReason']<>NULL){$involmentDefaultReason=$itemInvolvementList['bDefaultReason'];}else{$involmentDefaultReason=NULL;}
+			if($itemInvolvementList['bDefaultReasonDescription']<>NULL){$involmentDefaultReasonDesc=$itemInvolvementList['bDefaultReasonDescription'];}else{$involmentDefaultReasonDesc=NULL;}
+			if(isset($itemInvolvementList['bInitialTotalAmount']['cCurrency'])){
+				if($itemInvolvementList['bInitialTotalAmount']['cCurrency']<>NULL){$involmentInitTotAmountCur=$itemInvolvementList['bInitialTotalAmount']['cCurrency'];}else{$involmentInitTotAmountCur=NULL;}
+				if($itemInvolvementList['bInitialTotalAmount']['cValue']<>NULL){$involmentInitTotAmountVal=$itemInvolvementList['bInitialTotalAmount']['cValue'];}else{$involmentInitTotAmountVal=NULL;}	
+			}else{
+				$involmentInitTotAmountCur=NULL;
+				$involmentInitTotAmountVal=NULL;
+			}
+			if($itemInvolvementList['bInvolvementPurpose']<>NULL){$involmentPurpose=$itemInvolvementList['bInvolvementPurpose'];}else{$involmentPurpose=NULL;}
+			if($itemInvolvementList['bLastUpdate']<>NULL){$involmentLastUpt=$itemInvolvementList['bLastUpdate'];}else{$involmentLastUpt=NULL;}
+			if($itemInvolvementList['bNegativeStatus']<>NULL){$involmentNegativeStat=$itemInvolvementList['bNegativeStatus'];}else{$involmentNegativeStat=NULL;}
+			if($itemInvolvementList['bRealEndDate']<>NULL){$involmentRealDate=$itemInvolvementList['bRealEndDate'];}else{$involmentRealDate=NULL;}
+			if($itemInvolvementList['bStartDate']<>NULL){$involmentStartDate=$itemInvolvementList['bStartDate'];}else{$involmentStartDate=NULL;}
+			if($itemInvolvementList['bStatus']<>NULL){$involmentStatus=$itemInvolvementList['bStatus'];}else{$involmentStatus=NULL;}
+			if(isset($itemInvolvementList['bTotalAmount']['cCurrency'])){
+				if($itemInvolvementList['bTotalAmount']['cCurrency']<>NULL){$involmentTotAmountCur=$itemInvolvementList['bTotalAmount']['cCurrency'];}else{$involmentTotAmountCur=NULL;}
+				if($itemInvolvementList['bTotalAmount']['cValue']<>NULL){$involmentTotAmountVal=$itemInvolvementList['bTotalAmount']['cValue'];}else{$involmentTotAmountVal=NULL;}	
+			}else{
+				$involmentTotAmountCur=NULL;
+				$involmentTotAmountVal=NULL;
+			}
+			
+			$callInvolmentsList = "{call SP_INSERT_INVOLVEMENTS_LIST_COMPANY(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}";
+			$paramsInvolmentsList = array(
+								array($mappingId, SQLSRV_PARAM_IN),
+								array($pefindoId,SQLSRV_PARAM_IN),
+								array(NULL,SQLSRV_PARAM_IN),
+								array($involmentCondDate,SQLSRV_PARAM_IN),
+								array($involmentContractDate,SQLSRV_PARAM_IN),
+								array($involmentCreditor,SQLSRV_PARAM_IN),
+								array($involmentCurrOfContract,SQLSRV_PARAM_IN),
+								array($involmentDefaultDate,SQLSRV_PARAM_IN),
+								array($involmentDefaultReason,SQLSRV_PARAM_IN),
+								array($involmentDefaultReasonDesc,SQLSRV_PARAM_IN),
+								array($involmentInitTotAmountCur,SQLSRV_PARAM_IN),
+								array($involmentInitTotAmountVal,SQLSRV_PARAM_IN),
+								array($involmentPurpose,SQLSRV_PARAM_IN),
+								array($involmentLastUpt,SQLSRV_PARAM_IN),
+								array($involmentNegativeStat,SQLSRV_PARAM_IN),
+								array($involmentRealDate,SQLSRV_PARAM_IN),
+								array($involmentStartDate,SQLSRV_PARAM_IN),
+								array($involmentStatus,SQLSRV_PARAM_IN),
+								array($involmentTotAmountCur,SQLSRV_PARAM_IN),
+								array($involmentTotAmountVal,SQLSRV_PARAM_IN));
+			$execInvolmentsList = sqlsrv_query($conn, $callInvolmentsList, $paramsInvolmentsList) or die ( print_r( sqlsrv_errors(),true));
 		}
-		if($itemInvolvementList['bInvolvementPurpose']<>NULL){$involmentPurpose=$itemInvolvementList['bInvolvementPurpose'];}else{$involmentPurpose=NULL;}
-		if($itemInvolvementList['bLastUpdate']<>NULL){$involmentLastUpt=$itemInvolvementList['bLastUpdate'];}else{$involmentLastUpt=NULL;}
-		if($itemInvolvementList['bNegativeStatus']<>NULL){$involmentNegativeStat=$itemInvolvementList['bNegativeStatus'];}else{$involmentNegativeStat=NULL;}
-		if($itemInvolvementList['bRealEndDate']<>NULL){$involmentRealDate=$itemInvolvementList['bRealEndDate'];}else{$involmentRealDate=NULL;}
-		if($itemInvolvementList['bStartDate']<>NULL){$involmentStartDate=$itemInvolvementList['bStartDate'];}else{$involmentStartDate=NULL;}
-		if($itemInvolvementList['bStatus']<>NULL){$involmentStatus=$itemInvolvementList['bStatus'];}else{$involmentStatus=NULL;}
-		if(isset($itemInvolvementList['bTotalAmount']['cCurrency'])){
-			if($itemInvolvementList['bTotalAmount']['cCurrency']<>NULL){$involmentTotAmountCur=$itemInvolvementList['bTotalAmount']['cCurrency'];}else{$involmentTotAmountCur=NULL;}
-			if($itemInvolvementList['bTotalAmount']['cValue']<>NULL){$involmentTotAmountVal=$itemInvolvementList['bTotalAmount']['cValue'];}else{$involmentTotAmountVal=NULL;}	
-		}else{
-			$involmentTotAmountCur=NULL;
-			$involmentTotAmountVal=NULL;
-		}
-		
-		$callInvolmentsList = "{call SP_INSERT_INVOLVEMENTS_LIST_COMPANY(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}";
-		$paramsInvolmentsList = array(
-							array($mappingId, SQLSRV_PARAM_IN),
-							array($pefindoId,SQLSRV_PARAM_IN),
-							array(NULL,SQLSRV_PARAM_IN),
-							array($involmentCondDate,SQLSRV_PARAM_IN),
-							array($involmentContractDate,SQLSRV_PARAM_IN),
-							array($involmentCreditor,SQLSRV_PARAM_IN),
-							array($involmentCurrOfContract,SQLSRV_PARAM_IN),
-							array($involmentDefaultDate,SQLSRV_PARAM_IN),
-							array($involmentDefaultReason,SQLSRV_PARAM_IN),
-							array($involmentDefaultReasonDesc,SQLSRV_PARAM_IN),
-							array($involmentInitTotAmountCur,SQLSRV_PARAM_IN),
-							array($involmentInitTotAmountVal,SQLSRV_PARAM_IN),
-							array($involmentPurpose,SQLSRV_PARAM_IN),
-							array($involmentLastUpt,SQLSRV_PARAM_IN),
-							array($involmentNegativeStat,SQLSRV_PARAM_IN),
-							array($involmentRealDate,SQLSRV_PARAM_IN),
-							array($involmentStartDate,SQLSRV_PARAM_IN),
-							array($involmentStatus,SQLSRV_PARAM_IN),
-							array($involmentTotAmountCur,SQLSRV_PARAM_IN),
-							array($involmentTotAmountVal,SQLSRV_PARAM_IN));
-		$execInvolmentsList = sqlsrv_query($conn, $callInvolmentsList, $paramsInvolmentsList) or die ( print_r( sqlsrv_errors(),true));
 	}
 }
 

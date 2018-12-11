@@ -140,40 +140,42 @@ if(isset($array['GetCustomReportResponse']['GetCustomReportResult']['aContractSu
 					);
 	$execContPaymentList = sqlsrv_query($conn , $callContPaymentList, $paramsContPaymentList) or die (print_r( sqlsrv_errors(),true));			
 }else{
-	foreach($array['GetCustomReportResponse']['GetCustomReportResult']['aContractSummary']['bPaymentCalendarList']['bPaymentCalendar'] as $itemContPayment){
-		if($itemContPayment['bContractsSubmitted']<>NULL){$ContPaymentSubmited=$itemContPayment['bContractsSubmitted'];}else{$ContPaymentSubmited=NULL;}
-		if($itemContPayment['bDate']<>NULL){$ContPaymentDate=$itemContPayment['bDate'];}else{$ContPaymentDate=NULL;}		
-		if($itemContPayment['bNegativeStatusOfContract']<>NULL){$ContPaymentNegativeStat=$itemContPayment['bNegativeStatusOfContract'];}else{$ContPaymentNegativeStat=NULL;}				
-		if(isset($itemContPayment['bOutstandingAmount']['cCurrency'])){
-			if($itemContPayment['bOutstandingAmount']['cCurrency']<>NULL){$ContPaymentStandAmountCur=$itemContPayment['bOutstandingAmount']['cCurrency'];}else{$ContPaymentStandAmountCur=NULL;}			
-			if($itemContPayment['bOutstandingAmount']['cValue']<>NULL){$ContPaymentStandAmountVal=$itemContPayment['bOutstandingAmount']['cValue'];}else{$ContPaymentStandAmountVal=NULL;}				
-		}else{
-			$ContPaymentStandAmountCur=NULL;
-			$ContPaymentStandAmountVal=NULL;
+	if(isset($array['GetCustomReportResponse']['GetCustomReportResult']['aContractSummary']['bPaymentCalendarList']['bPaymentCalendar'])){
+		foreach($array['GetCustomReportResponse']['GetCustomReportResult']['aContractSummary']['bPaymentCalendarList']['bPaymentCalendar'] as $itemContPayment){
+			if($itemContPayment['bContractsSubmitted']<>NULL){$ContPaymentSubmited=$itemContPayment['bContractsSubmitted'];}else{$ContPaymentSubmited=NULL;}
+			if($itemContPayment['bDate']<>NULL){$ContPaymentDate=$itemContPayment['bDate'];}else{$ContPaymentDate=NULL;}		
+			if($itemContPayment['bNegativeStatusOfContract']<>NULL){$ContPaymentNegativeStat=$itemContPayment['bNegativeStatusOfContract'];}else{$ContPaymentNegativeStat=NULL;}				
+			if(isset($itemContPayment['bOutstandingAmount']['cCurrency'])){
+				if($itemContPayment['bOutstandingAmount']['cCurrency']<>NULL){$ContPaymentStandAmountCur=$itemContPayment['bOutstandingAmount']['cCurrency'];}else{$ContPaymentStandAmountCur=NULL;}			
+				if($itemContPayment['bOutstandingAmount']['cValue']<>NULL){$ContPaymentStandAmountVal=$itemContPayment['bOutstandingAmount']['cValue'];}else{$ContPaymentStandAmountVal=NULL;}				
+			}else{
+				$ContPaymentStandAmountCur=NULL;
+				$ContPaymentStandAmountVal=NULL;
+			}
+			if(isset($itemContPayment['bPastDueAmount']['cCurrency'])){
+				if($itemContPayment['bPastDueAmount']['cCurrency']<>NULL){$ContPaymentPastDueAmountCur=$itemContPayment['bPastDueAmount']['cCurrency'];}else{$ContPaymentPastDueAmountCur=NULL;}				
+				if($itemContPayment['bPastDueAmount']['cValue']<>NULL){$ContPaymentPastDueAmountVal=$itemContPayment['bPastDueAmount']['cValue'];}else{$ContPaymentPastDueAmountVal=NULL;}				
+			}else{
+				$ContPaymentPastDueAmountCur=NULL;
+				$ContPaymentPastDueAmountVal=NULL;
+			}
+			if($itemContPayment['bPastDueDays']<>NULL){$ContPaymentPastDueDays=$itemContPayment['bPastDueDays'];}else{$ContPaymentPastDueDays=NULL;}
+			
+			$callContPaymentList = "{call SP_INSERT_CONTRACT_SUM_PAYMENT_LIST_COMPANY(?,?,?,?,?,?,?,?,?,?)}";
+			$paramsContPaymentList = array(
+								array($mappingId, SQLSRV_PARAM_IN),
+								array($pefindoId,SQLSRV_PARAM_IN),
+								array($ContPaymentSubmited,SQLSRV_PARAM_IN),
+								array($ContPaymentDate,SQLSRV_PARAM_IN),
+								array($ContPaymentNegativeStat,SQLSRV_PARAM_IN),
+								array($ContPaymentStandAmountCur,SQLSRV_PARAM_IN),
+								array($ContPaymentStandAmountVal,SQLSRV_PARAM_IN),
+								array($ContPaymentPastDueAmountCur,SQLSRV_PARAM_IN),
+								array($ContPaymentPastDueAmountVal,SQLSRV_PARAM_IN),
+								array($ContPaymentPastDueDays,SQLSRV_PARAM_IN)
+							);
+			$execContPaymentList = sqlsrv_query($conn , $callContPaymentList, $paramsContPaymentList) or die (print_r( sqlsrv_errors(),true	));		
 		}
-		if(isset($itemContPayment['bPastDueAmount']['cCurrency'])){
-			if($itemContPayment['bPastDueAmount']['cCurrency']<>NULL){$ContPaymentPastDueAmountCur=$itemContPayment['bPastDueAmount']['cCurrency'];}else{$ContPaymentPastDueAmountCur=NULL;}				
-			if($itemContPayment['bPastDueAmount']['cValue']<>NULL){$ContPaymentPastDueAmountVal=$itemContPayment['bPastDueAmount']['cValue'];}else{$ContPaymentPastDueAmountVal=NULL;}				
-		}else{
-			$ContPaymentPastDueAmountCur=NULL;
-			$ContPaymentPastDueAmountVal=NULL;
-		}
-		if($itemContPayment['bPastDueDays']<>NULL){$ContPaymentPastDueDays=$itemContPayment['bPastDueDays'];}else{$ContPaymentPastDueDays=NULL;}
-		
-		$callContPaymentList = "{call SP_INSERT_CONTRACT_SUM_PAYMENT_LIST_COMPANY(?,?,?,?,?,?,?,?,?,?)}";
-		$paramsContPaymentList = array(
-							array($mappingId, SQLSRV_PARAM_IN),
-							array($pefindoId,SQLSRV_PARAM_IN),
-							array($ContPaymentSubmited,SQLSRV_PARAM_IN),
-							array($ContPaymentDate,SQLSRV_PARAM_IN),
-							array($ContPaymentNegativeStat,SQLSRV_PARAM_IN),
-							array($ContPaymentStandAmountCur,SQLSRV_PARAM_IN),
-							array($ContPaymentStandAmountVal,SQLSRV_PARAM_IN),
-							array($ContPaymentPastDueAmountCur,SQLSRV_PARAM_IN),
-							array($ContPaymentPastDueAmountVal,SQLSRV_PARAM_IN),
-							array($ContPaymentPastDueDays,SQLSRV_PARAM_IN)
-						);
-		$execContPaymentList = sqlsrv_query($conn , $callContPaymentList, $paramsContPaymentList) or die (print_r( sqlsrv_errors(),true	));		
 	}
 }
 
@@ -252,78 +254,80 @@ if(isset($array['GetCustomReportResponse']['GetCustomReportResult']['aContractSu
 						);
 	$execContSector = sqlsrv_query($conn , $callContSector, $paramsContSector) or die (print_r( sqlsrv_errors(),true	));		
 }else{
-	foreach($array['GetCustomReportResponse']['GetCustomReportResult']['aContractSummary']['bSectorInfoList']['bSectorInfo'] as $itemConSector){
-		if($itemConSector['bDebtorClosedContracts']<>NULL){$ContSectorDebClose=$itemConSector['bDebtorClosedContracts'];}else{$ContSectorDebClose=NULL;}
-		if($itemConSector['bDebtorOpenContracts']<>NULL){$ContSectorDebOpen=$itemConSector['bDebtorOpenContracts'];}else{$ContSectorDebOpen=NULL;}
-		if(isset($itemConSector['bDebtorOutstandingAmountSum']['cCurrency'])){
-			if($itemConSector['bDebtorOutstandingAmountSum']['cCurrency']<>NULL){$ContSectorDebStandAmountCur=$itemConSector['bDebtorOutstandingAmountSum']['cCurrency'];}else{$ContSectorDebStandAmountCur=NULL;}
-			if($itemConSector['bDebtorOutstandingAmountSum']['cValue']<>NULL){$ContSectorDebStandAmountVal=$itemConSector['bDebtorOutstandingAmountSum']['cValue'];}else{$ContSectorDebStandAmountVal=NULL;}
-		}else{
-			$ContSectorDebStandAmountCur=NULL;
-			$ContSectorDebStandAmountVal=NULL;
+	if(isset($array['GetCustomReportResponse']['GetCustomReportResult']['aContractSummary']['bSectorInfoList']['bSectorInfo'])){
+		foreach($array['GetCustomReportResponse']['GetCustomReportResult']['aContractSummary']['bSectorInfoList']['bSectorInfo'] as $itemConSector){
+			if($itemConSector['bDebtorClosedContracts']<>NULL){$ContSectorDebClose=$itemConSector['bDebtorClosedContracts'];}else{$ContSectorDebClose=NULL;}
+			if($itemConSector['bDebtorOpenContracts']<>NULL){$ContSectorDebOpen=$itemConSector['bDebtorOpenContracts'];}else{$ContSectorDebOpen=NULL;}
+			if(isset($itemConSector['bDebtorOutstandingAmountSum']['cCurrency'])){
+				if($itemConSector['bDebtorOutstandingAmountSum']['cCurrency']<>NULL){$ContSectorDebStandAmountCur=$itemConSector['bDebtorOutstandingAmountSum']['cCurrency'];}else{$ContSectorDebStandAmountCur=NULL;}
+				if($itemConSector['bDebtorOutstandingAmountSum']['cValue']<>NULL){$ContSectorDebStandAmountVal=$itemConSector['bDebtorOutstandingAmountSum']['cValue'];}else{$ContSectorDebStandAmountVal=NULL;}
+			}else{
+				$ContSectorDebStandAmountCur=NULL;
+				$ContSectorDebStandAmountVal=NULL;
+			}
+			if(isset($itemConSector['bDebtorPastDueAmountSum']['cCurrency'])){
+				if($itemConSector['bDebtorPastDueAmountSum']['cCurrency']<>NULL){$ContSectorDebPastDueAmountCur=$itemConSector['bDebtorPastDueAmountSum']['cCurrency'];}else{$ContSectorDebPastDueAmountCur=NULL;}				
+				if($itemConSector['bDebtorPastDueAmountSum']['cValue']<>NULL){$ContSectorDebPastDueAmountVal=$itemConSector['bDebtorPastDueAmountSum']['cValue'];}else{$ContSectorDebPastDueAmountVal=NULL;}				
+			}else{
+				$ContSectorDebPastDueAmountCur=NULL;
+				$ContSectorDebPastDueAmountVal=NULL;
+			}
+			if(isset($itemConSector['bDebtorTotalAmountSum']['cCurrency'])){
+				if($itemConSector['bDebtorTotalAmountSum']['cCurrency']<>NULL){$ContSectorDebTotSumAmountCur=$itemConSector['bDebtorTotalAmountSum']['cCurrency'];}else{$ContSectorDebTotSumAmountCur=NULL;}				
+				if($itemConSector['bDebtorTotalAmountSum']['cValue']<>NULL){$ContSectorDebTotSumAmountVal=$itemConSector['bDebtorTotalAmountSum']['cValue'];}else{$ContSectorDebTotSumAmountVal=NULL;}				
+			}else{
+				$ContSectorDebTotSumAmountCur=NULL;
+				$ContSectorDebTotSumAmountVal=NULL;
+			}
+			if($itemConSector['bGuarantorClosedContracts']<>NULL){$ContSectorGuarantCloseCont=$itemConSector['bGuarantorClosedContracts'];}else{$ContSectorGuarantCloseCont=NULL;}				
+			if($itemConSector['bGuarantorOpenContracts']<>NULL){$ContSectorGuarantOpenCont=$itemConSector['bGuarantorOpenContracts'];}else{$ContSectorGuarantOpenCont=NULL;}				
+			if(isset($itemConSector['bGuarantorOutstandingAmountSum']['cCurrency'])){
+				if($itemConSector['bGuarantorOutstandingAmountSum']['cCurrency']<>NULL){$ContSectorGuarantStandAmountCur=$itemConSector['bDebtorPastDueAmountSum']['cCurrency'];}else{$ContSectorGuarantStandAmountCur=NULL;}			
+				if($itemConSector['bGuarantorOutstandingAmountSum']['cValue']<>NULL){$ContSectorGuarantStandAmountVal=$itemConSector['bGuarantorOutstandingAmountSum']['cValue'];}else{$ContSectorGuarantStandAmountVal=NULL;}		
+			}else{
+				$ContSectorGuarantStandAmountCur=NULL;
+				$ContSectorGuarantStandAmountVal=NULL;
+			}
+			if(isset($itemConSector['bGuarantorPastDueAmountSum']['cCurrency'])){
+				if($itemConSector['bGuarantorPastDueAmountSum']['cCurrency']<>NULL){$ContSectorGuarantPastDueCur=$itemConSector['bGuarantorPastDueAmountSum']['cCurrency'];}else{$ContSectorGuarantPastDueCur=NULL;}		
+				if($itemConSector['bGuarantorPastDueAmountSum']['cValue']<>NULL){$ContSectorGuarantPastDueVal=$itemConSector['bGuarantorPastDueAmountSum']['cValue'];}else{$ContSectorGuarantPastDueVal=NULL;}				
+			}else{
+				$ContSectorGuarantPastDueCur=NULL;
+				$ContSectorGuarantPastDueVal=NULL;
+			}
+			if(isset($itemConSector['bGuarantorTotalAmountSum']['cCurrency'])){
+				if($itemConSector['bGuarantorTotalAmountSum']['cCurrency']<>NULL){$ContSectorGuarantTotSumCur=$itemConSector['bGuarantorTotalAmountSum']['cCurrency'];}else{$ContSectorGuarantTotSumCur=NULL;}				
+				if($itemConSector['bGuarantorTotalAmountSum']['cValue']<>NULL){$ContSectorGuarantTotSumVal=$itemConSector['bGuarantorTotalAmountSum']['cValue'];}else{$ContSectorGuarantTotSumVal=NULL;}				
+			}else{
+				$ContSectorGuarantTotSumCur=NULL;
+				$ContSectorGuarantTotSumVal=NULL;
+			}
+			if($itemConSector['bSector']<>NULL){$ContSectorSec=$itemConSector['bSector'];}else{$ContSectorSec=NULL;}
+			
+			$callContSector = "{call SP_INSERT_CONTRACTS_SUM_SECTOR_INFO_COMPANY(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}";
+			$paramsContSector = array(
+									array($mappingId, SQLSRV_PARAM_IN),
+									array($pefindoId,SQLSRV_PARAM_IN),
+									array($ContSectorDebClose,SQLSRV_PARAM_IN),
+									array($ContSectorDebOpen,SQLSRV_PARAM_IN),
+									array($ContSectorDebStandAmountCur,SQLSRV_PARAM_IN),
+									array($ContSectorDebStandAmountVal,SQLSRV_PARAM_IN),
+									array($ContSectorDebPastDueAmountCur,SQLSRV_PARAM_IN),
+									array($ContSectorDebPastDueAmountVal,SQLSRV_PARAM_IN),
+									array($ContSectorDebTotSumAmountCur,SQLSRV_PARAM_IN),
+									array($ContSectorDebTotSumAmountVal,SQLSRV_PARAM_IN),
+									array($ContSectorGuarantCloseCont,SQLSRV_PARAM_IN),
+									array($ContSectorGuarantOpenCont,SQLSRV_PARAM_IN),
+									array($ContSectorGuarantStandAmountCur,SQLSRV_PARAM_IN),
+									array($ContSectorGuarantStandAmountVal,SQLSRV_PARAM_IN),
+									array($ContSectorGuarantPastDueCur,SQLSRV_PARAM_IN),
+									array($ContSectorGuarantPastDueVal,SQLSRV_PARAM_IN),
+									array($ContSectorGuarantTotSumCur,SQLSRV_PARAM_IN),
+									array($ContSectorGuarantTotSumVal,SQLSRV_PARAM_IN),
+									array($ContSectorSec,SQLSRV_PARAM_IN)
+								);
+			$execContSector = sqlsrv_query($conn , $callContSector, $paramsContSector) or die (print_r( sqlsrv_errors(),true ));		
 		}
-		if(isset($itemConSector['bDebtorPastDueAmountSum']['cCurrency'])){
-			if($itemConSector['bDebtorPastDueAmountSum']['cCurrency']<>NULL){$ContSectorDebPastDueAmountCur=$itemConSector['bDebtorPastDueAmountSum']['cCurrency'];}else{$ContSectorDebPastDueAmountCur=NULL;}				
-			if($itemConSector['bDebtorPastDueAmountSum']['cValue']<>NULL){$ContSectorDebPastDueAmountVal=$itemConSector['bDebtorPastDueAmountSum']['cValue'];}else{$ContSectorDebPastDueAmountVal=NULL;}				
-		}else{
-			$ContSectorDebPastDueAmountCur=NULL;
-			$ContSectorDebPastDueAmountVal=NULL;
-		}
-		if(isset($itemConSector['bDebtorTotalAmountSum']['cCurrency'])){
-			if($itemConSector['bDebtorTotalAmountSum']['cCurrency']<>NULL){$ContSectorDebTotSumAmountCur=$itemConSector['bDebtorTotalAmountSum']['cCurrency'];}else{$ContSectorDebTotSumAmountCur=NULL;}				
-			if($itemConSector['bDebtorTotalAmountSum']['cValue']<>NULL){$ContSectorDebTotSumAmountVal=$itemConSector['bDebtorTotalAmountSum']['cValue'];}else{$ContSectorDebTotSumAmountVal=NULL;}				
-		}else{
-			$ContSectorDebTotSumAmountCur=NULL;
-			$ContSectorDebTotSumAmountVal=NULL;
-		}
-		if($itemConSector['bGuarantorClosedContracts']<>NULL){$ContSectorGuarantCloseCont=$itemConSector['bGuarantorClosedContracts'];}else{$ContSectorGuarantCloseCont=NULL;}				
-		if($itemConSector['bGuarantorOpenContracts']<>NULL){$ContSectorGuarantOpenCont=$itemConSector['bGuarantorOpenContracts'];}else{$ContSectorGuarantOpenCont=NULL;}				
-		if(isset($itemConSector['bGuarantorOutstandingAmountSum']['cCurrency'])){
-			if($itemConSector['bGuarantorOutstandingAmountSum']['cCurrency']<>NULL){$ContSectorGuarantStandAmountCur=$itemConSector['bDebtorPastDueAmountSum']['cCurrency'];}else{$ContSectorGuarantStandAmountCur=NULL;}			
-			if($itemConSector['bGuarantorOutstandingAmountSum']['cValue']<>NULL){$ContSectorGuarantStandAmountVal=$itemConSector['bGuarantorOutstandingAmountSum']['cValue'];}else{$ContSectorGuarantStandAmountVal=NULL;}		
-		}else{
-			$ContSectorGuarantStandAmountCur=NULL;
-			$ContSectorGuarantStandAmountVal=NULL;
-		}
-		if(isset($itemConSector['bGuarantorPastDueAmountSum']['cCurrency'])){
-			if($itemConSector['bGuarantorPastDueAmountSum']['cCurrency']<>NULL){$ContSectorGuarantPastDueCur=$itemConSector['bGuarantorPastDueAmountSum']['cCurrency'];}else{$ContSectorGuarantPastDueCur=NULL;}		
-			if($itemConSector['bGuarantorPastDueAmountSum']['cValue']<>NULL){$ContSectorGuarantPastDueVal=$itemConSector['bGuarantorPastDueAmountSum']['cValue'];}else{$ContSectorGuarantPastDueVal=NULL;}				
-		}else{
-			$ContSectorGuarantPastDueCur=NULL;
-			$ContSectorGuarantPastDueVal=NULL;
-		}
-		if(isset($itemConSector['bGuarantorTotalAmountSum']['cCurrency'])){
-			if($itemConSector['bGuarantorTotalAmountSum']['cCurrency']<>NULL){$ContSectorGuarantTotSumCur=$itemConSector['bGuarantorTotalAmountSum']['cCurrency'];}else{$ContSectorGuarantTotSumCur=NULL;}				
-			if($itemConSector['bGuarantorTotalAmountSum']['cValue']<>NULL){$ContSectorGuarantTotSumVal=$itemConSector['bGuarantorTotalAmountSum']['cValue'];}else{$ContSectorGuarantTotSumVal=NULL;}				
-		}else{
-			$ContSectorGuarantTotSumCur=NULL;
-			$ContSectorGuarantTotSumVal=NULL;
-		}
-		if($itemConSector['bSector']<>NULL){$ContSectorSec=$itemConSector['bSector'];}else{$ContSectorSec=NULL;}
-		
-		$callContSector = "{call SP_INSERT_CONTRACTS_SUM_SECTOR_INFO_COMPANY(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}";
-		$paramsContSector = array(
-								array($mappingId, SQLSRV_PARAM_IN),
-								array($pefindoId,SQLSRV_PARAM_IN),
-								array($ContSectorDebClose,SQLSRV_PARAM_IN),
-								array($ContSectorDebOpen,SQLSRV_PARAM_IN),
-								array($ContSectorDebStandAmountCur,SQLSRV_PARAM_IN),
-								array($ContSectorDebStandAmountVal,SQLSRV_PARAM_IN),
-								array($ContSectorDebPastDueAmountCur,SQLSRV_PARAM_IN),
-								array($ContSectorDebPastDueAmountVal,SQLSRV_PARAM_IN),
-								array($ContSectorDebTotSumAmountCur,SQLSRV_PARAM_IN),
-								array($ContSectorDebTotSumAmountVal,SQLSRV_PARAM_IN),
-								array($ContSectorGuarantCloseCont,SQLSRV_PARAM_IN),
-								array($ContSectorGuarantOpenCont,SQLSRV_PARAM_IN),
-								array($ContSectorGuarantStandAmountCur,SQLSRV_PARAM_IN),
-								array($ContSectorGuarantStandAmountVal,SQLSRV_PARAM_IN),
-								array($ContSectorGuarantPastDueCur,SQLSRV_PARAM_IN),
-								array($ContSectorGuarantPastDueVal,SQLSRV_PARAM_IN),
-								array($ContSectorGuarantTotSumCur,SQLSRV_PARAM_IN),
-								array($ContSectorGuarantTotSumVal,SQLSRV_PARAM_IN),
-								array($ContSectorSec,SQLSRV_PARAM_IN)
-							);
-		$execContSector = sqlsrv_query($conn , $callContSector, $paramsContSector) or die (print_r( sqlsrv_errors(),true ));		
 	}
 }	
 ?>

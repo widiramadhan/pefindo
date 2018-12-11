@@ -74,11 +74,11 @@ $dataINVOLCOMLIST = sqlsrv_fetch_array($execINVOLCOMLIST);
 											<td class="bg-td"><b>Valuta</td></b>
 											<td align="right"><?php echo $dataINVOLCOMLIST['CURRENCY_CONTRACT'];?></td>
 											<td class="bg-td"><b>Tanggal Wanprestasi</td></b>
-											<td align="right"><?php echo $dataINVOLCOMLIST['DEFAULT_DATE'];?></td>
+											<td align="right"><?php if($dataINVOLCOMLIST['DEFAULT_DATE']<>NULL){echo $dataINVOLCOMLIST['DEFAULT_DATE']->format("T-m-d");}else{echo"";}?></td>
 										</tr>
 										<tr>
 											<td class="bg-td"><b>Tanggal Kondisi</td></b>
-											<td align="right"><?php echo $dataINVOLCOMLIST['CONDITION_DATE'];?></td>
+											<td align="right"><?php if($dataINVOLCOMLIST['CONDITION_DATE']<>NULL){echo $dataINVOLCOMLIST['CONDITION_DATE']->format("T-m-d");}else{echo"";}?></td>
 											<td class="bg-td"><b>Sebab Macet</td></b>
 											<td align="right"><?php echo $dataINVOLCOMLIST['DEFAULT_REASON'];?></td>
 										</tr>

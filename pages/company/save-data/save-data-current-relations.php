@@ -152,60 +152,62 @@ if(isset($array['GetCustomReportResponse']['GetCustomReportResult']['aCurrentRel
 							);
 	$execCurrentRelatParty = sqlsrv_query($conn, $callCurrentRelatParty, $paramsCurrentRelatParty) or die (print_r( sqlsrv_errors(),true));		
 }else{
-	foreach($array['GetCustomReportResponse']['GetCustomReportResult']['aCurrentRelations']['bRelatedPartyList']['bRelatedParty'] as $itemCurentRelatPartyList){
-		if($itemCurentRelatPartyList['bContact']['cFixedLine']<>NULL){$CurrentRelatPartyLine=$itemCurentRelatPartyList['bContact']['cFixedLine'];}else{$CurrentRelatPartyLine=NULL;}				
-		if($itemCurentRelatPartyList['bContact']['cMobilePhone']<>NULL){$CurrentRelatPartyPhone=$itemCurentRelatPartyList['bContact']['cMobilePhone'];}else{$CurrentRelatPartyPhone=NULL;}					
-		if($itemCurentRelatPartyList['bCreditinfoId']<>NULL){$CurrentRelatPartyCreditFold=$itemCurentRelatPartyList['bCreditinfoId'];}else{$CurrentRelatPartyCreditFold=NULL;}					
-		if($itemCurentRelatPartyList['bFullName']<>NULL){$CurrentRelatPartyFullname=$itemCurentRelatPartyList['bFullName'];}else{$CurrentRelatPartyFullname=NULL;}					
-		if($itemCurentRelatPartyList['bGender']<>NULL){$CurrentRelatPartyGender=$itemCurentRelatPartyList['bGender'];}else{$CurrentRelatPartyGender=NULL;}					
-		if($itemCurentRelatPartyList['bIDNumber']<>NULL){$CurrentRelatPartyIdNumb=$itemCurentRelatPartyList['bIDNumber'];}else{$CurrentRelatPartyIdNumb=NULL;}				
-		if($itemCurentRelatPartyList['bIDNumberType']<>NULL){$CurrentRelatPartyIdNumbType=$itemCurentRelatPartyList['bIDNumberType'];}else{$CurrentRelatPartyIdNumbType=NULL;}				
-		if($itemCurentRelatPartyList['bLTV']<>NULL){$CurrentRelatPartyLtv=$itemCurentRelatPartyList['bLTV'];}else{$CurrentRelatPartyLtv=NULL;}					
-		if($itemCurentRelatPartyList['bMainAddress']['cAddressLine']<>NULL){$CurrentRelatPartyAddLine=$itemCurentRelatPartyList['bMainAddress']['cAddressLine'];}else{$CurrentRelatPartyAddLine=NULL;}					
-		if($itemCurentRelatPartyList['bMainAddress']['cCity']<>NULL){$CurrentRelatPartyAddCity=$itemCurentRelatPartyList['bMainAddress']['cCity'];}else{$CurrentRelatPartyAddCity=NULL;}					
-		if($itemCurentRelatPartyList['bMainAddress']['cCountry']<>NULL){$CurrentRelatPartyAddCountry=$itemCurentRelatPartyList['bMainAddress']['cCountry'];}else{$CurrentRelatPartyAddCountry=NULL;}					
-		if($itemCurentRelatPartyList['bMainAddress']['cDistrict']<>NULL){$CurrentRelatPartyAddDistrict=$itemCurentRelatPartyList['bMainAddress']['cDistrict'];}else{$CurrentRelatPartyAddDistrict=NULL;}					
-		if($itemCurentRelatPartyList['bMainAddress']['cParish']<>NULL){$CurrentRelatPartyAddParish=$itemCurentRelatPartyList['bMainAddress']['cParish'];}else{$CurrentRelatPartyAddParish=NULL;}					
-		if($itemCurentRelatPartyList['bMainAddress']['cPostalCode']<>NULL){$CurrentRelatPartyAddCode=$itemCurentRelatPartyList['bMainAddress']['cPostalCode'];}else{$CurrentRelatPartyAddCode=NULL;}				
-		if($itemCurentRelatPartyList['bMainAddress']['cStreet']<>NULL){$CurrentRelatPartyAddStreet=$itemCurentRelatPartyList['bMainAddress']['cStreet'];}else{$CurrentRelatPartyAddStreet=NULL;}								
-		if($itemCurentRelatPartyList['bOwnershipShare']<>NULL){$CurrentRelatPartyOwnerShip=$itemCurentRelatPartyList['bOwnershipShare'];}else{$CurrentRelatPartyOwnerShip=NULL;}				
-		if($itemCurentRelatPartyList['bProcura']['bProcuraRecordNumber']<>NULL){$CurrentRelatPartyProcuraRecordNumb=$itemCurentRelatPartyList['bProcura']['bProcuraRecordNumber'];}else{$CurrentRelatPartyProcuraRecordNumb=NULL;}					
-		if($itemCurentRelatPartyList['bProcura']['bRegistrationDate']<>NULL){$CurrentRelatPartyProcuraRegistDate=$itemCurentRelatPartyList['bProcura']['bRegistrationDate'];}else{$CurrentRelatPartyProcuraRegistDate=NULL;}
-		if($itemCurentRelatPartyList['bProcura']['bTerminationDate']<>NULL){$CurrentRelatPartyProcuraTermintDate=$itemCurentRelatPartyList['bProcura']['bTerminationDate'];}else{$CurrentRelatPartyProcuraTermintDate=NULL;}
-		if($itemCurentRelatPartyList['bSubjectStatus']<>NULL){$CurrentRelatPartySubStatus=$itemCurentRelatPartyList['bSubjectStatus'];}else{$CurrentRelatPartySubStatus=NULL;}
-		if($itemCurentRelatPartyList['bSubjectType']<>NULL){$CurrentRelatPartySubType=$itemCurentRelatPartyList['bSubjectType'];}else{$CurrentRelatPartySubType=NULL;}
-		if($itemCurentRelatPartyList['bTypeOfRelation']<>NULL){$CurrentRelatPartyTypeRelation=$itemCurentRelatPartyList['bTypeOfRelation'];}else{$CurrentRelatPartyTypeRelation=NULL;}
-		if($itemCurentRelatPartyList['bValidFrom']<>NULL){$CurrentRelatPartyValidFrom=$itemCurentRelatPartyList['bValidFrom'];}else{$CurrentRelatPartyValidFrom=NULL;}						
-	
-		$callCurrentRelatParty = "{call SP_INSERT_CURRENT_RELATIONS_RELATED_PARTY_LIST_COMPANY(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}";
-		$paramsCurrentRelatParty = array(
-									array($mappingId, SQLSRV_PARAM_IN),
-									array($pefindoId,SQLSRV_PARAM_IN),
-									array($CurrentRelatPartyLine,SQLSRV_PARAM_IN),
-									array($CurrentRelatPartyPhone,SQLSRV_PARAM_IN),
-									array($CurrentRelatPartyCreditFold,SQLSRV_PARAM_IN),
-									array($CurrentRelatPartyFullname,SQLSRV_PARAM_IN),
-									array($CurrentRelatPartyGender,SQLSRV_PARAM_IN),
-									array($CurrentRelatPartyIdNumb,SQLSRV_PARAM_IN),
-									array($CurrentRelatPartyIdNumbType,SQLSRV_PARAM_IN),
-									array($CurrentRelatPartyLtv,SQLSRV_PARAM_IN),
-									array($CurrentRelatPartyAddLine,SQLSRV_PARAM_IN),
-									array($CurrentRelatPartyAddCity,SQLSRV_PARAM_IN),
-									array($CurrentRelatPartyAddCountry,SQLSRV_PARAM_IN),
-									array($CurrentRelatPartyAddDistrict,SQLSRV_PARAM_IN),
-									array($CurrentRelatPartyAddParish,SQLSRV_PARAM_IN),
-									array($CurrentRelatPartyAddCode,SQLSRV_PARAM_IN),
-									array($CurrentRelatPartyAddStreet,SQLSRV_PARAM_IN),
-									array($CurrentRelatPartyOwnerShip,SQLSRV_PARAM_IN),
-									array($CurrentRelatPartyProcuraRecordNumb,SQLSRV_PARAM_IN),
-									array($CurrentRelatPartyProcuraRegistDate,SQLSRV_PARAM_IN),
-									array($CurrentRelatPartyProcuraTermintDate,SQLSRV_PARAM_IN),
-									array($CurrentRelatPartySubStatus,SQLSRV_PARAM_IN),
-									array($CurrentRelatPartySubType,SQLSRV_PARAM_IN),
-									array($CurrentRelatPartyTypeRelation,SQLSRV_PARAM_IN),
-									array($CurrentRelatPartyValidFrom,SQLSRV_PARAM_IN)
-								);
-		$execCurrentRelatParty = sqlsrv_query($conn, $callCurrentRelatParty, $paramsCurrentRelatParty) or die (print_r( sqlsrv_errors(),true));
+	if(isset($array['GetCustomReportResponse']['GetCustomReportResult']['aCurrentRelations']['bRelatedPartyList']['bRelatedParty'])){
+		foreach($array['GetCustomReportResponse']['GetCustomReportResult']['aCurrentRelations']['bRelatedPartyList']['bRelatedParty'] as $itemCurentRelatPartyList){
+			if($itemCurentRelatPartyList['bContact']['cFixedLine']<>NULL){$CurrentRelatPartyLine=$itemCurentRelatPartyList['bContact']['cFixedLine'];}else{$CurrentRelatPartyLine=NULL;}				
+			if($itemCurentRelatPartyList['bContact']['cMobilePhone']<>NULL){$CurrentRelatPartyPhone=$itemCurentRelatPartyList['bContact']['cMobilePhone'];}else{$CurrentRelatPartyPhone=NULL;}					
+			if($itemCurentRelatPartyList['bCreditinfoId']<>NULL){$CurrentRelatPartyCreditFold=$itemCurentRelatPartyList['bCreditinfoId'];}else{$CurrentRelatPartyCreditFold=NULL;}					
+			if($itemCurentRelatPartyList['bFullName']<>NULL){$CurrentRelatPartyFullname=$itemCurentRelatPartyList['bFullName'];}else{$CurrentRelatPartyFullname=NULL;}					
+			if($itemCurentRelatPartyList['bGender']<>NULL){$CurrentRelatPartyGender=$itemCurentRelatPartyList['bGender'];}else{$CurrentRelatPartyGender=NULL;}					
+			if($itemCurentRelatPartyList['bIDNumber']<>NULL){$CurrentRelatPartyIdNumb=$itemCurentRelatPartyList['bIDNumber'];}else{$CurrentRelatPartyIdNumb=NULL;}				
+			if($itemCurentRelatPartyList['bIDNumberType']<>NULL){$CurrentRelatPartyIdNumbType=$itemCurentRelatPartyList['bIDNumberType'];}else{$CurrentRelatPartyIdNumbType=NULL;}				
+			if($itemCurentRelatPartyList['bLTV']<>NULL){$CurrentRelatPartyLtv=$itemCurentRelatPartyList['bLTV'];}else{$CurrentRelatPartyLtv=NULL;}					
+			if($itemCurentRelatPartyList['bMainAddress']['cAddressLine']<>NULL){$CurrentRelatPartyAddLine=$itemCurentRelatPartyList['bMainAddress']['cAddressLine'];}else{$CurrentRelatPartyAddLine=NULL;}					
+			if($itemCurentRelatPartyList['bMainAddress']['cCity']<>NULL){$CurrentRelatPartyAddCity=$itemCurentRelatPartyList['bMainAddress']['cCity'];}else{$CurrentRelatPartyAddCity=NULL;}					
+			if($itemCurentRelatPartyList['bMainAddress']['cCountry']<>NULL){$CurrentRelatPartyAddCountry=$itemCurentRelatPartyList['bMainAddress']['cCountry'];}else{$CurrentRelatPartyAddCountry=NULL;}					
+			if($itemCurentRelatPartyList['bMainAddress']['cDistrict']<>NULL){$CurrentRelatPartyAddDistrict=$itemCurentRelatPartyList['bMainAddress']['cDistrict'];}else{$CurrentRelatPartyAddDistrict=NULL;}					
+			if($itemCurentRelatPartyList['bMainAddress']['cParish']<>NULL){$CurrentRelatPartyAddParish=$itemCurentRelatPartyList['bMainAddress']['cParish'];}else{$CurrentRelatPartyAddParish=NULL;}					
+			if($itemCurentRelatPartyList['bMainAddress']['cPostalCode']<>NULL){$CurrentRelatPartyAddCode=$itemCurentRelatPartyList['bMainAddress']['cPostalCode'];}else{$CurrentRelatPartyAddCode=NULL;}				
+			if($itemCurentRelatPartyList['bMainAddress']['cStreet']<>NULL){$CurrentRelatPartyAddStreet=$itemCurentRelatPartyList['bMainAddress']['cStreet'];}else{$CurrentRelatPartyAddStreet=NULL;}								
+			if($itemCurentRelatPartyList['bOwnershipShare']<>NULL){$CurrentRelatPartyOwnerShip=$itemCurentRelatPartyList['bOwnershipShare'];}else{$CurrentRelatPartyOwnerShip=NULL;}				
+			if($itemCurentRelatPartyList['bProcura']['bProcuraRecordNumber']<>NULL){$CurrentRelatPartyProcuraRecordNumb=$itemCurentRelatPartyList['bProcura']['bProcuraRecordNumber'];}else{$CurrentRelatPartyProcuraRecordNumb=NULL;}					
+			if($itemCurentRelatPartyList['bProcura']['bRegistrationDate']<>NULL){$CurrentRelatPartyProcuraRegistDate=$itemCurentRelatPartyList['bProcura']['bRegistrationDate'];}else{$CurrentRelatPartyProcuraRegistDate=NULL;}
+			if($itemCurentRelatPartyList['bProcura']['bTerminationDate']<>NULL){$CurrentRelatPartyProcuraTermintDate=$itemCurentRelatPartyList['bProcura']['bTerminationDate'];}else{$CurrentRelatPartyProcuraTermintDate=NULL;}
+			if($itemCurentRelatPartyList['bSubjectStatus']<>NULL){$CurrentRelatPartySubStatus=$itemCurentRelatPartyList['bSubjectStatus'];}else{$CurrentRelatPartySubStatus=NULL;}
+			if($itemCurentRelatPartyList['bSubjectType']<>NULL){$CurrentRelatPartySubType=$itemCurentRelatPartyList['bSubjectType'];}else{$CurrentRelatPartySubType=NULL;}
+			if($itemCurentRelatPartyList['bTypeOfRelation']<>NULL){$CurrentRelatPartyTypeRelation=$itemCurentRelatPartyList['bTypeOfRelation'];}else{$CurrentRelatPartyTypeRelation=NULL;}
+			if($itemCurentRelatPartyList['bValidFrom']<>NULL){$CurrentRelatPartyValidFrom=$itemCurentRelatPartyList['bValidFrom'];}else{$CurrentRelatPartyValidFrom=NULL;}						
+		
+			$callCurrentRelatParty = "{call SP_INSERT_CURRENT_RELATIONS_RELATED_PARTY_LIST_COMPANY(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}";
+			$paramsCurrentRelatParty = array(
+										array($mappingId, SQLSRV_PARAM_IN),
+										array($pefindoId,SQLSRV_PARAM_IN),
+										array($CurrentRelatPartyLine,SQLSRV_PARAM_IN),
+										array($CurrentRelatPartyPhone,SQLSRV_PARAM_IN),
+										array($CurrentRelatPartyCreditFold,SQLSRV_PARAM_IN),
+										array($CurrentRelatPartyFullname,SQLSRV_PARAM_IN),
+										array($CurrentRelatPartyGender,SQLSRV_PARAM_IN),
+										array($CurrentRelatPartyIdNumb,SQLSRV_PARAM_IN),
+										array($CurrentRelatPartyIdNumbType,SQLSRV_PARAM_IN),
+										array($CurrentRelatPartyLtv,SQLSRV_PARAM_IN),
+										array($CurrentRelatPartyAddLine,SQLSRV_PARAM_IN),
+										array($CurrentRelatPartyAddCity,SQLSRV_PARAM_IN),
+										array($CurrentRelatPartyAddCountry,SQLSRV_PARAM_IN),
+										array($CurrentRelatPartyAddDistrict,SQLSRV_PARAM_IN),
+										array($CurrentRelatPartyAddParish,SQLSRV_PARAM_IN),
+										array($CurrentRelatPartyAddCode,SQLSRV_PARAM_IN),
+										array($CurrentRelatPartyAddStreet,SQLSRV_PARAM_IN),
+										array($CurrentRelatPartyOwnerShip,SQLSRV_PARAM_IN),
+										array($CurrentRelatPartyProcuraRecordNumb,SQLSRV_PARAM_IN),
+										array($CurrentRelatPartyProcuraRegistDate,SQLSRV_PARAM_IN),
+										array($CurrentRelatPartyProcuraTermintDate,SQLSRV_PARAM_IN),
+										array($CurrentRelatPartySubStatus,SQLSRV_PARAM_IN),
+										array($CurrentRelatPartySubType,SQLSRV_PARAM_IN),
+										array($CurrentRelatPartyTypeRelation,SQLSRV_PARAM_IN),
+										array($CurrentRelatPartyValidFrom,SQLSRV_PARAM_IN)
+									);
+			$execCurrentRelatParty = sqlsrv_query($conn, $callCurrentRelatParty, $paramsCurrentRelatParty) or die (print_r( sqlsrv_errors(),true));
+		}
 	}
 }
 ?>

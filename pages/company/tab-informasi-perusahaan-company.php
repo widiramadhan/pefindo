@@ -62,7 +62,7 @@ $dataDISPTcompany = sqlsrv_fetch_array($execDISPTcompany);
 								<td class="bg-td"><b>Tanggal Pendirian</b></td>
 								<td colspan="3"><?php echo $datacompany['ESTABILISHMENT_DATE']->format('Y-m-d');?></td>
 								<td class="bg-td"><b>Tanggal Akad Terakhir</b></td>
-								<td colspan="3"><?php echo $datacompany['LATEST_DATE_OF_DEED']->format('Y-m-d');?></td>
+								<td colspan="3"><?php if($datacompany['LATEST_DATE_OF_DEED']<>NULL){echo $datacompany['LATEST_DATE_OF_DEED']->format('Y-m-d');}else{echo"";}?></td>
 							</tr>
 							<tr>
 								<td class="bg-td"><b>Domisili Pendirian</b></td>
@@ -84,7 +84,7 @@ $dataDISPTcompany = sqlsrv_fetch_array($execDISPTcompany);
 							</tr>
 							<tr>
 								<td class="bg-td"><b>Tanggal Rating</b></td>
-								<td colspan="3"><?php echo $datacompany['RATING_DATE']->format('Y-m-d');?></td>
+								<td colspan="3"><?php if($datacompany['RATING_DATE']<>NULL){echo $datacompany['RATING_DATE']->format('Y-m-d');}else{echo"";}?></td>
 								<td class="bg-td"><b></b></td>
 								<td colspan="3"></td>
 							</tr>
@@ -145,8 +145,8 @@ $dataDISPTcompany = sqlsrv_fetch_array($execDISPTcompany);
 							<tr>
 								<td><?php echo $datasubihis['GENERAL_ITEM'];?></td>
 								<td><?php echo $datasubihis['GENERAL_VALUE'];?></td>
-								<td><?php echo $datasubihis['GENERAL_VALID_FROM']->format('Y-m-d');?></td>
-								<td><?php echo $datasubihis['GENERAL_VALID_TO']->format('Y-m-d');?></td>
+								<td><?php if($datasubihis['GENERAL_VALID_FROM']<>NULL){echo $datasubihis['GENERAL_VALID_FROM']->format('Y-m-d');}else{echo"";}?></td>
+								<td><?php if($datasubihis['GENERAL_VALID_TO']<>NULL){echo $datasubihis['GENERAL_VALID_TO']->format('Y-m-d');}else{echo"";}?></td>
 							</tr>
 						<?php
 						}
@@ -173,8 +173,8 @@ $dataDISPTcompany = sqlsrv_fetch_array($execDISPTcompany);
 							<tr>
 								<td><?php echo $datasubihisil['IDENTIFICATIONS_ITEM'];?></td>
 								<td><?php echo $datasubihisil['IDENTIFICATIONS_VALUE'];?></td>
-								<td><?php echo $datasubihisil['IDENTIFICATIONS_VALID_FROM']->format('Y-m-d');?></td>
-								<td><?php echo $datasubihisil['IDENTIFICATIONS_VALID_TO']->format('Y-m-d');?></td>
+								<td><?php if($datasubihisil['IDENTIFICATIONS_VALID_FROM']<>NULL){echo $datasubihisil['IDENTIFICATIONS_VALID_FROM']->format('Y-m-d');}else{echo"";}?></td>
+								<td><?php if($datasubihisil['IDENTIFICATIONS_VALID_TO']<>NULL){echo $datasubihisil['IDENTIFICATIONS_VALID_TO']->format('Y-m-d');}else{echo"";}?></td>
 							</tr>
 						<?php
 						}
@@ -201,8 +201,8 @@ $dataDISPTcompany = sqlsrv_fetch_array($execDISPTcompany);
 							<tr>
 								<td><?php echo $datasubhisADD['ADDRESS_ITEM'];?></td>
 								<td><?php echo $datasubhisADD['ADDRESS_VALUE'];?></td>
-								<td><?php echo $datasubhisADD['ADDRESS_VALID_FORM']->format('Y-m-d');?></td>
-								<td><?php echo $datasubhisADD['ADDRESS_VALID_TO']->format('Y-m-d');?></td>
+								<td><?php if($datasubhisADD['ADDRESS_VALID_FORM']<>NULL){echo $datasubhisADD['ADDRESS_VALID_FORM']->format('Y-m-d');}else{echo"";}?></td>
+								<td><?php if($datasubhisADD['ADDRESS_VALID_TO']<>NULL){echo $datasubhisADD['ADDRESS_VALID_TO']->format('Y-m-d');}else{echo"";}?></td>
 							</tr>
 						<?php
 						}
@@ -229,8 +229,8 @@ $dataDISPTcompany = sqlsrv_fetch_array($execDISPTcompany);
 							<tr>
 								<td><?php echo $datasubhisCON['CONTACT_ITEM'];?></td>
 								<td><?php echo $datasubhisCON['CONTACT_VALUE'];?></td>
-								<td><?php echo $datasubhisCON['CONTACT_VALID_FROM']->format('Y-m-d');?></td>
-								<td><?php echo $datasubhisCON['CONTACT_VALID_TO']->format('Y-m-d');?></td>
+								<td><?php if($datasubhisCON['CONTACT_VALID_FROM']<>NULL){echo $datasubhisCON['CONTACT_VALID_FROM']->format('Y-m-d');}else{echo"";}?></td>
+								<td><?php if($datasubhisCON['CONTACT_VALID_TO']<>NULL){echo $datasubhisCON['CONTACT_VALID_TO']->format('Y-m-d');}else{echo"";}?></td>
 							</tr>
 							<?php
 							}

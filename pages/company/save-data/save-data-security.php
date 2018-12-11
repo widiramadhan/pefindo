@@ -102,106 +102,108 @@ if(isset($array['GetCustomReportResponse']['GetCustomReportResult']['aSecurities
 						);
 	$execSecuritiesList = sqlsrv_query($conn, $callSecuritiesList, $paramsSecuritiesList) or die ( print_r( sqlsrv_errors(),true));	
 }else{
-	foreach($array['GetCustomReportResponse']['GetCustomReportResult']['aSecurities']['bSecurityList']['bSecurity'] as $itemSecuritiesList){
-		if($itemSecuritiesList['bAcquisitionDate']<>NULL){$SecurityAcquisitionDate=$itemSecuritiesList['bAcquisitionDate'];}else{$SecurityAcquisitionDate=NULL;}
-		if($itemSecuritiesList['bBranch']<>NULL){$SecurityBranch=$itemSecuritiesList['bBranch'];}else{$SecurityBranch=NULL;}
-		if($itemSecuritiesList['bConditionDate']<>NULL){$SecurityCondDate=$itemSecuritiesList['bConditionDate'];}else{$SecurityCondDate=NULL;}
-		if($itemSecuritiesList['bContractCode']<>NULL){$SecurityContractCode=$itemSecuritiesList['bContractCode'];}else{$SecurityContractCode=NULL;}
-		if($itemSecuritiesList['bContractStatus']<>NULL){$SecurityContractStatus=$itemSecuritiesList['bContractStatus'];}else{$SecurityContractStatus=NULL;}
-		if($itemSecuritiesList['bCreditor']<>NULL){$SecurityCreditor=$itemSecuritiesList['bCreditor'];}else{$SecurityCreditor=NULL;}
-		if($itemSecuritiesList['bCurrencyOfContract']<>NULL){$SecurityCurContract=$itemSecuritiesList['bCurrencyOfContract'];}else{$SecurityCurContract=NULL;}
-		if($itemSecuritiesList['bDefaultDate']<>NULL){$SecurityDefaultDate=$itemSecuritiesList['bDefaultDate'];}else{$SecurityDefaultDate=NULL;}
-		if($itemSecuritiesList['bDefaultReason']<>NULL){$SecurityDefaultReason=$itemSecuritiesList['bDefaultReason'];}else{$SecurityDefaultReason=NULL;}
-		if($itemSecuritiesList['bDefaultReasonDescription']<>NULL){$SecurityDefaultReasonDesc=$itemSecuritiesList['bDefaultReasonDescription'];}else{$SecurityDefaultReasonDesc=NULL;}
-		if($itemSecuritiesList['bDelinquencyDate']<>NULL){$SecurityDeliqDate=$itemSecuritiesList['bDelinquencyDate'];}else{$SecurityDeliqDate=NULL;}
-		if($itemSecuritiesList['bDescription']<>NULL){$SecurityDesc=$itemSecuritiesList['bDescription'];}else{$SecurityDesc=NULL;}
-		if(isset($itemSecuritiesList['bInitialTotalAmount']['cCurrency'])){
-			if($itemSecuritiesList['bInitialTotalAmount']['cCurrency']<>NULL){$SecurityInitTotAmountCur=$itemSecuritiesList['bInitialTotalAmount']['cCurrency'];}else{$SecurityInitTotAmountCur=NULL;}	
-			if($itemSecuritiesList['bInitialTotalAmount']['cValue']<>NULL){$SecurityInitTotAmountVal=$itemSecuritiesList['bInitialTotalAmount']['cValue'];}else{$SecurityInitTotAmountVal=NULL;}	
-		}else{
-			$SecurityInitTotAmountCur=NULL;
-			$SecurityInitTotAmountVal=NULL;
+	if(isset($array['GetCustomReportResponse']['GetCustomReportResult']['aSecurities']['bSecurityList']['bSecurity'])){
+		foreach($array['GetCustomReportResponse']['GetCustomReportResult']['aSecurities']['bSecurityList']['bSecurity'] as $itemSecuritiesList){
+			if($itemSecuritiesList['bAcquisitionDate']<>NULL){$SecurityAcquisitionDate=$itemSecuritiesList['bAcquisitionDate'];}else{$SecurityAcquisitionDate=NULL;}
+			if($itemSecuritiesList['bBranch']<>NULL){$SecurityBranch=$itemSecuritiesList['bBranch'];}else{$SecurityBranch=NULL;}
+			if($itemSecuritiesList['bConditionDate']<>NULL){$SecurityCondDate=$itemSecuritiesList['bConditionDate'];}else{$SecurityCondDate=NULL;}
+			if($itemSecuritiesList['bContractCode']<>NULL){$SecurityContractCode=$itemSecuritiesList['bContractCode'];}else{$SecurityContractCode=NULL;}
+			if($itemSecuritiesList['bContractStatus']<>NULL){$SecurityContractStatus=$itemSecuritiesList['bContractStatus'];}else{$SecurityContractStatus=NULL;}
+			if($itemSecuritiesList['bCreditor']<>NULL){$SecurityCreditor=$itemSecuritiesList['bCreditor'];}else{$SecurityCreditor=NULL;}
+			if($itemSecuritiesList['bCurrencyOfContract']<>NULL){$SecurityCurContract=$itemSecuritiesList['bCurrencyOfContract'];}else{$SecurityCurContract=NULL;}
+			if($itemSecuritiesList['bDefaultDate']<>NULL){$SecurityDefaultDate=$itemSecuritiesList['bDefaultDate'];}else{$SecurityDefaultDate=NULL;}
+			if($itemSecuritiesList['bDefaultReason']<>NULL){$SecurityDefaultReason=$itemSecuritiesList['bDefaultReason'];}else{$SecurityDefaultReason=NULL;}
+			if($itemSecuritiesList['bDefaultReasonDescription']<>NULL){$SecurityDefaultReasonDesc=$itemSecuritiesList['bDefaultReasonDescription'];}else{$SecurityDefaultReasonDesc=NULL;}
+			if($itemSecuritiesList['bDelinquencyDate']<>NULL){$SecurityDeliqDate=$itemSecuritiesList['bDelinquencyDate'];}else{$SecurityDeliqDate=NULL;}
+			if($itemSecuritiesList['bDescription']<>NULL){$SecurityDesc=$itemSecuritiesList['bDescription'];}else{$SecurityDesc=NULL;}
+			if(isset($itemSecuritiesList['bInitialTotalAmount']['cCurrency'])){
+				if($itemSecuritiesList['bInitialTotalAmount']['cCurrency']<>NULL){$SecurityInitTotAmountCur=$itemSecuritiesList['bInitialTotalAmount']['cCurrency'];}else{$SecurityInitTotAmountCur=NULL;}	
+				if($itemSecuritiesList['bInitialTotalAmount']['cValue']<>NULL){$SecurityInitTotAmountVal=$itemSecuritiesList['bInitialTotalAmount']['cValue'];}else{$SecurityInitTotAmountVal=NULL;}	
+			}else{
+				$SecurityInitTotAmountCur=NULL;
+				$SecurityInitTotAmountVal=NULL;
+			}
+			if($itemSecuritiesList['bInterestRate']<>NULL){$SecurityInterestRate=$itemSecuritiesList['bInterestRate'];}else{$SecurityInterestRate=NULL;}
+			if($itemSecuritiesList['bIssueDate']<>NULL){$SecurityIssueDate=$itemSecuritiesList['bIssueDate'];}else{$SecurityIssueDate=NULL;}
+			if($itemSecuritiesList['bIssuerName']<>NULL){$SecurityIssueName=$itemSecuritiesList['bIssuerName'];}else{$SecurityIssueName=NULL;}
+			if($itemSecuritiesList['bLastUpdate']<>NULL){$SecurityLastUpt=$itemSecuritiesList['bLastUpdate'];}else{$SecurityLastUpt=NULL;}
+			if($itemSecuritiesList['bMarketListed']<>NULL){$SecurityMarketListed=$itemSecuritiesList['bMarketListed'];}else{$SecurityMarketListed=NULL;}
+			if(isset($itemSecuritiesList['bMarketValue']['cCurrency'])){
+				if($itemSecuritiesList['bMarketValue']['cCurrency']<>NULL){$SecurityMarketValCur=$itemSecuritiesList['bMarketValue']['cCurrency'];}else{$SecurityMarketValCur=NULL;}	
+				if($itemSecuritiesList['bMarketValue']['cValue']<>NULL){$SecurityMarketValVal=$itemSecuritiesList['bMarketValue']['cValue'];}else{$SecurityMarketValVal=NULL;}	
+			}else{
+				$SecurityMarketValVal=NULL;
+				$SecurityMarketValCur=NULL;
+			}
+			if($itemSecuritiesList['bMaturityDate']<>NULL){$SecurityMarturyDate=$itemSecuritiesList['bMaturityDate'];}else{$SecurityMarturyDate=NULL;}
+			if($itemSecuritiesList['bNegativeStatus']<>NULL){$SecurityNegativeStat=$itemSecuritiesList['bNegativeStatus'];}else{$SecurityNegativeStat=NULL;}
+			if(isset($itemSecuritiesList['bOutstandingAmount']['cCurrency'])){
+				if($itemSecuritiesList['bOutstandingAmount']['cCurrency']<>NULL){$SecurityOutStandTotAmountCur=$itemSecuritiesList['bOutstandingAmount']['cCurrency'];}else{$SecurityOutStandTotAmountCur=NULL;}
+				if($itemSecuritiesList['bOutstandingAmount']['cValue']<>NULL){$SecurityOutStandTotAmountVal=$itemSecuritiesList['bOutstandingAmount']['cValue'];}else{$SecurityOutStandTotAmountVal=NULL;}	
+			}else{
+				$SecurityOutStandTotAmountCur=NULL;
+				$SecurityOutStandTotAmountVal=NULL;
+			}
+			if($itemSecuritiesList['bPastDueDays']<>NULL){$SecurityPastDueDays=$itemSecuritiesList['bPastDueDays'];}else{$SecurityPastDueDays=NULL;}
+			if($itemSecuritiesList['bPreviousContractCode']<>NULL){$SecurityPreviousCode=$itemSecuritiesList['bPreviousContractCode'];}else{$SecurityPreviousCode=NULL;}
+			if(isset($itemSecuritiesList['bPrincipalArrears']['cCurrency'])){
+				if($itemSecuritiesList['bPrincipalArrears']['cCurrency']<>NULL){$SecurityPripcipalArreasCur=$itemSecuritiesList['bPrincipalArrears']['cCurrency'];}else{$SecurityPripcipalArreasCur=NULL;}	
+				if($itemSecuritiesList['bPrincipalArrears']['cValue']<>NULL){$SecurityPripcipalArreasVal=$itemSecuritiesList['bPrincipalArrears']['cValue'];}else{$SecurityPripcipalArreasVal=NULL;}	
+			}else{
+				$SecurityPripcipalArreasCur=NULL;
+				$SecurityPripcipalArreasVal=NULL;
+			}
+			if($itemSecuritiesList['bPurposeOfOwnership']<>NULL){$SecurityPurposeOwnerShip=$itemSecuritiesList['bPurposeOfOwnership'];}else{$SecurityPurposeOwnerShip=NULL;}
+			if($itemSecuritiesList['bRating']<>NULL){$SecurityRating=$itemSecuritiesList['bRating'];}else{$SecurityRating=NULL;}
+			if($itemSecuritiesList['bRealEndDate']<>NULL){$SecurityRealDate=$itemSecuritiesList['bRealEndDate'];}else{$SecurityRealDate=NULL;}
+			if($itemSecuritiesList['bSecurityType']<>NULL){$SecurityType=$itemSecuritiesList['bSecurityType'];}else{$SecurityType=NULL;}
+			if($itemSecuritiesList['bSovereignRate']<>NULL){$SecuritySovereignRate=$itemSecuritiesList['bSovereignRate'];}else{$SecuritySovereignRate=NULL;}
+			if($itemSecuritiesList['bTypeofInterestRate']<>NULL){$SecurityTypeInterestRate=$itemSecuritiesList['bTypeofInterestRate'];}else{$SecurityTypeInterestRate=NULL;}
+			
+			$callSecuritiesList = "{call SP_INSERT_SECURITIES_LIST_COMPANY(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}";
+			$paramsSecuritiesList = array(
+								array($mappingId, SQLSRV_PARAM_IN),
+								array($pefindoId,SQLSRV_PARAM_IN),
+								array(NULL,SQLSRV_PARAM_IN),
+								array($SecurityAcquisitionAmount,SQLSRV_PARAM_IN),
+								array($SecurityAcquisitionDate,SQLSRV_PARAM_IN),
+								array($SecurityBranch,SQLSRV_PARAM_IN),
+								array($SecurityCondDate,SQLSRV_PARAM_IN),
+								array($SecurityContractCode,SQLSRV_PARAM_IN),
+								array($SecurityContractStatus,SQLSRV_PARAM_IN),
+								array($SecurityCreditor,SQLSRV_PARAM_IN),
+								array($SecurityCurContract,SQLSRV_PARAM_IN),
+								array($SecurityDefaultDate,SQLSRV_PARAM_IN),
+								array($SecurityDefaultReason,SQLSRV_PARAM_IN),
+								array($SecurityDefaultReasonDesc,SQLSRV_PARAM_IN),					
+								array($SecurityDeliqDate,SQLSRV_PARAM_IN),
+								array($SecurityDesc,SQLSRV_PARAM_IN),					
+								array($SecurityInitTotAmountVal,SQLSRV_PARAM_IN),
+								array($SecurityInitTotAmountCur,SQLSRV_PARAM_IN),
+								array($SecurityInterestRate,SQLSRV_PARAM_IN),
+								array($SecurityIssueDate,SQLSRV_PARAM_IN),
+								array($SecurityIssueName,SQLSRV_PARAM_IN),
+								array($SecurityLastUpt,SQLSRV_PARAM_IN),
+								array($SecurityMarketListed,SQLSRV_PARAM_IN),
+								array($SecurityMarketValVal,SQLSRV_PARAM_IN),
+								array($SecurityMarketValCur,SQLSRV_PARAM_IN),
+								array($SecurityMarturyDate,SQLSRV_PARAM_IN),
+								array($SecurityNegativeStat,SQLSRV_PARAM_IN),
+								array($SecurityOutStandTotAmountVal,SQLSRV_PARAM_IN),
+								array($SecurityOutStandTotAmountCur,SQLSRV_PARAM_IN),
+								array($SecurityPastDueDays,SQLSRV_PARAM_IN),
+								array($SecurityPreviousCode,SQLSRV_PARAM_IN),
+								array($SecurityPripcipalArreasVal,SQLSRV_PARAM_IN),
+								array($SecurityPripcipalArreasCur,SQLSRV_PARAM_IN),
+								array($SecurityPurposeOwnerShip,SQLSRV_PARAM_IN),
+								array($SecurityRating,SQLSRV_PARAM_IN),
+								array($SecurityRealDate,SQLSRV_PARAM_IN),
+								array($SecurityType,SQLSRV_PARAM_IN),
+								array($SecuritySovereignRate,SQLSRV_PARAM_IN),
+								array($SecurityTypeInterestRate,SQLSRV_PARAM_IN)										
+								);
+			$execSecuritiesList = sqlsrv_query($conn, $callSecuritiesList, $paramsSecuritiesList) or die ( print_r( sqlsrv_errors(),true));	
 		}
-		if($itemSecuritiesList['bInterestRate']<>NULL){$SecurityInterestRate=$itemSecuritiesList['bInterestRate'];}else{$SecurityInterestRate=NULL;}
-		if($itemSecuritiesList['bIssueDate']<>NULL){$SecurityIssueDate=$itemSecuritiesList['bIssueDate'];}else{$SecurityIssueDate=NULL;}
-		if($itemSecuritiesList['bIssuerName']<>NULL){$SecurityIssueName=$itemSecuritiesList['bIssuerName'];}else{$SecurityIssueName=NULL;}
-		if($itemSecuritiesList['bLastUpdate']<>NULL){$SecurityLastUpt=$itemSecuritiesList['bLastUpdate'];}else{$SecurityLastUpt=NULL;}
-		if($itemSecuritiesList['bMarketListed']<>NULL){$SecurityMarketListed=$itemSecuritiesList['bMarketListed'];}else{$SecurityMarketListed=NULL;}
-		if(isset($itemSecuritiesList['bMarketValue']['cCurrency'])){
-			if($itemSecuritiesList['bMarketValue']['cCurrency']<>NULL){$SecurityMarketValCur=$itemSecuritiesList['bMarketValue']['cCurrency'];}else{$SecurityMarketValCur=NULL;}	
-			if($itemSecuritiesList['bMarketValue']['cValue']<>NULL){$SecurityMarketValVal=$itemSecuritiesList['bMarketValue']['cValue'];}else{$SecurityMarketValVal=NULL;}	
-		}else{
-			$SecurityMarketValVal=NULL;
-			$SecurityMarketValCur=NULL;
-		}
-		if($itemSecuritiesList['bMaturityDate']<>NULL){$SecurityMarturyDate=$itemSecuritiesList['bMaturityDate'];}else{$SecurityMarturyDate=NULL;}
-		if($itemSecuritiesList['bNegativeStatus']<>NULL){$SecurityNegativeStat=$itemSecuritiesList['bNegativeStatus'];}else{$SecurityNegativeStat=NULL;}
-		if(isset($itemSecuritiesList['bOutstandingAmount']['cCurrency'])){
-			if($itemSecuritiesList['bOutstandingAmount']['cCurrency']<>NULL){$SecurityOutStandTotAmountCur=$itemSecuritiesList['bOutstandingAmount']['cCurrency'];}else{$SecurityOutStandTotAmountCur=NULL;}
-			if($itemSecuritiesList['bOutstandingAmount']['cValue']<>NULL){$SecurityOutStandTotAmountVal=$itemSecuritiesList['bOutstandingAmount']['cValue'];}else{$SecurityOutStandTotAmountVal=NULL;}	
-		}else{
-			$SecurityOutStandTotAmountCur=NULL;
-			$SecurityOutStandTotAmountVal=NULL;
-		}
-		if($itemSecuritiesList['bPastDueDays']<>NULL){$SecurityPastDueDays=$itemSecuritiesList['bPastDueDays'];}else{$SecurityPastDueDays=NULL;}
-		if($itemSecuritiesList['bPreviousContractCode']<>NULL){$SecurityPreviousCode=$itemSecuritiesList['bPreviousContractCode'];}else{$SecurityPreviousCode=NULL;}
-		if(isset($itemSecuritiesList['bPrincipalArrears']['cCurrency'])){
-			if($itemSecuritiesList['bPrincipalArrears']['cCurrency']<>NULL){$SecurityPripcipalArreasCur=$itemSecuritiesList['bPrincipalArrears']['cCurrency'];}else{$SecurityPripcipalArreasCur=NULL;}	
-			if($itemSecuritiesList['bPrincipalArrears']['cValue']<>NULL){$SecurityPripcipalArreasVal=$itemSecuritiesList['bPrincipalArrears']['cValue'];}else{$SecurityPripcipalArreasVal=NULL;}	
-		}else{
-			$SecurityPripcipalArreasCur=NULL;
-			$SecurityPripcipalArreasVal=NULL;
-		}
-		if($itemSecuritiesList['bPurposeOfOwnership']<>NULL){$SecurityPurposeOwnerShip=$itemSecuritiesList['bPurposeOfOwnership'];}else{$SecurityPurposeOwnerShip=NULL;}
-		if($itemSecuritiesList['bRating']<>NULL){$SecurityRating=$itemSecuritiesList['bRating'];}else{$SecurityRating=NULL;}
-		if($itemSecuritiesList['bRealEndDate']<>NULL){$SecurityRealDate=$itemSecuritiesList['bRealEndDate'];}else{$SecurityRealDate=NULL;}
-		if($itemSecuritiesList['bSecurityType']<>NULL){$SecurityType=$itemSecuritiesList['bSecurityType'];}else{$SecurityType=NULL;}
-		if($itemSecuritiesList['bSovereignRate']<>NULL){$SecuritySovereignRate=$itemSecuritiesList['bSovereignRate'];}else{$SecuritySovereignRate=NULL;}
-		if($itemSecuritiesList['bTypeofInterestRate']<>NULL){$SecurityTypeInterestRate=$itemSecuritiesList['bTypeofInterestRate'];}else{$SecurityTypeInterestRate=NULL;}
-		
-		$callSecuritiesList = "{call SP_INSERT_SECURITIES_LIST_COMPANY(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}";
-		$paramsSecuritiesList = array(
-							array($mappingId, SQLSRV_PARAM_IN),
-							array($pefindoId,SQLSRV_PARAM_IN),
-							array(NULL,SQLSRV_PARAM_IN),
-							array($SecurityAcquisitionAmount,SQLSRV_PARAM_IN),
-							array($SecurityAcquisitionDate,SQLSRV_PARAM_IN),
-							array($SecurityBranch,SQLSRV_PARAM_IN),
-							array($SecurityCondDate,SQLSRV_PARAM_IN),
-							array($SecurityContractCode,SQLSRV_PARAM_IN),
-							array($SecurityContractStatus,SQLSRV_PARAM_IN),
-							array($SecurityCreditor,SQLSRV_PARAM_IN),
-							array($SecurityCurContract,SQLSRV_PARAM_IN),
-							array($SecurityDefaultDate,SQLSRV_PARAM_IN),
-							array($SecurityDefaultReason,SQLSRV_PARAM_IN),
-							array($SecurityDefaultReasonDesc,SQLSRV_PARAM_IN),					
-							array($SecurityDeliqDate,SQLSRV_PARAM_IN),
-							array($SecurityDesc,SQLSRV_PARAM_IN),					
-							array($SecurityInitTotAmountVal,SQLSRV_PARAM_IN),
-							array($SecurityInitTotAmountCur,SQLSRV_PARAM_IN),
-							array($SecurityInterestRate,SQLSRV_PARAM_IN),
-							array($SecurityIssueDate,SQLSRV_PARAM_IN),
-							array($SecurityIssueName,SQLSRV_PARAM_IN),
-							array($SecurityLastUpt,SQLSRV_PARAM_IN),
-							array($SecurityMarketListed,SQLSRV_PARAM_IN),
-							array($SecurityMarketValVal,SQLSRV_PARAM_IN),
-							array($SecurityMarketValCur,SQLSRV_PARAM_IN),
-							array($SecurityMarturyDate,SQLSRV_PARAM_IN),
-							array($SecurityNegativeStat,SQLSRV_PARAM_IN),
-							array($SecurityOutStandTotAmountVal,SQLSRV_PARAM_IN),
-							array($SecurityOutStandTotAmountCur,SQLSRV_PARAM_IN),
-							array($SecurityPastDueDays,SQLSRV_PARAM_IN),
-							array($SecurityPreviousCode,SQLSRV_PARAM_IN),
-							array($SecurityPripcipalArreasVal,SQLSRV_PARAM_IN),
-							array($SecurityPripcipalArreasCur,SQLSRV_PARAM_IN),
-							array($SecurityPurposeOwnerShip,SQLSRV_PARAM_IN),
-							array($SecurityRating,SQLSRV_PARAM_IN),
-							array($SecurityRealDate,SQLSRV_PARAM_IN),
-							array($SecurityType,SQLSRV_PARAM_IN),
-							array($SecuritySovereignRate,SQLSRV_PARAM_IN),
-							array($SecurityTypeInterestRate,SQLSRV_PARAM_IN)										
-							);
-		$execSecuritiesList = sqlsrv_query($conn, $callSecuritiesList, $paramsSecuritiesList) or die ( print_r( sqlsrv_errors(),true));	
 	}
 }
 /* SECURITY SUMMARY */	

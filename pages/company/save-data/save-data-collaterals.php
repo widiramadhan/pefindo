@@ -13,8 +13,13 @@ if(isset($array['GetCustomReportResponse']['GetCustomReportResult']['aCollateral
 	if($array['GetCustomReportResponse']['GetCustomReportResult']['aCollaterals']['bCollateralList']['bCollateral']['bOwnershipProof']<>NULL){$ColOwnerShip=$array['GetCustomReportResponse']['GetCustomReportResult']['aCollaterals']['bCollateralList']['bCollateral']['bOwnershipProof'];}else{$ColOwnerShip=NULL;}
 	if($array['GetCustomReportResponse']['GetCustomReportResult']['aCollaterals']['bCollateralList']['bCollateral']['bProportion']<>NULL){$ColProportion=$array['GetCustomReportResponse']['GetCustomReportResult']['aCollaterals']['bCollateralList']['bCollateral']['bProportion'];}else{$ColProportion=NULL;}
 	if($array['GetCustomReportResponse']['GetCustomReportResult']['aCollaterals']['bCollateralList']['bCollateral']['bSecurityAssignmentType']<>NULL){$ColSecAssigmnt=$array['GetCustomReportResponse']['GetCustomReportResult']['aCollaterals']['bCollateralList']['bCollateral']['bSecurityAssignmentType'];}else{$ColSecAssigmnt=NULL;}
-	if($array['GetCustomReportResponse']['GetCustomReportResult']['aCollaterals']['bCollateralList']['bCollateral']['bTaxValue']['cCurrency']<>NULL){$ColTaxCurency=$array['GetCustomReportResponse']['GetCustomReportResult']['aCollaterals']['bCollateralList']['bCollateral']['bTaxValue']['cCurrency'];}else{$ColTaxCurency=NULL;}
-	if($array['GetCustomReportResponse']['GetCustomReportResult']['aCollaterals']['bCollateralList']['bCollateral']['bTaxValue']['cValue']<>NULL){$ColTaxValue=$array['GetCustomReportResponse']['GetCustomReportResult']['aCollaterals']['bCollateralList']['bCollateral']['bTaxValue']['cValue'];}else{$ColTaxValue=NULL;}
+	if(isset($array['GetCustomReportResponse']['GetCustomReportResult']['aCollaterals']['bCollateralList']['bCollateral']['bTaxValue']['cCurrency'])){
+		if($array['GetCustomReportResponse']['GetCustomReportResult']['aCollaterals']['bCollateralList']['bCollateral']['bTaxValue']['cCurrency']<>NULL){$ColTaxCurency=$array['GetCustomReportResponse']['GetCustomReportResult']['aCollaterals']['bCollateralList']['bCollateral']['bTaxValue']['cCurrency'];}else{$ColTaxCurency=NULL;}
+		if($array['GetCustomReportResponse']['GetCustomReportResult']['aCollaterals']['bCollateralList']['bCollateral']['bTaxValue']['cValue']<>NULL){$ColTaxValue=$array['GetCustomReportResponse']['GetCustomReportResult']['aCollaterals']['bCollateralList']['bCollateral']['bTaxValue']['cValue'];}else{$ColTaxValue=NULL;}
+	}else{
+		$ColTaxCurency=NULL;
+		$ColTaxValue=NULL;
+	}
 	if($array['GetCustomReportResponse']['GetCustomReportResult']['aCollaterals']['bCollateralList']['bCollateral']['bType']<>NULL){$ColTaxType=$array['GetCustomReportResponse']['GetCustomReportResult']['aCollaterals']['bCollateralList']['bCollateral']['bType'];}else{$ColTaxType=NULL;}
 	if($array['GetCustomReportResponse']['GetCustomReportResult']['aCollaterals']['bCollateralList']['bCollateral']['bValuationDate']<>NULL){$ColValDate=$array['GetCustomReportResponse']['GetCustomReportResult']['aCollaterals']['bCollateralList']['bCollateral']['bValuationDate'];}else{$ColValDate=NULL;}
 	
@@ -42,63 +47,53 @@ if(isset($array['GetCustomReportResponse']['GetCustomReportResult']['aCollateral
 						);
 	$execCollateralList = sqlsrv_query( $conn, $callCollateralList, $paramsCollateralList) or die( print_r( sqlsrv_errors(), true));
 }else{
-	foreach($array['GetCustomReportResponse']['GetCustomReportResult']['aCollaterals']['bCollateralList']['bCollateral'] as $itemCol_List){
-		if($itemCol_List['bAppraisalValue']<>NULL){$AppraiseVal=$itemCol_List['bAppraisalValue']['cCurrency']." ".$itemCol_List['bAppraisalValue']['cValue'];}else{$AppraiseVal=NULL;}
-		if($itemCol_List['bBankValue']['cCurrency']<>NULL){$BankCurency=$itemCol_List['bBankValue']['cCurrency'];}else{$BankCurency=NULL;}
-		if($itemCol_List['bBankValue']['cValue']<>NULL){$BankValue=$itemCol_List['bBankValue']['cValue'];}else{$BankValue=NULL;}
-		if($itemCol_List['bCollateralCode']<>NULL){$ColCode=$itemCol_List['bCollateralCode'];}else{$ColCode=NULL;}
-		if($itemCol_List['bCreditor']<>NULL){$ColCreditor=$itemCol_List['bCreditor'];}else{$ColCreditor=NULL;}
-		if($itemCol_List['bDescription']<>NULL){$ColDesc=$itemCol_List['bDescription'];}else{$ColDesc=NULL;}
-		if($itemCol_List['bInsurance']<>NULL){$ColInsurance=$itemCol_List['bInsurance'];}else{$ColInsurance=NULL;}
-		if($itemCol_List['bLastUpdate']<>NULL){$ColLastUpt=$itemCol_List['bLastUpdate'];}else{$ColLastUpt=NULL;}
-		if($itemCol_List['bOwnerName']<>NULL){$ColOwnerName=$itemCol_List['bOwnerName'];}else{$ColOwnerName=NULL;}
-		if($itemCol_List['bOwnershipProof']<>NULL){$ColOwnerShip=$itemCol_List['bOwnershipProof'];}else{$ColOwnerShip=NULL;}
-		if($itemCol_List['bProportion']<>NULL){$ColProportion=$itemCol_List['bProportion'];}else{$ColProportion=NULL;}
-		if($itemCol_List['bSecurityAssignmentType']<>NULL){$ColSecAssigmnt=$itemCol_List['bSecurityAssignmentType'];}else{$ColSecAssigmnt=NULL;}
-		if($itemCol_List['bTaxValue']['cCurrency']<>NULL){$ColTaxCurency=$itemCol_List['bTaxValue']['cCurrency'];}else{$ColTaxCurency=NULL;}
-		if($itemCol_List['bTaxValue']['cValue']<>NULL){$ColTaxValue=$itemCol_List['bTaxValue']['cValue'];}else{$ColTaxValue=NULL;}
-		if($itemCol_List['bType']<>NULL){$ColTaxType=$itemCol_List['bType'];}else{$ColTaxType=NULL;}
-		if($itemCol_List['bValuationDate']<>NULL){$ColValDate=$itemCol_List['bValuationDate'];}else{$ColValDate=NULL;}				
+	if(isset($array['GetCustomReportResponse']['GetCustomReportResult']['aCollaterals']['bCollateralList']['bCollateral'])){
+		foreach($array['GetCustomReportResponse']['GetCustomReportResult']['aCollaterals']['bCollateralList']['bCollateral'] as $itemCol_List){
+			if($itemCol_List['bAppraisalValue']<>NULL){$AppraiseVal=$itemCol_List['bAppraisalValue']['cCurrency']." ".$itemCol_List['bAppraisalValue']['cValue'];}else{$AppraiseVal=NULL;}
+			if($itemCol_List['bBankValue']['cCurrency']<>NULL){$BankCurency=$itemCol_List['bBankValue']['cCurrency'];}else{$BankCurency=NULL;}
+			if($itemCol_List['bBankValue']['cValue']<>NULL){$BankValue=$itemCol_List['bBankValue']['cValue'];}else{$BankValue=NULL;}
+			if($itemCol_List['bCollateralCode']<>NULL){$ColCode=$itemCol_List['bCollateralCode'];}else{$ColCode=NULL;}
+			if($itemCol_List['bCreditor']<>NULL){$ColCreditor=$itemCol_List['bCreditor'];}else{$ColCreditor=NULL;}
+			if($itemCol_List['bDescription']<>NULL){$ColDesc=$itemCol_List['bDescription'];}else{$ColDesc=NULL;}
+			if($itemCol_List['bInsurance']<>NULL){$ColInsurance=$itemCol_List['bInsurance'];}else{$ColInsurance=NULL;}
+			if($itemCol_List['bLastUpdate']<>NULL){$ColLastUpt=$itemCol_List['bLastUpdate'];}else{$ColLastUpt=NULL;}
+			if($itemCol_List['bOwnerName']<>NULL){$ColOwnerName=$itemCol_List['bOwnerName'];}else{$ColOwnerName=NULL;}
+			if($itemCol_List['bOwnershipProof']<>NULL){$ColOwnerShip=$itemCol_List['bOwnershipProof'];}else{$ColOwnerShip=NULL;}
+			if($itemCol_List['bProportion']<>NULL){$ColProportion=$itemCol_List['bProportion'];}else{$ColProportion=NULL;}
+			if($itemCol_List['bSecurityAssignmentType']<>NULL){$ColSecAssigmnt=$itemCol_List['bSecurityAssignmentType'];}else{$ColSecAssigmnt=NULL;}
+			if(isset($itemCol_List['bTaxValue']['cCurrency'])){
+				if($itemCol_List['bTaxValue']['cCurrency']<>NULL){$ColTaxCurency=$itemCol_List['bTaxValue']['cCurrency'];}else{$ColTaxCurency=NULL;}
+				if($itemCol_List['bTaxValue']['cValue']<>NULL){$ColTaxValue=$itemCol_List['bTaxValue']['cValue'];}else{$ColTaxValue=NULL;}
+			}else{
+				$ColTaxCurency=NULL;
+				$ColTaxValue=NULL;
+			}
+			if($itemCol_List['bType']<>NULL){$ColTaxType=$itemCol_List['bType'];}else{$ColTaxType=NULL;}
+			if($itemCol_List['bValuationDate']<>NULL){$ColValDate=$itemCol_List['bValuationDate'];}else{$ColValDate=NULL;}				
 		
-	//$AppraiseVal = NULL;
-	//$BankCurency = NULL;
-	//$BankValue = NULL;
-	//$ColCode = NULL;
-	//$ColCreditor = NULL;
-	//$ColDesc = NULL;
-	//$ColInsurance = NULL;
-	//$ColLastUpt = NULL;
-	//$ColOwnerName = NULL;
-	//$ColOwnerShip = NULL;
-	//$ColProportion = NULL;
-	//$ColSecAssigmnt = NULL;
-	//$ColTaxCurency = NULL;
-	//$ColTaxValue = NULL;
-	//$ColTaxType = NULL;
-	//$ColValDate = NULL;
-	
-		$callCollateralList = "{call SP_INSERT_COLLATERAL_LIST_COMPANY(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}";
-		$paramsCollateralList = array(
-								array($mappingId, SQLSRV_PARAM_IN),
-								array($pefindoId, SQLSRV_PARAM_IN),
-								array($AppraiseVal, SQLSRV_PARAM_IN),
-								array($BankCurency, SQLSRV_PARAM_IN),
-								array($BankValue, SQLSRV_PARAM_IN),
-								array($ColCode, SQLSRV_PARAM_IN),
-								array($ColCreditor, SQLSRV_PARAM_IN),
-								array($ColDesc, SQLSRV_PARAM_IN),
-								array($ColInsurance, SQLSRV_PARAM_IN),
-								array($ColLastUpt, SQLSRV_PARAM_IN),
-								array($ColOwnerName, SQLSRV_PARAM_IN),
-								array($ColOwnerShip, SQLSRV_PARAM_IN),
-								array($ColProportion, SQLSRV_PARAM_IN),
-								array($ColSecAssigmnt, SQLSRV_PARAM_IN),
-								array($ColTaxCurency, SQLSRV_PARAM_IN),
-								array($ColTaxValue, SQLSRV_PARAM_IN),
-								array($ColTaxType, SQLSRV_PARAM_IN),
-								array($ColValDate, SQLSRV_PARAM_IN)
-							);
-		$execCollateralList = sqlsrv_query( $conn, $callCollateralList, $paramsCollateralList) or die( print_r( sqlsrv_errors(), true));
+			$callCollateralList = "{call SP_INSERT_COLLATERAL_LIST_COMPANY(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}";
+			$paramsCollateralList = array(
+									array($mappingId, SQLSRV_PARAM_IN),
+									array($pefindoId, SQLSRV_PARAM_IN),
+									array($AppraiseVal, SQLSRV_PARAM_IN),
+									array($BankCurency, SQLSRV_PARAM_IN),
+									array($BankValue, SQLSRV_PARAM_IN),
+									array($ColCode, SQLSRV_PARAM_IN),
+									array($ColCreditor, SQLSRV_PARAM_IN),
+									array($ColDesc, SQLSRV_PARAM_IN),
+									array($ColInsurance, SQLSRV_PARAM_IN),
+									array($ColLastUpt, SQLSRV_PARAM_IN),
+									array($ColOwnerName, SQLSRV_PARAM_IN),
+									array($ColOwnerShip, SQLSRV_PARAM_IN),
+									array($ColProportion, SQLSRV_PARAM_IN),
+									array($ColSecAssigmnt, SQLSRV_PARAM_IN),
+									array($ColTaxCurency, SQLSRV_PARAM_IN),
+									array($ColTaxValue, SQLSRV_PARAM_IN),
+									array($ColTaxType, SQLSRV_PARAM_IN),
+									array($ColValDate, SQLSRV_PARAM_IN)
+								);
+			$execCollateralList = sqlsrv_query( $conn, $callCollateralList, $paramsCollateralList) or die( print_r( sqlsrv_errors(), true));
+		}
 	}
 }
 

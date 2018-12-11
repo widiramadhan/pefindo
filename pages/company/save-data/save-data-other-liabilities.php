@@ -87,92 +87,94 @@ if(isset($array['GetCustomReportResponse']['GetCustomReportResult']['aOtherLiabi
 						array($OtherLiabilitiesRealDate,SQLSRV_PARAM_IN));
 	$execOtherLiabilitiesList = sqlsrv_query($conn, $callOtherLiabilitiesList, $paramsOtherLiabilitiesList) or die ( print_r( sqlsrv_errors(),true));
 }else{
-	foreach($array['GetCustomReportResponse']['GetCustomReportResult']['aOtherLiabilities']['bOtherLiabilityList']['bOtherLiability'] as $itemOtherLiabilitiestList){
-		if($itemOtherLiabilitiestList['bBranch']<>NULL){$OtherLiabilitiesBranch = $itemOtherLiabilitiestList['bBranch'];}else{$OtherLiabilitiesBranch=NULL;}
-		if($itemOtherLiabilitiestList['bConditionDate']<>NULL){$OtherLiabilitiesCondDate = $itemOtherLiabilitiestList['bConditionDate'];}else{$OtherLiabilitiesCondDate=NULL;}
-		if($itemOtherLiabilitiestList['bContractCode']<>NULL){$OtherLiabilitiesContractDate = $itemOtherLiabilitiestList['bContractCode'];}else{$OtherLiabilitiesContractDate=NULL;}
-		if($itemOtherLiabilitiestList['bContractStatus']<>NULL){$OtherLiabilitiesContractStat = $itemOtherLiabilitiestList['bContractStatus'];}else{$OtherLiabilitiesContractStat=NULL;}
-		if($itemOtherLiabilitiestList['bContractType']<>NULL){$OtherLiabilitiesContractType = $itemOtherLiabilitiestList['bContractType'];}else{$OtherLiabilitiesContractType=NULL;}
-		if($itemOtherLiabilitiestList['bCreditor']<>NULL){$OtherLiabilitiesCreditor = $itemOtherLiabilitiestList['bCreditor'];}else{$OtherLiabilitiesCreditor=NULL;}
-		if($itemOtherLiabilitiestList['bCurrencyOfContract']<>NULL){$OtherLiabilitiesCurContract = $itemOtherLiabilitiestList['bCurrencyOfContract'];}else{$OtherLiabilitiesCurContract=NULL;}
-		if($itemOtherLiabilitiestList['bDefaultDate']<>NULL){$OtherLiabilitiesDefaultDate = $itemOtherLiabilitiestList['bDefaultDate'];}else{$OtherLiabilitiesDefaultDate=NULL;}
-		if($itemOtherLiabilitiestList['bDefaultReason']<>NULL){$OtherLiabilitiesDefaultReason = $itemOtherLiabilitiestList['bDefaultReason'];}else{$OtherLiabilitiesDefaultReason=NULL;}
-		if($itemOtherLiabilitiestList['bDefaultReasonDescription']<>NULL){$OtherLiabilitiesDefaultReasonDesc = $itemOtherLiabilitiestList['bDefaultReasonDescription'];}else{$OtherLiabilitiesDefaultReasonDesc=NULL;}
-		if($itemOtherLiabilitiestList['bDelinquencyDate']<>NULL){$OtherLiabilitiesDeliqDate = $itemOtherLiabilitiestList['bDelinquencyDate'];}else{$OtherLiabilitiesDeliqDate=NULL;}
-		if($itemOtherLiabilitiestList['bDescription']<>NULL){$OtherLiabilitiesDesc= $itemOtherLiabilitiestList['bDescription'];}else{$OtherLiabilitiesDesc=NULL;}
-		if(isset($itemOtherLiabilitiestList['bInitialTotalAmount']['cCurrency'])){
-			if($itemOtherLiabilitiestList['bInitialTotalAmount']['cCurrency']<>NULL){$OtherLiabilitiesInitTotAmountCur=$itemOtherLiabilitiestList['bInitialTotalAmount']['cCurrency'];}else{$OtherLiabilitiesInitTotAmountCur=NULL;}
-			if($itemOtherLiabilitiestList['bInitialTotalAmount']['cValue']<>NULL){$OtherLiabilitiesInitTotAmountVal=$itemOtherLiabilitiestList['bInitialTotalAmount']['cValue'];}else{$OtherLiabilitiesInitTotAmountVal=NULL;}
-		}else{
-			$OtherLiabilitiesInitTotAmountCur=NULL;
-			$OtherLiabilitiesInitTotAmountVal=NULL;
-		}
-		if($itemOtherLiabilitiestList['bInterestRate']<>NULL){$OtherLiabilitiesInterestRate= $itemOtherLiabilitiestList['bInterestRate'];}else{$OtherLiabilitiesInterestRate=NULL;}
-		if($itemOtherLiabilitiestList['bIssueDate']<>NULL){$OtherLiabilitiesIssueDate= $itemOtherLiabilitiestList['bIssueDate'];}else{$OtherLiabilitiesIssueDate=NULL;}
-		if($itemOtherLiabilitiestList['bLastUpdate']<>NULL){$OtherLiabilitiesLastUpt= $itemOtherLiabilitiestList['bLastUpdate'];}else{$OtherLiabilitiesLastUpt=NULL;}
-		if(isset($itemOtherLiabilitiestList['bMarketValue']['cCurrency'])){
-			if($itemOtherLiabilitiestList['bMarketValue']['cCurrency']<>NULL){$OtherLiabilitiesMarketValCur=$itemOtherLiabilitiestList['bMarketValue']['cCurrency'];}else{$OtherLiabilitiesMarketValCur=NULL;}
-			if($itemOtherLiabilitiestList['bMarketValue']['cValue']<>NULL){$OtherLiabilitiesMarketValVal=$itemOtherLiabilitiestList['bMarketValue']['cValue'];}else{$OtherLiabilitiesMarketValVal=NULL;}
-		}else{
-			$OtherLiabilitiesMarketValCur=NULL;
-			$OtherLiabilitiesMarketValVal=NULL;
-		}
-		if($itemOtherLiabilitiestList['bMaturityDate']<>NULL){$OtherLiabilitiesMaturyDate= $itemOtherLiabilitiestList['bMaturityDate'];}else{$OtherLiabilitiesMaturyDate=NULL;}
-		if($itemOtherLiabilitiestList['bNegativeStatus']<>NULL){$OtherLiabilitiesNegativeStat= $itemOtherLiabilitiestList['bNegativeStatus'];}else{$OtherLiabilitiesNegativeStat=NULL;}
-		if(isset($itemOtherLiabilitiestList['bOutstandingAmount']['cCurrency'])){
-			if($itemOtherLiabilitiestList['bOutstandingAmount']['cCurrency']<>NULL){$OtherLiabilitiesOutStandAmountCur=$itemOtherLiabilitiestList['bOutstandingAmount']['cCurrency'];}else{$OtherLiabilitiesOutStandAmountCur=NULL;}
-			if($itemOtherLiabilitiestList['bOutstandingAmount']['cValue']<>NULL){$OtherLiabilitiesOutStandAmountVal=$itemOtherLiabilitiestList['bOutstandingAmount']['cValue'];}else{$OtherLiabilitiesOutStandAmountVal=NULL;}
-		}else{
-			$OtherLiabilitiesOutStandAmountCur=NULL;
-			$OtherLiabilitiesOutStandAmountVal=NULL;
-		}
-		if($itemOtherLiabilitiestList['bPastDueDays']<>NULL){$OtherLiabilitiesPastDueDays= $itemOtherLiabilitiestList['bPastDueDays'];}else{$OtherLiabilitiesPastDueDays=NULL;}
-		if($itemOtherLiabilitiestList['bPreviousContractCode']<>NULL){$OtherLiabilitiesPreviousContCode= $itemOtherLiabilitiestList['bPreviousContractCode'];}else{$OtherLiabilitiesPreviousContCode=NULL;}
-		if(isset($itemOtherLiabilitiestList['bPrincipalArrears']['cCurrency'])){
-			if($itemOtherLiabilitiestList['bPrincipalArrears']['cCurrency']<>NULL){$OtherLiabilitiesPrincipalArreasCur=$itemOtherLiabilitiestList['bPrincipalArrears']['cCurrency'];}else{$OtherLiabilitiesPrincipalArreasCur=NULL;}
-			if($itemOtherLiabilitiestList['bPrincipalArrears']['cValue']<>NULL){$OtherLiabilitiesPrincipalArreasVal=$itemOtherLiabilitiestList['bPrincipalArrears']['cValue'];}else{$OtherLiabilitiesPrincipalArreasVal=NULL;}
-		}else{
-			$OtherLiabilitiesPrincipalArreasCur=NULL;
-			$OtherLiabilitiesPrincipalArreasVal=NULL;
-		}
-		if($itemOtherLiabilitiestList['bRating']<>NULL){$OtherLiabilitiesRating= $itemOtherLiabilitiestList['bRating'];}else{$OtherLiabilitiesRating=NULL;}
-		if($itemOtherLiabilitiestList['bRealEndDate']<>NULL){$OtherLiabilitiesRealDate= $itemOtherLiabilitiestList['bRealEndDate'];}else{$OtherLiabilitiesRealDate=NULL;}
+	if(isset($array['GetCustomReportResponse']['GetCustomReportResult']['aOtherLiabilities']['bOtherLiabilityList']['bOtherLiability'])){
+		foreach($array['GetCustomReportResponse']['GetCustomReportResult']['aOtherLiabilities']['bOtherLiabilityList']['bOtherLiability'] as $itemOtherLiabilitiestList){
+			if($itemOtherLiabilitiestList['bBranch']<>NULL){$OtherLiabilitiesBranch = $itemOtherLiabilitiestList['bBranch'];}else{$OtherLiabilitiesBranch=NULL;}
+			if($itemOtherLiabilitiestList['bConditionDate']<>NULL){$OtherLiabilitiesCondDate = $itemOtherLiabilitiestList['bConditionDate'];}else{$OtherLiabilitiesCondDate=NULL;}
+			if($itemOtherLiabilitiestList['bContractCode']<>NULL){$OtherLiabilitiesContractDate = $itemOtherLiabilitiestList['bContractCode'];}else{$OtherLiabilitiesContractDate=NULL;}
+			if($itemOtherLiabilitiestList['bContractStatus']<>NULL){$OtherLiabilitiesContractStat = $itemOtherLiabilitiestList['bContractStatus'];}else{$OtherLiabilitiesContractStat=NULL;}
+			if($itemOtherLiabilitiestList['bContractType']<>NULL){$OtherLiabilitiesContractType = $itemOtherLiabilitiestList['bContractType'];}else{$OtherLiabilitiesContractType=NULL;}
+			if($itemOtherLiabilitiestList['bCreditor']<>NULL){$OtherLiabilitiesCreditor = $itemOtherLiabilitiestList['bCreditor'];}else{$OtherLiabilitiesCreditor=NULL;}
+			if($itemOtherLiabilitiestList['bCurrencyOfContract']<>NULL){$OtherLiabilitiesCurContract = $itemOtherLiabilitiestList['bCurrencyOfContract'];}else{$OtherLiabilitiesCurContract=NULL;}
+			if($itemOtherLiabilitiestList['bDefaultDate']<>NULL){$OtherLiabilitiesDefaultDate = $itemOtherLiabilitiestList['bDefaultDate'];}else{$OtherLiabilitiesDefaultDate=NULL;}
+			if($itemOtherLiabilitiestList['bDefaultReason']<>NULL){$OtherLiabilitiesDefaultReason = $itemOtherLiabilitiestList['bDefaultReason'];}else{$OtherLiabilitiesDefaultReason=NULL;}
+			if($itemOtherLiabilitiestList['bDefaultReasonDescription']<>NULL){$OtherLiabilitiesDefaultReasonDesc = $itemOtherLiabilitiestList['bDefaultReasonDescription'];}else{$OtherLiabilitiesDefaultReasonDesc=NULL;}
+			if($itemOtherLiabilitiestList['bDelinquencyDate']<>NULL){$OtherLiabilitiesDeliqDate = $itemOtherLiabilitiestList['bDelinquencyDate'];}else{$OtherLiabilitiesDeliqDate=NULL;}
+			if($itemOtherLiabilitiestList['bDescription']<>NULL){$OtherLiabilitiesDesc= $itemOtherLiabilitiestList['bDescription'];}else{$OtherLiabilitiesDesc=NULL;}
+			if(isset($itemOtherLiabilitiestList['bInitialTotalAmount']['cCurrency'])){
+				if($itemOtherLiabilitiestList['bInitialTotalAmount']['cCurrency']<>NULL){$OtherLiabilitiesInitTotAmountCur=$itemOtherLiabilitiestList['bInitialTotalAmount']['cCurrency'];}else{$OtherLiabilitiesInitTotAmountCur=NULL;}
+				if($itemOtherLiabilitiestList['bInitialTotalAmount']['cValue']<>NULL){$OtherLiabilitiesInitTotAmountVal=$itemOtherLiabilitiestList['bInitialTotalAmount']['cValue'];}else{$OtherLiabilitiesInitTotAmountVal=NULL;}
+			}else{
+				$OtherLiabilitiesInitTotAmountCur=NULL;
+				$OtherLiabilitiesInitTotAmountVal=NULL;
+			}
+			if($itemOtherLiabilitiestList['bInterestRate']<>NULL){$OtherLiabilitiesInterestRate= $itemOtherLiabilitiestList['bInterestRate'];}else{$OtherLiabilitiesInterestRate=NULL;}
+			if($itemOtherLiabilitiestList['bIssueDate']<>NULL){$OtherLiabilitiesIssueDate= $itemOtherLiabilitiestList['bIssueDate'];}else{$OtherLiabilitiesIssueDate=NULL;}
+			if($itemOtherLiabilitiestList['bLastUpdate']<>NULL){$OtherLiabilitiesLastUpt= $itemOtherLiabilitiestList['bLastUpdate'];}else{$OtherLiabilitiesLastUpt=NULL;}
+			if(isset($itemOtherLiabilitiestList['bMarketValue']['cCurrency'])){
+				if($itemOtherLiabilitiestList['bMarketValue']['cCurrency']<>NULL){$OtherLiabilitiesMarketValCur=$itemOtherLiabilitiestList['bMarketValue']['cCurrency'];}else{$OtherLiabilitiesMarketValCur=NULL;}
+				if($itemOtherLiabilitiestList['bMarketValue']['cValue']<>NULL){$OtherLiabilitiesMarketValVal=$itemOtherLiabilitiestList['bMarketValue']['cValue'];}else{$OtherLiabilitiesMarketValVal=NULL;}
+			}else{
+				$OtherLiabilitiesMarketValCur=NULL;
+				$OtherLiabilitiesMarketValVal=NULL;
+			}
+			if($itemOtherLiabilitiestList['bMaturityDate']<>NULL){$OtherLiabilitiesMaturyDate= $itemOtherLiabilitiestList['bMaturityDate'];}else{$OtherLiabilitiesMaturyDate=NULL;}
+			if($itemOtherLiabilitiestList['bNegativeStatus']<>NULL){$OtherLiabilitiesNegativeStat= $itemOtherLiabilitiestList['bNegativeStatus'];}else{$OtherLiabilitiesNegativeStat=NULL;}
+			if(isset($itemOtherLiabilitiestList['bOutstandingAmount']['cCurrency'])){
+				if($itemOtherLiabilitiestList['bOutstandingAmount']['cCurrency']<>NULL){$OtherLiabilitiesOutStandAmountCur=$itemOtherLiabilitiestList['bOutstandingAmount']['cCurrency'];}else{$OtherLiabilitiesOutStandAmountCur=NULL;}
+				if($itemOtherLiabilitiestList['bOutstandingAmount']['cValue']<>NULL){$OtherLiabilitiesOutStandAmountVal=$itemOtherLiabilitiestList['bOutstandingAmount']['cValue'];}else{$OtherLiabilitiesOutStandAmountVal=NULL;}
+			}else{
+				$OtherLiabilitiesOutStandAmountCur=NULL;
+				$OtherLiabilitiesOutStandAmountVal=NULL;
+			}
+			if($itemOtherLiabilitiestList['bPastDueDays']<>NULL){$OtherLiabilitiesPastDueDays= $itemOtherLiabilitiestList['bPastDueDays'];}else{$OtherLiabilitiesPastDueDays=NULL;}
+			if($itemOtherLiabilitiestList['bPreviousContractCode']<>NULL){$OtherLiabilitiesPreviousContCode= $itemOtherLiabilitiestList['bPreviousContractCode'];}else{$OtherLiabilitiesPreviousContCode=NULL;}
+			if(isset($itemOtherLiabilitiestList['bPrincipalArrears']['cCurrency'])){
+				if($itemOtherLiabilitiestList['bPrincipalArrears']['cCurrency']<>NULL){$OtherLiabilitiesPrincipalArreasCur=$itemOtherLiabilitiestList['bPrincipalArrears']['cCurrency'];}else{$OtherLiabilitiesPrincipalArreasCur=NULL;}
+				if($itemOtherLiabilitiestList['bPrincipalArrears']['cValue']<>NULL){$OtherLiabilitiesPrincipalArreasVal=$itemOtherLiabilitiestList['bPrincipalArrears']['cValue'];}else{$OtherLiabilitiesPrincipalArreasVal=NULL;}
+			}else{
+				$OtherLiabilitiesPrincipalArreasCur=NULL;
+				$OtherLiabilitiesPrincipalArreasVal=NULL;
+			}
+			if($itemOtherLiabilitiestList['bRating']<>NULL){$OtherLiabilitiesRating= $itemOtherLiabilitiestList['bRating'];}else{$OtherLiabilitiesRating=NULL;}
+			if($itemOtherLiabilitiestList['bRealEndDate']<>NULL){$OtherLiabilitiesRealDate= $itemOtherLiabilitiestList['bRealEndDate'];}else{$OtherLiabilitiesRealDate=NULL;}
 
-		$callOtherLiabilitiesList = "{call SP_INSERT_M_OTHER_LIABILITIES_LIST_COMPANY(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}";
-		$paramsOtherLiabilitiesList = array(
-							array($mappingId, SQLSRV_PARAM_IN),
-							array($pefindoId,SQLSRV_PARAM_IN),
-							array(NULL,SQLSRV_PARAM_IN),
-							array($OtherLiabilitiesBranch,SQLSRV_PARAM_IN),					
-							array($OtherLiabilitiesCondDate,SQLSRV_PARAM_IN),
-							array($OtherLiabilitiesContractDate,SQLSRV_PARAM_IN),
-							array($OtherLiabilitiesContractStat,SQLSRV_PARAM_IN),
-							array($OtherLiabilitiesContractType,SQLSRV_PARAM_IN),
-							array($OtherLiabilitiesCreditor,SQLSRV_PARAM_IN),					
-							array($OtherLiabilitiesCurContract,SQLSRV_PARAM_IN),
-							array($OtherLiabilitiesDefaultDate,SQLSRV_PARAM_IN),
-							array($OtherLiabilitiesDefaultReason,SQLSRV_PARAM_IN),
-							array($OtherLiabilitiesDefaultReasonDesc,SQLSRV_PARAM_IN),
-							array($OtherLiabilitiesDeliqDate,SQLSRV_PARAM_IN),					
-							array($OtherLiabilitiesDesc,SQLSRV_PARAM_IN),
-							array($OtherLiabilitiesInitTotAmountCur,SQLSRV_PARAM_IN),
-							array($OtherLiabilitiesInitTotAmountVal,SQLSRV_PARAM_IN),
-							array($OtherLiabilitiesInterestRate,SQLSRV_PARAM_IN),
-							array($OtherLiabilitiesIssueDate,SQLSRV_PARAM_IN),					
-							array($OtherLiabilitiesLastUpt,SQLSRV_PARAM_IN),
-							array($OtherLiabilitiesMarketValCur,SQLSRV_PARAM_IN),
-							array($OtherLiabilitiesMarketValVal,SQLSRV_PARAM_IN),
-							array($OtherLiabilitiesMaturyDate,SQLSRV_PARAM_IN),
-							array($OtherLiabilitiesNegativeStat,SQLSRV_PARAM_IN),					
-							array($OtherLiabilitiesOutStandAmountCur,SQLSRV_PARAM_IN),
-							array($OtherLiabilitiesOutStandAmountVal,SQLSRV_PARAM_IN),
-							array($OtherLiabilitiesPastDueDays,SQLSRV_PARAM_IN),
-							array($OtherLiabilitiesPreviousContCode,SQLSRV_PARAM_IN),
-							array($OtherLiabilitiesPrincipalArreasCur,SQLSRV_PARAM_IN),					
-							array($OtherLiabilitiesPrincipalArreasVal,SQLSRV_PARAM_IN),
-							array($OtherLiabilitiesRating,SQLSRV_PARAM_IN),
-							array($OtherLiabilitiesRealDate,SQLSRV_PARAM_IN));
-		$execOtherLiabilitiesList = sqlsrv_query($conn, $callOtherLiabilitiesList, $paramsOtherLiabilitiesList) or die ( print_r( sqlsrv_errors(),true));
+			$callOtherLiabilitiesList = "{call SP_INSERT_M_OTHER_LIABILITIES_LIST_COMPANY(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}";
+			$paramsOtherLiabilitiesList = array(
+								array($mappingId, SQLSRV_PARAM_IN),
+								array($pefindoId,SQLSRV_PARAM_IN),
+								array(NULL,SQLSRV_PARAM_IN),
+								array($OtherLiabilitiesBranch,SQLSRV_PARAM_IN),					
+								array($OtherLiabilitiesCondDate,SQLSRV_PARAM_IN),
+								array($OtherLiabilitiesContractDate,SQLSRV_PARAM_IN),
+								array($OtherLiabilitiesContractStat,SQLSRV_PARAM_IN),
+								array($OtherLiabilitiesContractType,SQLSRV_PARAM_IN),
+								array($OtherLiabilitiesCreditor,SQLSRV_PARAM_IN),					
+								array($OtherLiabilitiesCurContract,SQLSRV_PARAM_IN),
+								array($OtherLiabilitiesDefaultDate,SQLSRV_PARAM_IN),
+								array($OtherLiabilitiesDefaultReason,SQLSRV_PARAM_IN),
+								array($OtherLiabilitiesDefaultReasonDesc,SQLSRV_PARAM_IN),
+								array($OtherLiabilitiesDeliqDate,SQLSRV_PARAM_IN),					
+								array($OtherLiabilitiesDesc,SQLSRV_PARAM_IN),
+								array($OtherLiabilitiesInitTotAmountCur,SQLSRV_PARAM_IN),
+								array($OtherLiabilitiesInitTotAmountVal,SQLSRV_PARAM_IN),
+								array($OtherLiabilitiesInterestRate,SQLSRV_PARAM_IN),
+								array($OtherLiabilitiesIssueDate,SQLSRV_PARAM_IN),					
+								array($OtherLiabilitiesLastUpt,SQLSRV_PARAM_IN),
+								array($OtherLiabilitiesMarketValCur,SQLSRV_PARAM_IN),
+								array($OtherLiabilitiesMarketValVal,SQLSRV_PARAM_IN),
+								array($OtherLiabilitiesMaturyDate,SQLSRV_PARAM_IN),
+								array($OtherLiabilitiesNegativeStat,SQLSRV_PARAM_IN),					
+								array($OtherLiabilitiesOutStandAmountCur,SQLSRV_PARAM_IN),
+								array($OtherLiabilitiesOutStandAmountVal,SQLSRV_PARAM_IN),
+								array($OtherLiabilitiesPastDueDays,SQLSRV_PARAM_IN),
+								array($OtherLiabilitiesPreviousContCode,SQLSRV_PARAM_IN),
+								array($OtherLiabilitiesPrincipalArreasCur,SQLSRV_PARAM_IN),					
+								array($OtherLiabilitiesPrincipalArreasVal,SQLSRV_PARAM_IN),
+								array($OtherLiabilitiesRating,SQLSRV_PARAM_IN),
+								array($OtherLiabilitiesRealDate,SQLSRV_PARAM_IN));
+			$execOtherLiabilitiesList = sqlsrv_query($conn, $callOtherLiabilitiesList, $paramsOtherLiabilitiesList) or die ( print_r( sqlsrv_errors(),true));
+		}
 	}
 }
 
