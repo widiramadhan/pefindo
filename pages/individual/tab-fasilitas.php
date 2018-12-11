@@ -236,26 +236,26 @@
 						</tbody>
 					</table>
 				</div>
-				<div id="accordion3">
+				<div id="accordion22">
 					<div class="card">
 						<div class="header">
 							<div class="pull-left">
 								<?php
-								$callCalList3 = "{call SP_GET_TAB_CONTRACT_SUMMARY_PAYMENT_CALENDERLIST(?)}";
+								$callCalList3 = "{call SP_GET_TAB_DASHBOARD_TBL_CONTRACT_SUMARY_PAYMENT_CALENDER_LIST(?)}";
 								$paramsCalList3 = array(array($id, SQLSRV_PARAM_IN));
 								$execCalList3 = sqlsrv_query($conn, $callCalList3, $paramsCalList3) or die( print_r( sqlsrv_errors(), true));
 								$rowCalList = sqlsrv_fetch_array($execCalList3);
 								?>
-								<p class="name text-default">Pembayaran <?php echo date("m/Y", strtotime($array['GetCustomReportResponse']['GetCustomReportResult']['aContractSummary']['bPaymentCalendarList']['bPaymentCalendar'][11]['bDate']))." - ".date("m/Y", strtotime($array['GetCustomReportResponse']['GetCustomReportResult']['aContractSummary']['bPaymentCalendarList']['bPaymentCalendar'][0]['bDate']));?></p>
+								<p class="name text-default">Pembayaran <?php if($rowCalList['START_DATE']<>NULL){echo $rowCalList['START_DATE']->format('m/Y');}else{echo"";}echo" - ";if($rowCalList['END_DATE']<>NULL){echo $rowCalList['END_DATE']->format('m/Y');}else{echo"";}?></p>
 							</div>
 							<div class="pull-right">
-								<a class="card-link2" data-toggle="collapse" href="#collapseOne3">
+								<a class="card-link2" data-toggle="collapse" href="#collapseOne22">
 									<i class="fa fa-chevron-down text-danger"></i>
 								</a>
 							</div>
 							<div style="clear:both"></div>
 						</div>
-						<div id="collapseOne3" class="collapse content" data-parent="#accordion3">
+						<div id="collapseOne22" class="collapse content" data-parent="#accordion22">
 							<div class="table-responsive">
 								<table class="table table-bordered">
 									<thead>
@@ -270,16 +270,18 @@
 									</thead>
 									<tbody>
 									<?php
-										for ($x = 11; $x <= 11 && $x >= 0; $x--) {
-											$item=$array['GetCustomReportResponse']['GetCustomReportResult']['aContractSummary']['bPaymentCalendarList']['bPaymentCalendar'][$x];
+										$callCalList4 = "{call SP_GET_TAB_DASHBOARD_TBL_CONTRACT_SUMARY_PAYMENT_CALENDER_LIST(?)}";
+										$paramsCalList4 = array(array($id, SQLSRV_PARAM_IN));
+										$execCalList4 = sqlsrv_query($conn, $callCalList4, $paramsCalList4) or die( print_r( sqlsrv_errors(), true));
+										while($dataCalList4=sqlsrv_fetch_array($execCalList4)){
 									?>
 									<tr>
-										<td align="center"><?php echo date("m/Y", strtotime($item['bDate']));?></center></td>
-										<td align="center"><?php echo $item['bContractsSubmitted'];//if($item['bContractsSubmitted'] == '0'){ echo "0";}else{echo"";}?></center></td>
-										<td align="right"><?php if($item['bPastDueDays'] == NULL){ echo "No Data";}else{echo $item['bPastDueDays'];}?></td>
-										<td align="right"><?php if($item['bPastDueAmount'] == NULL){echo"No Data";}else{echo $item['bPastDueAmount']['cCurrency']." ".number_format($item['bPastDueAmount']['cValue'],0,',','.');}?></td>
-										<td align="center"><?php echo $item['bNegativeStatusOfContract'];?></td>
-										<td align="right"><?php if($item['bOutstandingAmount'] == NULL){echo"No Data";}else{echo $item['bOutstandingAmount']['cCurrency']." ".number_format($item['bOutstandingAmount']['cValue'],0,',','.');}?></td>
+										<td align="center"><?php echo $dataCalList4['DATE']->format('m/Y');?></center></td>
+										<td align="center"><?php echo $dataCalList4['CONTRACT_SUBMITTED'];?></center></td>
+										<td align="right"><?php if($dataCalList4['PAST_DUE_DAYS'] == 999){ echo "No Data";}else{echo $dataCalList4['PAST_DUE_DAYS'];}?></td>
+										<td align="right"><?php if($dataCalList4['PAST_DUE_AMOUNT_VALUE_VALUE'] == NULL){echo"No Data";}else{echo $dataCalList4['PAST_DUE_AMOUNT_CURRENCY']." ".number_format($dataCalList4['PAST_DUE_AMOUNT_VALUE_VALUE'],0,',','.');}?></td>
+										<td align="center"><?php echo $dataCalList4['NEGATIVE_STATUS_OF_CONTRACT'];?></td>
+										<td align="right"><?php if($dataCalList4['OUT_STANDING_AMOUNT_VALUE_VALUE'] == NULL){echo"No Data";}else{echo $dataCalList4['OUT_STANDING_AMOUNT_CURRENCY']." ".number_format($dataCalList4['OUT_STANDING_AMOUNT_VALUE_VALUE'],0,',','.');}?></td>
 									</tr>
 									<?php
 										}
@@ -290,161 +292,6 @@
 						</div>
 					</div>
 				</div>
-				<?php
-					if(count($array['GetCustomReportResponse']['GetCustomReportResult']['aContractSummary']['bPaymentCalendarList']['bPaymentCalendar']) <= 24){
-				?>
-				<div id="accordion4">
-					<div class="card">
-						<div class="header">
-							<div class="pull-left">
-								<p class="name text-default">Pembayaran <?php echo date("m/Y", strtotime($array['GetCustomReportResponse']['GetCustomReportResult']['aContractSummary']['bPaymentCalendarList']['bPaymentCalendar'][23]['bDate']))." - ".date("m/Y", strtotime($array['GetCustomReportResponse']['GetCustomReportResult']['aContractSummary']['bPaymentCalendarList']['bPaymentCalendar'][12]['bDate']));?></p>
-							</div>
-							<div class="pull-right">
-								<a class="card-link2" data-toggle="collapse" href="#collapseOne4">
-									<i class="fa fa-chevron-down text-danger"></i>
-								</a>
-							</div>
-							<div style="clear:both"></div>
-						</div>
-						<div id="collapseOne4" class="collapse content" data-parent="#accordion4">
-							<div class="table-responsive">
-								<table class="table table-bordered">
-									<thead>
-										<tr>
-											<th>PERIODE</th>
-											<th>JUMLAH FASILITAS</th>
-											<th>NOMINAL TUNGGAKAN</th>
-											<th>UMUR TUNGGAKAN</th>
-											<th>KOLEKTIBILITAS</th>
-											<th>SALDO TERUTANG</th>
-										</tr>
-									</thead>
-									<tbody>
-									<?php
-										for ($x = 23; $x <= 23 && $x >= 12; $x--) {
-											$item=$array['GetCustomReportResponse']['GetCustomReportResult']['aContractSummary']['bPaymentCalendarList']['bPaymentCalendar'][$x];
-									?>
-									<tr>
-										<td align="center"><?php echo date("m/Y", strtotime($item['bDate']));?></center></td>
-										<td align="center"><?php echo $item['bContractsSubmitted'];//if($item['bContractsSubmitted'] == '0'){ echo "0";}else{echo"";}?></center></td>
-										<td align="right"><?php if($item['bPastDueDays'] == NULL){ echo "No Data";}else{echo $item['bPastDueDays'];}?></td>
-										<td align="right"><?php if($item['bPastDueAmount'] == NULL){echo"No Data";}else{echo $item['bPastDueAmount']['cCurrency']." ".number_format($item['bPastDueAmount']['cValue'],0,',','.');}?></td>
-										<td align="center"><?php echo $item['bNegativeStatusOfContract'];?></td>
-										<td align="right"><?php if($item['bOutstandingAmount'] == NULL){echo"No Data";}else{echo $item['bOutstandingAmount']['cCurrency']." ".number_format($item['bOutstandingAmount']['cValue'],0,',','.');}?></td>
-									</tr>
-									<?php
-										}
-									?>
-									</tbody>
-								</table>
-							</div>
-						</div>
-					</div>
-				</div>
-				<?php
-					}else if(count($array['GetCustomReportResponse']['GetCustomReportResult']['aContractSummary']['bPaymentCalendarList']['bPaymentCalendar']) <= 36){
-				?>
-				<div id="accordion4">
-					<div class="card">
-						<div class="header">
-							<div class="pull-left">
-								<p class="name text-default">Pembayaran <?php echo date("m/Y", strtotime($array['GetCustomReportResponse']['GetCustomReportResult']['aContractSummary']['bPaymentCalendarList']['bPaymentCalendar'][23]['bDate']))." - ".date("m/Y", strtotime($array['GetCustomReportResponse']['GetCustomReportResult']['aContractSummary']['bPaymentCalendarList']['bPaymentCalendar'][12]['bDate']));?></p>
-							</div>
-							<div class="pull-right">
-								<a class="card-link2" data-toggle="collapse" href="#collapseOne4">
-									<i class="fa fa-chevron-down text-danger"></i>
-								</a>
-							</div>
-							<div style="clear:both"></div>
-						</div>
-						<div id="collapseOne4" class="collapse content" data-parent="#accordion4">
-							<div class="table-responsive">
-								<table class="table table-bordered">
-									<thead>
-										<tr>
-											<th>PERIODE</th>
-											<th>JUMLAH FASILITAS</th>
-											<th>NOMINAL TUNGGAKAN</th>
-											<th>UMUR TUNGGAKAN</th>
-											<th>KOLEKTIBILITAS</th>
-											<th>SALDO TERUTANG</th>
-										</tr>
-									</thead>
-									<tbody>
-									<?php
-										for ($x = 23; $x <= 23 && $x >= 12; $x--) {
-											$item=$array['GetCustomReportResponse']['GetCustomReportResult']['aContractSummary']['bPaymentCalendarList']['bPaymentCalendar'][$x];
-									?>
-									<tr>
-										<td align="center"><?php echo date("m/Y", strtotime($item['bDate']));?></center></td>
-										<td align="center"><?php echo $item['bContractsSubmitted'];//if($item['bContractsSubmitted'] == '0'){ echo "0";}else{echo"";}?></center></td>
-										<td align="right"><?php if($item['bPastDueDays'] == NULL){ echo "No Data";}else{echo $item['bPastDueDays'];}?></td>
-										<td align="right"><?php if($item['bPastDueAmount'] == NULL){echo"No Data";}else{echo $item['bPastDueAmount']['cCurrency']." ".number_format($item['bPastDueAmount']['cValue'],0,',','.');}?></td>
-										<td align="center"><?php echo $item['bNegativeStatusOfContract'];?></td>
-										<td align="right"><?php if($item['bOutstandingAmount'] == NULL){echo"No Data";}else{echo $item['bOutstandingAmount']['cCurrency']." ".number_format($item['bOutstandingAmount']['cValue'],0,',','.');}?></td>
-									</tr>
-									<?php
-										}
-									?>
-									</tbody>
-								</table>
-							</div>
-						</div>
-					</div>
-				</div>
-				<div id="accordion5">
-					<div class="card">
-						<div class="header">
-							<div class="pull-left">
-								<p class="name text-default">Pembayaran <?php echo date("m/Y", strtotime($array['GetCustomReportResponse']['GetCustomReportResult']['aContractSummary']['bPaymentCalendarList']['bPaymentCalendar'][35]['bDate']))." - ".date("m/Y", strtotime($array['GetCustomReportResponse']['GetCustomReportResult']['aContractSummary']['bPaymentCalendarList']['bPaymentCalendar'][24]['bDate']));?></p>
-							</div>
-							<div class="pull-right">
-								<a class="card-link2" data-toggle="collapse" href="#collapseOne5">
-									<i class="fa fa-chevron-down text-danger"></i>
-								</a>
-							</div>
-							<div style="clear:both"></div>
-						</div>
-						<div id="collapseOne5" class="collapse content" data-parent="#accordion5">
-							<div class="table-responsive">
-								<table class="table table-bordered">
-									<thead>
-										<tr>
-											<th>PERIODE</th>
-											<th>JUMLAH FASILITAS</th>
-											<th>NOMINAL TUNGGAKAN</th>
-											<th>UMUR TUNGGAKAN</th>
-											<th>KOLEKTIBILITAS</th>
-											<th>SALDO TERUTANG</th>
-										</tr>
-									</thead>
-									<tbody>
-									<?php
-										for ($x = 35; $x <= 35 && $x >= 24; $x--) {
-											$item=$array['GetCustomReportResponse']['GetCustomReportResult']['aContractSummary']['bPaymentCalendarList']['bPaymentCalendar'][$x];
-									?>
-									<tr>
-										<td align="center"><?php echo date("m/Y", strtotime($item['bDate']));?></center></td>
-										<td align="center"><?php echo $item['bContractsSubmitted'];//if($item['bContractsSubmitted'] == '0'){ echo "0";}else{echo"";}?></center></td>
-										<td align="right"><?php if($item['bPastDueDays'] == NULL){ echo "No Data";}else{echo $item['bPastDueDays'];}?></td>
-										<td align="right"><?php if($item['bPastDueAmount'] == NULL){echo"No Data";}else{echo $item['bPastDueAmount']['cCurrency']." ".number_format($item['bPastDueAmount']['cValue'],0,',','.');}?></td>
-										<td align="center"><?php echo $item['bNegativeStatusOfContract'];?></td>
-										<td align="right"><?php if($item['bOutstandingAmount'] == NULL){echo"No Data";}else{echo $item['bOutstandingAmount']['cCurrency']." ".number_format($item['bOutstandingAmount']['cValue'],0,',','.');}?></td>
-									</tr>
-									<?php
-										}
-									?>
-									</tbody>
-								</table>
-							</div>
-						</div>
-					</div>
-				</div>
-				<?php
-					}else{
-						echo"";
-					}
-				?>
 				<p class="name text-danger">Ringkasan fasilitas dan penjaminan Perbankan</p>	
 				<?php
 					/* select table M_CONTRACT_SUMMARY_SECTOR_INFO_LIST */
@@ -1064,215 +911,62 @@
 									</tbody>
 								</table>
 							</div>
-							<div id="accordion88">
-					<div class="card">
-						<div class="header">
-							<div class="pull-left">
-								<?php
-								$callCalList3 = "{call SP_GET_TAB_CONTRACT_SUMMARY_PAYMENT_CALENDERLIST(?)}";
-								$paramsCalList3 = array(array($id, SQLSRV_PARAM_IN));
-								$execCalList3 = sqlsrv_query($conn, $callCalList3, $paramsCalList3) or die( print_r( sqlsrv_errors(), true));
-								$rowCalList = sqlsrv_fetch_array($execCalList3);
-								?>
-								<p class="name text-default">Pembayaran <?php echo date("m/Y", strtotime($array['GetCustomReportResponse']['GetCustomReportResult']['aContractSummary']['bPaymentCalendarList']['bPaymentCalendar'][11]['bDate']))." - ".date("m/Y", strtotime($array['GetCustomReportResponse']['GetCustomReportResult']['aContractSummary']['bPaymentCalendarList']['bPaymentCalendar'][0]['bDate']));?></p>
+						<div id="accordion212">
+							<div class="card">
+								<div class="header">
+									<div class="pull-left">
+										<?php
+										$callCalList3 = "{call SP_GET_TAB_DASHBOARD_TBL_CONTRACT_SUMARY_PAYMENT_CALENDER_LIST(?)}";
+										$paramsCalList3 = array(array($id, SQLSRV_PARAM_IN));
+										$execCalList3 = sqlsrv_query($conn, $callCalList3, $paramsCalList3) or die( print_r( sqlsrv_errors(), true));
+										$rowCalList = sqlsrv_fetch_array($execCalList3);
+										?>
+										<p class="name text-default">Pembayaran <?php if($rowCalList['START_DATE']<>NULL){echo $rowCalList['START_DATE']->format('m/Y');}else{echo"";}echo" - ";if($rowCalList['END_DATE']<>NULL){echo $rowCalList['END_DATE']->format('m/Y');}else{echo"";}?></p>
+									</div>
+									<div class="pull-right">
+										<a class="card-link2" data-toggle="collapse" href="#collapseOne212">
+											<i class="fa fa-chevron-down text-danger"></i>
+										</a>
+									</div>
+									<div style="clear:both"></div>
+								</div>
+								<div id="collapseOne212" class="collapse content" data-parent="#accordion212">
+									<div class="table-responsive">
+										<table class="table table-bordered">
+											<thead>
+												<tr>
+													<th>PERIODE</th>
+													<th>JUMLAH FASILITAS</th>
+													<th>NOMINAL TUNGGAKAN</th>
+													<th>UMUR TUNGGAKAN</th>
+													<th>KOLEKTIBILITAS</th>
+													<th>SALDO TERUTANG</th>
+												</tr>
+											</thead>
+											<tbody>
+											<?php
+												$callCalList4 = "{call SP_GET_TAB_DASHBOARD_TBL_CONTRACT_SUMARY_PAYMENT_CALENDER_LIST(?)}";
+												$paramsCalList4 = array(array($id, SQLSRV_PARAM_IN));
+												$execCalList4 = sqlsrv_query($conn, $callCalList4, $paramsCalList4) or die( print_r( sqlsrv_errors(), true));
+												while($dataCalList4=sqlsrv_fetch_array($execCalList4)){
+											?>
+											<tr>
+												<td align="center"><?php echo $dataCalList4['DATE']->format('m/Y');?></center></td>
+												<td align="center"><?php echo $dataCalList4['CONTRACT_SUBMITTED'];?></center></td>
+												<td align="right"><?php if($dataCalList4['PAST_DUE_DAYS'] == 999){ echo "No Data";}else{echo $dataCalList4['PAST_DUE_DAYS'];}?></td>
+												<td align="right"><?php if($dataCalList4['PAST_DUE_AMOUNT_VALUE_VALUE'] == NULL){echo"No Data";}else{echo $dataCalList4['PAST_DUE_AMOUNT_CURRENCY']." ".number_format($dataCalList4['PAST_DUE_AMOUNT_VALUE_VALUE'],0,',','.');}?></td>
+												<td align="center"><?php echo $dataCalList4['NEGATIVE_STATUS_OF_CONTRACT'];?></td>
+												<td align="right"><?php if($dataCalList4['OUT_STANDING_AMOUNT_VALUE_VALUE'] == NULL){echo"No Data";}else{echo $dataCalList4['OUT_STANDING_AMOUNT_CURRENCY']." ".number_format($dataCalList4['OUT_STANDING_AMOUNT_VALUE_VALUE'],0,',','.');}?></td>
+											</tr>
+											<?php
+												}
+											?>
+											</tbody>
+										</table>
+									</div>
+								</div>
 							</div>
-							<div class="pull-right">
-								<a class="card-link2" data-toggle="collapse" href="#collapseOne3">
-									<i class="fa fa-chevron-down text-danger"></i>
-								</a>
-							</div>
-							<div style="clear:both"></div>
-						</div>
-						<div id="collapseOne3" class="collapse content" data-parent="#accordion3">
-							<div class="table-responsive">
-								<table class="table table-bordered">
-									<thead>
-										<tr>
-											<th>PERIODE</th>
-											<th>JUMLAH FASILITAS</th>
-											<th>NOMINAL TUNGGAKAN</th>
-											<th>UMUR TUNGGAKAN</th>
-											<th>KOLEKTIBILITAS</th>
-											<th>SALDO TERUTANG</th>
-										</tr>
-									</thead>
-									<tbody>
-									<?php
-										for ($x = 11; $x <= 11 && $x >= 0; $x--) {
-											$item=$array['GetCustomReportResponse']['GetCustomReportResult']['aContractSummary']['bPaymentCalendarList']['bPaymentCalendar'][$x];
-									?>
-									<tr>
-										<td align="center"><?php echo date("m/Y", strtotime($item['bDate']));?></center></td>
-										<td align="center"><?php echo $item['bContractsSubmitted'];//if($item['bContractsSubmitted'] == '0'){ echo "0";}else{echo"";}?></center></td>
-										<td align="right"><?php if($item['bPastDueDays'] == NULL){ echo "No Data";}else{echo $item['bPastDueDays'];}?></td>
-										<td align="right"><?php if($item['bPastDueAmount'] == NULL){echo"No Data";}else{echo $item['bPastDueAmount']['cCurrency']." ".number_format($item['bPastDueAmount']['cValue'],0,',','.');}?></td>
-										<td align="center"><?php echo $item['bNegativeStatusOfContract'];?></td>
-										<td align="right"><?php if($item['bOutstandingAmount'] == NULL){echo"No Data";}else{echo $item['bOutstandingAmount']['cCurrency']." ".number_format($item['bOutstandingAmount']['cValue'],0,',','.');}?></td>
-									</tr>
-									<?php
-										}
-									?>
-									</tbody>
-								</table>
-							</div>
-						</div>
-					</div>
-				</div>
-				<?php
-					if(count($array['GetCustomReportResponse']['GetCustomReportResult']['aContractSummary']['bPaymentCalendarList']['bPaymentCalendar']) <= 24){
-				?>
-				<div id="accordion77">
-					<div class="card">
-						<div class="header">
-							<div class="pull-left">
-								<p class="name text-default">Pembayaran <?php echo date("m/Y", strtotime($array['GetCustomReportResponse']['GetCustomReportResult']['aContractSummary']['bPaymentCalendarList']['bPaymentCalendar'][23]['bDate']))." - ".date("m/Y", strtotime($array['GetCustomReportResponse']['GetCustomReportResult']['aContractSummary']['bPaymentCalendarList']['bPaymentCalendar'][12]['bDate']));?></p>
-							</div>
-							<div class="pull-right">
-								<a class="card-link2" data-toggle="collapse" href="#collapseOne4">
-									<i class="fa fa-chevron-down text-danger"></i>
-								</a>
-							</div>
-							<div style="clear:both"></div>
-						</div>
-						<div id="collapseOne4" class="collapse content" data-parent="#accordion4">
-							<div class="table-responsive">
-								<table class="table table-bordered">
-									<thead>
-										<tr>
-											<th>PERIODE</th>
-											<th>JUMLAH FASILITAS</th>
-											<th>NOMINAL TUNGGAKAN</th>
-											<th>UMUR TUNGGAKAN</th>
-											<th>KOLEKTIBILITAS</th>
-											<th>SALDO TERUTANG</th>
-										</tr>
-									</thead>
-									<tbody>
-									<?php
-										for ($x = 23; $x <= 23 && $x >= 12; $x--) {
-											$item=$array['GetCustomReportResponse']['GetCustomReportResult']['aContractSummary']['bPaymentCalendarList']['bPaymentCalendar'][$x];
-									?>
-									<tr>
-										<td align="center"><?php echo date("m/Y", strtotime($item['bDate']));?></center></td>
-										<td align="center"><?php echo $item['bContractsSubmitted'];//if($item['bContractsSubmitted'] == '0'){ echo "0";}else{echo"";}?></center></td>
-										<td align="right"><?php if($item['bPastDueDays'] == NULL){ echo "No Data";}else{echo $item['bPastDueDays'];}?></td>
-										<td align="right"><?php if($item['bPastDueAmount'] == NULL){echo"No Data";}else{echo $item['bPastDueAmount']['cCurrency']." ".number_format($item['bPastDueAmount']['cValue'],0,',','.');}?></td>
-										<td align="center"><?php echo $item['bNegativeStatusOfContract'];?></td>
-										<td align="right"><?php if($item['bOutstandingAmount'] == NULL){echo"No Data";}else{echo $item['bOutstandingAmount']['cCurrency']." ".number_format($item['bOutstandingAmount']['cValue'],0,',','.');}?></td>
-									</tr>
-									<?php
-										}
-									?>
-									</tbody>
-								</table>
-							</div>
-						</div>
-					</div>
-				</div>
-				<?php
-					}else if(count($array['GetCustomReportResponse']['GetCustomReportResult']['aContractSummary']['bPaymentCalendarList']['bPaymentCalendar']) <= 36){
-				?>
-				<div id="accordion66">
-					<div class="card">
-						<div class="header">
-							<div class="pull-left">
-								<p class="name text-default">Pembayaran <?php echo date("m/Y", strtotime($array['GetCustomReportResponse']['GetCustomReportResult']['aContractSummary']['bPaymentCalendarList']['bPaymentCalendar'][23]['bDate']))." - ".date("m/Y", strtotime($array['GetCustomReportResponse']['GetCustomReportResult']['aContractSummary']['bPaymentCalendarList']['bPaymentCalendar'][12]['bDate']));?></p>
-							</div>
-							<div class="pull-right">
-								<a class="card-link2" data-toggle="collapse" href="#collapseOne4">
-									<i class="fa fa-chevron-down text-danger"></i>
-								</a>
-							</div>
-							<div style="clear:both"></div>
-						</div>
-						<div id="collapseOne4" class="collapse content" data-parent="#accordion4">
-							<div class="table-responsive">
-								<table class="table table-bordered">
-									<thead>
-										<tr>
-											<th>PERIODE</th>
-											<th>JUMLAH FASILITAS</th>
-											<th>NOMINAL TUNGGAKAN</th>
-											<th>UMUR TUNGGAKAN</th>
-											<th>KOLEKTIBILITAS</th>
-											<th>SALDO TERUTANG</th>
-										</tr>
-									</thead>
-									<tbody>
-									<?php
-										for ($x = 23; $x <= 23 && $x >= 12; $x--) {
-											$item=$array['GetCustomReportResponse']['GetCustomReportResult']['aContractSummary']['bPaymentCalendarList']['bPaymentCalendar'][$x];
-									?>
-									<tr>
-										<td align="center"><?php echo date("m/Y", strtotime($item['bDate']));?></center></td>
-										<td align="center"><?php echo $item['bContractsSubmitted'];//if($item['bContractsSubmitted'] == '0'){ echo "0";}else{echo"";}?></center></td>
-										<td align="right"><?php if($item['bPastDueDays'] == NULL){ echo "No Data";}else{echo $item['bPastDueDays'];}?></td>
-										<td align="right"><?php if($item['bPastDueAmount'] == NULL){echo"No Data";}else{echo $item['bPastDueAmount']['cCurrency']." ".number_format($item['bPastDueAmount']['cValue'],0,',','.');}?></td>
-										<td align="center"><?php echo $item['bNegativeStatusOfContract'];?></td>
-										<td align="right"><?php if($item['bOutstandingAmount'] == NULL){echo"No Data";}else{echo $item['bOutstandingAmount']['cCurrency']." ".number_format($item['bOutstandingAmount']['cValue'],0,',','.');}?></td>
-									</tr>
-									<?php
-										}
-									?>
-									</tbody>
-								</table>
-							</div>
-						</div>
-					</div>
-				</div>
-				<div id="accordion55">
-					<div class="card">
-						<div class="header">
-							<div class="pull-left">
-								<p class="name text-default">Pembayaran <?php echo date("m/Y", strtotime($array['GetCustomReportResponse']['GetCustomReportResult']['aContractSummary']['bPaymentCalendarList']['bPaymentCalendar'][35]['bDate']))." - ".date("m/Y", strtotime($array['GetCustomReportResponse']['GetCustomReportResult']['aContractSummary']['bPaymentCalendarList']['bPaymentCalendar'][24]['bDate']));?></p>
-							</div>
-							<div class="pull-right">
-								<a class="card-link2" data-toggle="collapse" href="#collapseOne5">
-									<i class="fa fa-chevron-down text-danger"></i>
-								</a>
-							</div>
-							<div style="clear:both"></div>
-						</div>
-						<div id="collapseOne5" class="collapse content" data-parent="#accordion5">
-							<div class="table-responsive">
-								<table class="table table-bordered">
-									<thead>
-										<tr>
-											<th>PERIODE</th>
-											<th>JUMLAH FASILITAS</th>
-											<th>NOMINAL TUNGGAKAN</th>
-											<th>UMUR TUNGGAKAN</th>
-											<th>KOLEKTIBILITAS</th>
-											<th>SALDO TERUTANG</th>
-										</tr>
-									</thead>
-									<tbody>
-									<?php
-										for ($x = 35; $x <= 35 && $x >= 24; $x--) {
-											$item=$array['GetCustomReportResponse']['GetCustomReportResult']['aContractSummary']['bPaymentCalendarList']['bPaymentCalendar'][$x];
-									?>
-									<tr>
-										<td align="center"><?php echo date("m/Y", strtotime($item['bDate']));?></center></td>
-										<td align="center"><?php echo $item['bContractsSubmitted'];//if($item['bContractsSubmitted'] == '0'){ echo "0";}else{echo"";}?></center></td>
-										<td align="right"><?php if($item['bPastDueDays'] == NULL){ echo "No Data";}else{echo $item['bPastDueDays'];}?></td>
-										<td align="right"><?php if($item['bPastDueAmount'] == NULL){echo"No Data";}else{echo $item['bPastDueAmount']['cCurrency']." ".number_format($item['bPastDueAmount']['cValue'],0,',','.');}?></td>
-										<td align="center"><?php echo $item['bNegativeStatusOfContract'];?></td>
-										<td align="right"><?php if($item['bOutstandingAmount'] == NULL){echo"No Data";}else{echo $item['bOutstandingAmount']['cCurrency']." ".number_format($item['bOutstandingAmount']['cValue'],0,',','.');}?></td>
-									</tr>
-									<?php
-										}
-									?>
-									</tbody>
-								</table>
-							</div>
-						</div>
-					</div>
-				</div>
-				<?php
-					}else{
-						echo"";
-					}
-				?>						
+						</div>				
 						</div>
 					</div>
 				</div>
@@ -1627,6 +1321,116 @@
 										<?php } ?>									
 								</table>
 							</div>
+							
+							<div class="table-responsive">
+								<table class="table table-bordered">
+									<tr>
+										<td colspan="4" class="bg-td"><p class="text-default" style="font-size:14px;"><b>Pengaduan</b></p></td>
+									</tr>
+									<tr>
+										<td width="30%" class="bg-td">Jumlah Pengaduan yang telah ditutup</td>
+										<td width="20%" align="right"></td>
+										<td width="30%" class="bg-td">Jumlah Pengaduan yang tidak sah</td>
+										<td width="20%" align="right"></td>
+									</tr>									
+								</table>
+							</div>
+							<p class="name text-default">Ringkasan Kalender Pembayaran untuk Seluruh Fasilitas</p>
+							<div class="table-responsive">
+								<table class="table table-bordered">
+									<thead>
+										<tr>
+											<th width='20%'>BULAN / TAHUN</th>
+											<?php
+												$callCalList = "{call SP_GET_TAB_DASHBOARD_TBL_CONTRACT_SUMARY_PAYMENT_CALENDER_LIST(?)}";
+												$paramsCalList = array(array($id, SQLSRV_PARAM_IN));
+												$execCalList = sqlsrv_query($conn, $callCalList, $paramsCalList) or die( print_r( sqlsrv_errors(), true));
+												while($dataCalList=sqlsrv_fetch_array($execCalList)){
+													echo "<th>".$dataCalList['DATE']->format('m/Y')."</th>";
+												} 
+											?>
+										</tr>
+									</thead>
+									<tbody>
+										<tr>
+											<td><b>Status Macet</b></td>
+											<?php
+												$callCalList2 = "{call SP_GET_TAB_DASHBOARD_TBL_CONTRACT_SUMARY_PAYMENT_CALENDER_LIST(?)}";
+												$paramsCalList2 = array(array($id, SQLSRV_PARAM_IN));
+												$execCalList2 = sqlsrv_query($conn, $callCalList2, $paramsCalList2) or die( print_r( sqlsrv_errors(), true));
+												while($dataCalList2=sqlsrv_fetch_array($execCalList2)){
+													$pastDueDay2 = $dataCalList2['PAST_DUE_DAYS'];
+													if($pastDueDay2 >= 0 && $pastDueDay2 <= 30){
+														echo'<td><center><div class="circle-green"><i class="fa fa-check"></i></div></center></td>';
+													}else if($pastDueDay2 >= 31 && $pastDueDay2 <= 89){
+														echo'<td><center><div class="circle-yellow"><i class="fa fa-check"></i></div></center></td>';
+													}else if($pastDueDay2 >= 90 && $pastDueDay2 <= 100){
+														echo'<td><center><div class="circle-red"><i class="fa fa-check"></i></div></center></td>';
+													}else if($pastDueDay2 == 999){
+														echo'<td><center><div class="circle-default">N/A</div></center></td>';
+													}
+												}
+											?>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+							<div id="accordion213">
+							<div class="card">
+								<div class="header">
+									<div class="pull-left">
+										<?php
+										$callCalList3 = "{call SP_GET_TAB_DASHBOARD_TBL_CONTRACT_SUMARY_PAYMENT_CALENDER_LIST(?)}";
+										$paramsCalList3 = array(array($id, SQLSRV_PARAM_IN));
+										$execCalList3 = sqlsrv_query($conn, $callCalList3, $paramsCalList3) or die( print_r( sqlsrv_errors(), true));
+										$rowCalList = sqlsrv_fetch_array($execCalList3);
+										?>
+										<p class="name text-default">Pembayaran <?php if($rowCalList['START_DATE']<>NULL){echo $rowCalList['START_DATE']->format('m/Y');}else{echo"";}echo" - ";if($rowCalList['END_DATE']<>NULL){echo $rowCalList['END_DATE']->format('m/Y');}else{echo"";}?></p>
+									</div>
+									<div class="pull-right">
+										<a class="card-link2" data-toggle="collapse" href="#collapseOne213">
+											<i class="fa fa-chevron-down text-danger"></i>
+										</a>
+									</div>
+									<div style="clear:both"></div>
+								</div>
+								<div id="collapseOne213" class="collapse content" data-parent="#accordion213">
+									<div class="table-responsive">
+										<table class="table table-bordered">
+											<thead>
+												<tr>
+													<th>PERIODE</th>
+													<th>JUMLAH FASILITAS</th>
+													<th>NOMINAL TUNGGAKAN</th>
+													<th>UMUR TUNGGAKAN</th>
+													<th>KOLEKTIBILITAS</th>
+													<th>SALDO TERUTANG</th>
+												</tr>
+											</thead>
+											<tbody>
+											<?php
+												$callCalList4 = "{call SP_GET_TAB_DASHBOARD_TBL_CONTRACT_SUMARY_PAYMENT_CALENDER_LIST(?)}";
+												$paramsCalList4 = array(array($id, SQLSRV_PARAM_IN));
+												$execCalList4 = sqlsrv_query($conn, $callCalList4, $paramsCalList4) or die( print_r( sqlsrv_errors(), true));
+												while($dataCalList4=sqlsrv_fetch_array($execCalList4)){
+											?>
+											<tr>
+												<td align="center"><?php echo $dataCalList4['DATE']->format('m/Y');?></center></td>
+												<td align="center"><?php echo $dataCalList4['CONTRACT_SUBMITTED'];?></center></td>
+												<td align="right"><?php if($dataCalList4['PAST_DUE_DAYS'] == 999){ echo "No Data";}else{echo $dataCalList4['PAST_DUE_DAYS'];}?></td>
+												<td align="right"><?php if($dataCalList4['PAST_DUE_AMOUNT_VALUE_VALUE'] == NULL){echo"No Data";}else{echo $dataCalList4['PAST_DUE_AMOUNT_CURRENCY']." ".number_format($dataCalList4['PAST_DUE_AMOUNT_VALUE_VALUE'],0,',','.');}?></td>
+												<td align="center"><?php echo $dataCalList4['NEGATIVE_STATUS_OF_CONTRACT'];?></td>
+												<td align="right"><?php if($dataCalList4['OUT_STANDING_AMOUNT_VALUE_VALUE'] == NULL){echo"No Data";}else{echo $dataCalList4['OUT_STANDING_AMOUNT_CURRENCY']." ".number_format($dataCalList4['OUT_STANDING_AMOUNT_VALUE_VALUE'],0,',','.');}?></td>
+											</tr>
+											<?php
+												}
+											?>
+											</tbody>
+										</table>
+									</div>
+								</div>
+							</div>
+						</div>
 							
 						</div>
 					</div>
