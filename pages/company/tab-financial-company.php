@@ -30,7 +30,7 @@ $dataFICOM = sqlsrv_fetch_array($execFICOM);
 											<td align ="left" class="bg-td"><b>REPORTER</td></b>
 										</tr>
 										<tr class = "header">
-											<td align ="left" ><?php echo $dataFICOM[SUBSCRIBER];?><div class="pull-right"><i class="fa fa-caret-square-o-down"></i></div></td>
+											<td align ="left" ><?php echo $dataFICOM['SUBSCRIBER'];?><div class="pull-right"><i class="fa fa-caret-square-o-down"></i></div></td>
 										</tr>
 										<tr>
 											<td colspan="4">
