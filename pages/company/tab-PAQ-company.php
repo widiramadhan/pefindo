@@ -26,9 +26,9 @@ $dataPAQ = sqlsrv_fetch_array($execPAQ);
 									</tr>
 									<tr>
 										<td width="30%;" class="bg-td"><b>Last Fraud Registration Date</b></td>
-										<td width="20%;"><?php echo if($dataPAQ['DATE_OF_LAST_FRAUD_REGISTRATION_PRIMARY_SUBJECT']<> NULL){echo $dataPAQ['DATE_OF_LAST_FRAUD_REGISTRATION_PRIMARY_SUBJECT'];}else{echo"-";}?></td>
+										<td width="20%;"><?php echo $dataPAQ['DATE_OF_LAST_FRAUD_REGISTRATION_PRIMARY_SUBJECT'];?></td>
 										<td width="30%;" class="bg-td"><b>Last Fraud Registration Date - Third Party</b></td>
-										<td width="20%;"><?php if($dataPAQ['DATE_OF_LAST_FRAUD_REGISTRATION_THIRD_PARTY']<> NULL){echo $dataPAQ['DATE_OF_LAST_FRAUD_REGISTRATION_THIRD_PARTY'];}else{echo"-";}?></td>
+										<td width="20%;"><?php $dataPAQ['DATE_OF_LAST_FRAUD_REGISTRATION_THIRD_PARTY'];?></td>
 									</tr>
 								</tbody>
 							</table>

@@ -259,7 +259,7 @@ $data = sqlsrv_fetch_array($exec);
 						<?php require_once("pages/company/tab-skor-ps-company.php");?>
 					</div>
 					<div id="pefindo-alert-quest" class="tab-pane fade">
-						<?php require_once("pages/company/tab-PAQ-company.php");?>
+						<?php //require_once("pages/company/tab-PAQ-company.php");?>
 					</div>
 					<div id="fasilitas" class="tab-pane fade">
 						<?php require_once("pages/company/tab-fasilitas-company.php");?>
