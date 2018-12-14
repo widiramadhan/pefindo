@@ -68,107 +68,6 @@ tr.header{
 								</tr>
 							</thead>
 							<tbody>
-								<?php
-								foreach($array['GetCustomReportResponse']['GetCustomReportResult']['aSecurities']['bSecurityList'] as $item){
-										$type=$item['bSecurityType'];
-										$status=$item['bContractStatus'];
-										$issued=$item['bIssueDate'];
-										if($item ['bRealEndDate']<>NULL){
-											$real=$item['bRealEndDate'];
-											}else{
-												$real="-";
-											}
-										if($item ['bMarketValue']<>NULL){
-												$market=$item ['bMarketValue']['cCurrency']." ".number_format($item['bMarketValue']['cValue'],0,',','.');
-											}else{
-												$market="-";
-											}
-										$contract=$item['bContractCode'];
-										if($item ['bBranch']<>NULL){
-											$Branch=$item['bBranch'];
-											}else{
-												$Branch="-";
-											}
-										if($item ['bInitialTotalAmount']<>NULL){
-											$InitialTotalAmount=$item['bInitialTotalAmount']['cCurrency']." ".number_format($item['bInitialTotalAmount']['cValue'],0,',','.');
-											}else{
-												$InitialTotalAmount="-";
-											}
-										$Purpose=$item['bPurposeOfOwnership'];
-										if($item ['bAcquisitionAmount']<>NULL){
-											$AcquisitionAmount=$item['bAcquisitionAmount'];
-											}else{
-												$AcquisitionAmount="-";
-											}
-										if($item ['bAcquisitionDate']<>NULL){
-											$AcquisitionDate=$item['bAcquisitionDate'];
-											}else{
-												$AcquisitionDate="-";
-											}
-										if($item ['bOutstandingAmount']<>NULL){
-											$OutstandingAmount=$item['bOutstandingAmount']['cCurrency']." ".number_format($item['bOutstandingAmount']['cValue'],0,',','.');
-											}else{
-												$OutstandingAmount="-";
-											}
-										if($item ['bPrincipalArrears']<>NULL){
-											$PrincipalArrears=$item['bPrincipalArrears']['cCurrency']." ".number_format($item['bPrincipalArrears']['cValue'],0,',','.');
-											}else{
-												$PrincipalArrears="-";
-											}
-										$CurrencyOfContract=$item['bCurrencyOfContract'];
-										if($item ['bPastDueDays']<>NULL){
-											$PastDueDays=$item['bPastDueDays'];
-											}else{
-												$PastDueDays="-";
-											}
-										$IssuerName=$item['bIssuerName'];
-										$NegativeStatus=$item['bNegativeStatus'];
-										$InterestRate=round((float)$item['bInterestRate']).'%';
-										if($item ['bDelinquencyDate']<>NULL){
-											$DelinquencyDate=$item['bDelinquencyDate'];
-											}else{
-												$DelinquencyDate="-";
-											}
-										$TypeofInterestRate=$item['bTypeofInterestRate'];
-										if($item ['bDefaultDate']<>NULL){
-											$DefaultDate=$item['bDefaultDate'];
-											}else{
-												$DefaultDate="-";
-											}
-										$MarketListed=$item['bMarketListed'];
-										$DefaultReason=$item['bDefaultReason'];
-										$Rating=$item['bRating'];
-										if($item ['bDefaultReasonDescription']<>NULL){
-											$DefaultDescription=$item['bDefaultReasonDescription'];
-											}else{
-												$DefaultDescription="-";
-											}
-										if($item ['bSovereignRate']<>NULL){	
-											$SovereignRate=$item['bSovereignRate'];
-											}else{
-												$SovereignRate="-";
-											}
-										if($item ['bConditionDate']<>NULL){	
-											$ConditionDate=$item['bConditionDate'];
-											}else{
-												$ConditionDate="-";
-											}
-										$MaturityDate=$item['bMaturityDate'];
-										$DefaultReason=$item['bDefaultReason'];
-										$Rating=$item['bRating'];
-										if($item ['bDefaultReasonDescription']<>NULL){	
-											$DefaultDescription=$item['bDefaultReasonDescription'];
-											}else{
-												$DefaultDescription="-";
-											}
-										$Creditor=$item['bCreditor'];
-										$LastUpdate=$item['bLastUpdate'];
-										if($item ['bDescription']<>NULL){	
-											$Description=$item['bDescription'];
-											}else{
-												$Description="-";
-											}
-								?>
 								<tr class="header expand">
 									<td align="center"><?php echo $dataSRTCOMLIST['SECURITY_TYPE'];?></td>
 									<td align="center"><?php echo $dataSRTCOMLIST['CONTRACT_STATUS'];?></td>
@@ -262,9 +161,6 @@ tr.header{
 										</table>
 									</td>
 								</tr>
-							<?php
-								}
-							?>
 							</tbody>
 						</table>
 					</div>	

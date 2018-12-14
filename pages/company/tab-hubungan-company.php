@@ -71,7 +71,7 @@ $dataCONRELLIST = sqlsrv_fetch_array($execCONRELLIST);
 										</tr>	
 										<tr>
 											<td rowspan="2" style="vertical-align:top;"><b>Alamat</td></b>
-											<td rowspan="2" style="vertical-align:top;"><?php echo $dataREPARLIST['MAIN_ADDRESS_STREET'];?></td>
+											<td rowspan="2" style="vertical-align:top;"><?php echo $dataREPARLIST['MAIN_ADDRESS_STREET'].",".$dataREPARLIST['MAIN_ADDRESS_CITY'].",".$dataREPARLIST['MAIN_ADDRESS_DISTRICT'].",".$dataREPARLIST['MAIN_ADDRESS_PARISH'];?></td>
 										</tr>
 									</table>
 								</td>
@@ -83,7 +83,7 @@ $dataCONRELLIST = sqlsrv_fetch_array($execCONRELLIST);
 					<div class="table-responsive">
 						<table class="table table-bordered" style="width:100%;">
 							<tr>
-								<td><?php echo $dataINVOLLIST['INVOLMENT_LIST'];?></td>
+								<td><?php if($dataINVOLLIST['INVOLMENT_LIST']<>NULL){echo $dataINVOLLIST['INVOLMENT_LIST'];}else {echo "Data Tidak Ada";}?></td>
 							</tr>
 						</table>
 					</div>
@@ -109,7 +109,7 @@ $dataCONRELLIST = sqlsrv_fetch_array($execCONRELLIST);
 										<table class="table table-borderless">
 											<tr>
 												<td><b>Berlaku Sejak</td></b>
-												<td><?php if($dataCONRELLIST['VALID_FORM']<>NULL){echo $dataCONRELLIST['VALID_FORM']->format('Y-m-d');}else{echo"";}?></td>
+												<td><?php if($dataCONRELLIST['VALID_FORM']<>NULL){echo $dataCONRELLIST['VALID_FORM']->format('Y-m-d');}else{echo"-";}?></td>
 											</tr>
 											<tr>
 												<td rowspan="2" style="vertical-align:top;"><b>Alamat</td></b>

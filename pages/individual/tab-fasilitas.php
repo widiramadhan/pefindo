@@ -1132,7 +1132,7 @@
 										<td class="bg-td"><b>Baki Debet</b></td>
 										<td align="right"><?php if($dataCONSUSECX['TOTAL_TAKEN_AMOUNT_CURRENCY']<>NULL){echo $dataCONSUSECX['TOTAL_TAKEN_AMOUNT_CURRENCY']." ".number_format($dataCONSUSECX['TOTAL_TAKEN_AMOUNT_VALUE'],0,',','.');}else{echo"-";}?></td>
 										<td class="bg-td"><b>Tanggal Akad Awal</b></td>
-										<td align="right"><?php if($dataCONSUSECX['INITIAL_AGREEMENT_DATE']->format('Y-m-d')<>NULL){echo $dataCONSUSECX['INITIAL_AGREEMENT_DATE']->format('Y-m-d');}else{echo"-";}?></td>
+										<td align="right"><?php $dataCONSUSECX['INITIAL_AGREEMENT_DATE'];?></td>
 									</tr>
 								</table>
 							</div>

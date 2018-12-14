@@ -34,7 +34,7 @@ $dataOTLISUMLIST = sqlsrv_fetch_array($execOTLISUMLIST);
 								<td class="bg-td" style="width:20%;"><b>Jumlah Tagihan yang Sudah Ditutup</td></b>
 								<td colspan="2"><?php echo $dataOTLISUM['NUMBER_OF_CLOSED_AGREEMENTS'];?></td>
 								<td class="bg-td" style="width:20%;"><b>Total Tunggakan Pokok</td></b>
-								<td colspan="2" style="width:20%;"><?php echo ($dataOTLISUM['TOTAL_PRINCIPAL_ARREARS_CURRENCY']." ".number_format($dataOTLISUM['TOTAL_PRINCIPAL_ARREARS_VALUE'],0,",","."));?></td>
+								<td colspan="2" style="width:20%;"><?php echo number_format($dataOTLISUM['TOTAL_PRINCIPAL_ARREARS_VALUE'],0,",",".");?></td>
 							</tr>
 						</thead>	
 					</table>
@@ -58,7 +58,7 @@ $dataOTLISUMLIST = sqlsrv_fetch_array($execOTLISUMLIST);
 							<tr class="header expand">
 								<td align="center"><?php echo $dataOTLISUMLIST['CONTRACT_TYPE'];?></td>
 								<td align="center"><?php echo $dataOTLISUMLIST['CONTRACT_STATUS'];?></td>
-								<td align="center"><?php if($dataOTLISUMLIST['ISSUE_DATE']<>NULL){echo $dataOTLISUMLIST['ISSUE_DATE']->format('T-m-d');}else{echo"";}?></td>
+								<td align="center"><?php if($dataOTLISUMLIST['ISSUE_DATE']<>NULL){echo $dataOTLISUMLIST['ISSUE_DATE']->format('Y-m-d');}else{echo"";}?></td>
 								<td align="center"><?php echo $dataOTLISUMLIST['REAL_DATE'];?></td>
 								<td align="center"><?php echo $dataOTLISUMLIST['MARKET_VALUE_CURRENCY']." ".number_format($dataOTLISUMLIST['MARKET_VALUE_VALUE'],0,',','.');?><i class="fa fa-caret-square-o-down"></i></td>
 							</tr>
