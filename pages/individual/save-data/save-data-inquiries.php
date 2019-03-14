@@ -19,24 +19,26 @@ if(isset($array['GetCustomReportResponse']['GetCustomReportResult']['aInquiries'
 						);
 	$execInquiriesList = sqlsrv_query($conn, $callInquiriesList, $paramsInquiriesList) or die ( print_r( sqlsrv_errors(),true));
 }else{
-	foreach($array['GetCustomReportResponse']['GetCustomReportResult']['aInquiries']['bInquiryList']['bInquiry'] as $itemInquiryList){
-		if($itemInquiryList['bDateOfInquiry']<>NULL){$InquirsListDateInquiry = $itemInquiryList['bDateOfInquiry'];}else{$InquirsListDateInquiry=NULL;}			
-		if($itemInquiryList['bProduct']<>NULL){$InquirsListProduct = $itemInquiryList['bProduct'];}else{$InquirsListProduct=NULL;}			
-		if($itemInquiryList['bReason']<>NULL){$InquirsListReason = $itemInquiryList['bReason'];}else{$InquirsListReason=NULL;}			
-		if($itemInquiryList['bSector']<>NULL){$InquirsListSector = $itemInquiryList['bSector'];}else{$InquirsListSector=NULL;}		
-		if($itemInquiryList['bSubscriberInfo']<>NULL){$InquirsListSubcInfo = $itemInquiryList['bSubscriberInfo'];}else{$InquirsListSubcInfo=NULL;}			
-	
-		$callInquiriesList = "{call SP_INSERT_INQUIRIES_LIST(?,?,?,?,?,?,?)}";
-		$paramsInquiriesList = array(
-							array($mappingId, SQLSRV_PARAM_IN),
-							array($pefindoId,SQLSRV_PARAM_IN),
-							array($InquirsListDateInquiry,SQLSRV_PARAM_IN),							
-							array($InquirsListProduct,SQLSRV_PARAM_IN),
-							array($InquirsListReason,SQLSRV_PARAM_IN),
-							array($InquirsListSector,SQLSRV_PARAM_IN),							
-							array($InquirsListSubcInfo,SQLSRV_PARAM_IN)
-							);
-		$execInquiriesList = sqlsrv_query($conn, $callInquiriesList, $paramsInquiriesList) or die ( print_r( sqlsrv_errors(),true));
+	if(isset($array['GetCustomReportResponse']['GetCustomReportResult']['aInquiries']['bInquiryList']['bInquiry'])){
+		foreach($array['GetCustomReportResponse']['GetCustomReportResult']['aInquiries']['bInquiryList']['bInquiry'] as $itemInquiryList){
+			if($itemInquiryList['bDateOfInquiry']<>NULL){$InquirsListDateInquiry = $itemInquiryList['bDateOfInquiry'];}else{$InquirsListDateInquiry=NULL;}			
+			if($itemInquiryList['bProduct']<>NULL){$InquirsListProduct = $itemInquiryList['bProduct'];}else{$InquirsListProduct=NULL;}			
+			if($itemInquiryList['bReason']<>NULL){$InquirsListReason = $itemInquiryList['bReason'];}else{$InquirsListReason=NULL;}			
+			if($itemInquiryList['bSector']<>NULL){$InquirsListSector = $itemInquiryList['bSector'];}else{$InquirsListSector=NULL;}		
+			if($itemInquiryList['bSubscriberInfo']<>NULL){$InquirsListSubcInfo = $itemInquiryList['bSubscriberInfo'];}else{$InquirsListSubcInfo=NULL;}			
+		
+			$callInquiriesList = "{call SP_INSERT_INQUIRIES_LIST(?,?,?,?,?,?,?)}";
+			$paramsInquiriesList = array(
+								array($mappingId, SQLSRV_PARAM_IN),
+								array($pefindoId,SQLSRV_PARAM_IN),
+								array($InquirsListDateInquiry,SQLSRV_PARAM_IN),							
+								array($InquirsListProduct,SQLSRV_PARAM_IN),
+								array($InquirsListReason,SQLSRV_PARAM_IN),
+								array($InquirsListSector,SQLSRV_PARAM_IN),							
+								array($InquirsListSubcInfo,SQLSRV_PARAM_IN)
+								);
+			$execInquiriesList = sqlsrv_query($conn, $callInquiriesList, $paramsInquiriesList) or die ( print_r( sqlsrv_errors(),true));
+		}
 	}
 }
 

@@ -14,56 +14,77 @@
     <link href="assets/css/animate.min.css" rel="stylesheet"/>
     <link href="assets/css/light-bootstrap-dashboard.css?v=1.4.0" rel="stylesheet"/>
     <link href="assets/css/demo.css" rel="stylesheet" />
-    <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
-    <link href='http://fonts.googleapis.com/css?family=Roboto:400,700,300' rel='stylesheet' type='text/css'>
+    <!--<link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+	<!--<link rel="stylesheet" href="a/font-awesome/css/font-awesome.min.css">
+    <link href='http://fonts.googleapis.com/css?family=Roboto:400,700,300' rel='stylesheet' type='text/css'>-->
+	<link href="assets/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+	<link href='assets/css/fonts.css' rel='stylesheet' type='text/css'>
     <link href="assets/css/pe-icon-7-stroke.css" rel="stylesheet" />
-	<link rel="stylesheet" href="https://cdn.datatables.net/1.10.19/css/dataTables.bootstrap4.min.css" type="text/css">
+	<link rel="stylesheet" href="assets/css/dataTables.bootstrap4.min.css" type="text/css">
 	<!--<link href="assets/plugins/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css" rel="stylesheet" type='text/css'>-->
-	<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+	<link rel="stylesheet" href="assets/css/jquery-ui.css">
 </head>
 <?php
-require_once("config/configuration.php");
-require_once("config/connection.php");
-if(isset($_GET['username'])){
-	$user=$_GET['username'];
-}else{
-	echo"<script>window.location='access-denied.php'</script>";
-}
+	//require_once("config/configuration.php");
+	require_once("config/connection.php");
+	if(isset($_GET['USERNAME'])){
+		$user=$_GET['USERNAME'];
+	}else{
+		echo"<script>window.location='access-denied.php'</script>";
+	}
+
+	if(isset($_POST['no_ktp'])){
+		$no_ktp_dkcupil=$_POST['no_ktp'];
+	}else{
+		$no_ktp_dkcupil="";
+	}
+
+	if(isset($_POST['prospect_no'])){
+		$prospect_dkcupil=$_POST['prospect_no'];
+	}else{
+		$prospect_dkcupil="";
+	}
 ?>
 <body>
 
 <div class="wrapper">
-    <div class="sidebar" data-color="red" data-image="assets/img/sidebar-5.jpg">
-    	<div class="sidebar-wrapper">
+    <div class="sidebar" data-image="assets/img/sidebar-5.jpg">
+    	<div class="sidebar-wrapper" style="background-color: #035c7a">
             <div class="logo">
-                <a href="http://www.creative-tim.com" class="simple-text">
+                <a href="index.php" class="simple-text">
                     H2H PEFINDO - SFI
                 </a>
             </div>
 
             <ul class="nav">
                 <li>
-                    <a href="index.php?username=<?php echo $user;?>">
+                    <a href="index.php?USERNAME=<?php echo $user;?>">
                         <i class="pe-7s-home"></i>
                         <p>Dashboard</p>
                     </a>
                 </li>
                 <li>
-                    <a href="index.php?username=<?php echo $user;?>&page=individual">
+                    <a href="index.php?USERNAME=<?php echo $user;?>&page=individual">
                         <i class="pe-7s-user"></i>
                         <p>Individual</p>
                     </a>
                 </li>
                 <li>
-                    <a href="index.php?username=<?php echo $user;?>&page=company">
+                    <a href="index.php?USERNAME=<?php echo $user;?>&page=company">
                         <i class="pe-7s-id"></i>
                         <p>Company</p>
                     </a>
                 </li>
 				<li>
-                    <a href="index.php?username=<?php echo $user;?>&page=history">
+                    <a href="index.php?USERNAME=<?php echo $user;?>&page=history">
                         <i class="pe-7s-note"></i>
                         <p>History</p>
+                    </a>
+                </li>
+                <li>
+                    <a href="index.php?USERNAME=<?php echo $user;?>&page=pefindonodata">
+                        <i class="pe-7s-note"></i>
+                        <p>Pefindo No Data</p>
                     </a>
                 </li>
             </ul>
@@ -228,22 +249,77 @@ if(isset($_GET['username'])){
 	</div>
 </div>
 
+<!-- MODAL DUKCAPIL -->
+<div id="dataDukcapil" class="modal fade" role="dialog">
+	<div class="modal-dialog modal-lg" style="width: 90%">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">&times;</button>
+				<h4 class="modal-title">Data Dukcapil</h4>
+			</div>
+			<div class="modal-body">
+				<div class="row">
+					<div class="col-md-12">
+						<div class="table-responsive">
+							<table id="exampleCompany" class="table table-bordered" style="width:100%">
+								<thead>
+									<tr>
+										<th>No</th>
+										<th>NIK</th>
+										<th>Nama</th>
+										<th>Tanggal_Lahir</th>
+										<th>Tempat_Lahir</th>
+										<th>Jenis_Kelamin</th>
+										<th>Nama_Ibu_Kandung</th>
+										<th>ALAMAT</th>
+									</tr>
+								</thead>
+								<tbody>
+									<?php
+										$callGetDukcapil = "{call SP_DUKCAPIL_GETDATA_RESULT (?,?)}";
+										$paramsDukcapil = array(array($prospect_dkcupil, SQLSRV_PARAM_IN),array($no_ktp_dkcupil, SQLSRV_PARAM_IN));
+										$execGetDukcapil = sqlsrv_query($conn, $callGetDukcapil, $paramsDukcapil) or die( print_r( sqlsrv_errors(), true));
+										$no=0;
+										while($rowGetDukcapil = sqlsrv_fetch_array($execGetDukcapil)){
+											$no++;
+									?>
+									<tr>
+										<td><?php echo $no;?></td>
+										<td><?php echo $rowGetDukcapil['NIK'];?></td>
+										<td><?php echo $rowGetDukcapil['NAMA'];?></td>
+										<td><?php echo $rowGetDukcapil['BIRTH_DT']->format('Y-m-d');?></td>
+										<td><?php echo $rowGetDukcapil['TEMPAT_LAHIR'];?></td>
+										<td><?php echo $rowGetDukcapil['JENIS_KELAMIN'];?></td>
+										<td><?php echo $rowGetDukcapil['MOTHER_MAIDEN_NAME'];?></td>
+										<td><?php echo $rowGetDukcapil['ALAMAT'];?></td>
+									</tr>
+									<?php } ?>
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
     <script src="assets/js/jquery.3.2.1.min.js" type="text/javascript"></script>
 	<!--<script src="https://code.jquery.com/jquery-1.12.4.js"></script>-->
-	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+	<script src="assets/js/jquery-ui.js"></script>
 	<script src="assets/js/bootstrap.min.js" type="text/javascript"></script>
 	<script src="assets/js/chartist.min.js"></script>
     <script src="assets/js/bootstrap-notify.js"></script>
 	<script src="assets/js/light-bootstrap-dashboard.js?v=1.4.0"></script>
 	<script src="assets/js/demo.js"></script>
 	<script src="assets/js/jquery.maskedinput.js"></script>
-	<script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
-	<script src="https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap4.min.js"></script>
-	<!--<script src="assets/plugins/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>-->
+	<script src="assets/js/jquery.dataTables.min.js"></script>
+	<script src="assets/js/dataTables.bootstrap4.min.js"></script>
+	<!--<script src="assets/plugins/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
 	<script src="https://code.highcharts.com/highcharts.js"></script>
 	<script src="https://code.highcharts.com/modules/series-label.js"></script>
 	<script src="https://code.highcharts.com/modules/exporting.js"></script>
-	<script src="https://code.highcharts.com/modules/export-data.js"></script>
+	<script src="https://code.highcharts.com/modules/export-data.js"></script>-->
 </html>
 <script>
 $(document).ready(function() {

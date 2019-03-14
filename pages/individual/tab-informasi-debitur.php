@@ -23,14 +23,12 @@ $dataDisputesSum = sqlsrv_fetch_array($execDisputesSum);
 								<td colspan="8" class="bg-td"><p class="name text-default">NAMA</p></td>
 							</tr>
 							<tr>
-								<td class="bg-td"><b>Nama Sesuai Identitas</b></td>
-								<td colspan="3"><?php echo $dataIndividual['FULL_NAME_LOCAL'];?></td>
 								<td class="bg-td"><b>Nama Lengkap</b></td>
 								<td colspan="3"><?php echo $dataIndividual['FULL_NAME'];?></td>
-							</tr>
-							<tr>
 								<td class="bg-td"><b>Nama Gadis Ibu Kandung</b></td>.
 								<td colspan="3"><?php echo $dataIndividual['MOTHER_MAIDEN_NAME'];?></td>
+							</tr>
+							<tr>
 								<td class="bg-td"><b>Alias</b></td>
 								<td colspan="3"><?php echo $dataIndividual['ALIAS'];?></td>
 							</tr>
@@ -80,12 +78,6 @@ $dataDisputesSum = sqlsrv_fetch_array($execDisputesSum);
 								<td colspan="3"><?php echo $dataIndividual['GENDER'];?></td>
 								<td class="bg-td"><b>Kewarganegaraan</b></td>
 								<td colspan="3"><?php echo $dataIndividual['CITIZENSHIP'];?></td>														
-							</tr>
-							<tr>
-								<td class="bg-td"><b>Status Pernikahan</b></td>
-								<td colspan="3"><?php echo $dataIndividual['MARITAL_STATUS'];?></td>
-								<td class="bg-td"><b>Golongan Debitur</b></td>
-								<td colspan="3"><?php echo $dataIndividual['RESIDENCY'];?></td>
 							</tr>
 							<tr>
 								<td class="bg-td"><b>Status pekerjaan</b></td>

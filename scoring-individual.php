@@ -2,6 +2,7 @@
 require_once("config/configuration.php");
 require_once("config/connection.php");
 $id=$_GET['id'];
+$user=$_GET['USERNAME'];
 $date=date("Y-m-d");
 
 $callSP = "{call SP_GET_MASTER_INDIVIDUAL(?)}";
@@ -9,6 +10,10 @@ $params = array(array($id, SQLSRV_PARAM_IN));
 $exec = sqlsrv_query( $conn, $callSP, $params) or die( print_r( sqlsrv_errors(), true));
 $data = sqlsrv_fetch_array($exec);
 
+$callJOB = "{call SP_GET_JOB_TITLE(?)}";
+$paramsJOB = array(array($user, SQLSRV_PARAM_IN));
+$execJOB = sqlsrv_query( $conn, $callJOB, $paramsJOB) or die( print_r( sqlsrv_errors(), true));
+$dataJOB = sqlsrv_fetch_array($execJOB);
 ?>
 <style>
 a{
@@ -156,10 +161,10 @@ tr.child {
 }
 </style>
 <script src="assets/js/jquery.3.2.1.min.js" type="text/javascript"></script>
-<script src="https://code.highcharts.com/highcharts.js"></script>
+<!--<script src="https://code.highcharts.com/highcharts.js"></script>
 <script src="https://code.highcharts.com/modules/series-label.js"></script>
 <script src="https://code.highcharts.com/modules/exporting.js"></script>
-<script src="https://code.highcharts.com/modules/export-data.js"></script>
+<script src="https://code.highcharts.com/modules/export-data.js"></script>-->
 <script>
 $(document).ready(function(){
   $("#collapseOne").on("hide.bs.collapse", function(){
@@ -185,10 +190,10 @@ $(document).ready(function(){
 					<h4 class="title">Scoring Report</h4>
 					<p class="category">Sistem Informasi Debitur</p>
 				</div>
-				<div class="pull-right">
-					<a href="pages/getPDF.php?username=<?php echo $user;?>&id=<?php echo $id;?>&type=<?php echo $data['CUST_TYPE'];?>" target="_blank" class="btn btn-danger"><i class="fa fa-file-pdf-o"></i> Export Report to PDF</a>&nbsp;
-					<a href="pages/getExcel.php?username=<?php echo $user;?>&id=<?php echo $id;?>" target="_blank" class="btn btn-success"><i class="fa fa-file-excel-o"></i> Export Summary to Excel</a>
-				</div>
+				<!--<div class="pull-right">
+					<a href="pages/getPDF.php?USERNAME=<?php echo $user;?>&id=<?php echo $id;?>&type=<?php echo $data['CUST_TYPE'];?>" target="_blank" class="btn btn-danger"><i class="fa fa-file-pdf-o"></i> Export Report to PDF</a>&nbsp;
+					<a href="pages/getExcel.php?USERNAME=<?php echo $user;?>&id=<?php echo $id;?>" target="_blank" class="btn btn-success"><i class="fa fa-file-excel-o"></i> Export Summary to Excel</a>
+				</div>-->
 				<div style="clear:both;"></div>
 			</div>
 			<div class="content">
@@ -233,7 +238,9 @@ $(document).ready(function(){
 				</div>
 				
 				<ul class="nav nav-tabs">
-					<li class="active"><a data-toggle="tab" href="#dashboard">Dashboard</a></li>
+					<?php //if($dataJOB['JOB_TITLE_CODE'] <> "SFICA" || $dataJOB['JOB_TITLE_CODE'] <> "SFICA"?>
+					<li class="active"><a data-toggle="tab" href="#summary">Summary</a></li>
+					<li><a data-toggle="tab" href="#dashboard">Dashboard</a></li>
 					<li><a data-toggle="tab" href="#informasi-debitur">Informasi Debitur</a></li>
 					<li><a data-toggle="tab" href="#skorPS">Skor PS</a></li>
 					<li><a data-toggle="tab" href="#pefindo-alert-quest">PEFINDO Alert Quest</a></li>
@@ -245,11 +252,10 @@ $(document).ready(function(){
 					<li><a data-toggle="tab" href="#hubungan">Hubungan</a></li>
 					<li><a data-toggle="tab" href="#permintaan-informasi">Permintaan Informasi</a></li>
 					<li><a data-toggle="tab" href="#pengaduan">Pengaduan</a></li>
-					<!--<li><a data-toggle="tab" href="#all">Semua</a></li>-->
 				</ul>
 				<br>
 				<div class="tab-content">
-					<div id="dashboard" class="tab-pane fade in active">
+					<div id="dashboard" class="tab-pane fade in">
 						<?php require_once("pages/individual/tab-dashboard.php");?>
 					</div>
 					<div id="informasi-debitur" class="tab-pane fade in">
@@ -285,6 +291,9 @@ $(document).ready(function(){
 					<div id="pengaduan" class="tab-pane fade">
 						<?php require_once("pages/individual/tab-pengaduan.php");?>
 					</div>
+					<div id="summary" class="tab-pane fade in active">
+						<?php require_once("pages/individual/tab-summary.php");?>
+					</div>
 					<div class="disclaimer">
 						<b>Disclaimer PBK</b><br>
 						Informasi Perkreditan ini didasarkan pada data yang dihimpun dari Sistem Informasi Debitur Bank Indonesia / Sistem Layanan Informasi Keuangan (SLIK) Otoritas Jasa Keuangan (OJK), Lembaga Keuangan yang menjadi Anggota atau Mitra PEFINDO Biro Kredit (PBK), serta instansi pemerintah maupun pihak swasta yang menjadi sumber data PBK.<br>
@@ -309,7 +318,7 @@ $paramsCIP3 = array(array($id, SQLSRV_PARAM_IN),array($dataCIP['M_CIP_ID'], SQLS
 	});
 </script>
 <script>
-	Highcharts.chart('container', {
+	/*Highcharts.chart('container', {
 		credits: {
 			 enabled: false
 		},
@@ -355,7 +364,7 @@ $paramsCIP3 = array(array($id, SQLSRV_PARAM_IN),array($dataCIP['M_CIP_ID'], SQLS
 			}]
 		}
 
-	});
+	});*/
 </script>
 
 <script>

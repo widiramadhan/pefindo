@@ -65,7 +65,7 @@ if(isset($array['GetCustomReportResponse']['GetCustomReportResult']['aCIP']['bRe
 		if($item['bProbabilityOfDefault']<>NULL){$probabilityCIP=$item['bProbabilityOfDefault'];}else{$probabilityCIP=NULL;}
 		if($item['bScore']<>NULL){$scoreCIP=$item['bScore'];}else{$scoreCIP=NULL;}
 		if($item['bTrend']<>NULL){$trendCIP=$item['bTrend'];}else{$trendCIP=NULL;}
-		
+		//echo $mappingId.", ".$pefindoId.", ".$dateCIP.", ".$gradeCIP.", ".$probabilityCIP.", ".$scoreCIP.", ".$trendCIP;
 		$callCIP = "{call SP_INSERT_CIP(?,?,?,?,?,?,?)}";
 		$paramsCIP = array(
 						array($mappingId, SQLSRV_PARAM_IN),

@@ -70,6 +70,28 @@ tr.child {
 				<p class="name">Daftar Garansi atau Penjaminan yang Diberikan</p>
 				<div class="table-responsive">
 					<table class="table table-bordered" style="width:100%;">
+						<?php
+							$totalPlafond = 0;
+							$totalBakiDebet = 0;
+							$totalJatuhTempo = 0;
+							$totalUsiaTunggakan = 0;
+							
+							$callCONT = "{call SP_GET_TAB_CONTRACT_GUARANTOR_COMPANY(?)}";
+							$optionsCONT =  array( "Scrollable" => "buffered" );
+							$paramsCONT = array(array($id, SQLSRV_PARAM_IN));
+							$execCONT = sqlsrv_query( $conn, $callCONT, $paramsCONT,$optionsCONT) or die( print_r( sqlsrv_errors(), true));
+							$numRowsCONT = sqlsrv_num_rows($execCONT);
+							$checkCONT=sqlsrv_num_rows($execCONT);
+							$numsCONT = sqlsrv_num_rows($execCONT);
+							if($numsCONT == 0 ){
+								echo"<div style='border:1px solid #EEE;padding:5px;'> Tidak ada data</div>";
+							}else{
+							while($dataCONT = sqlsrv_fetch_array($execCONT)){
+									$totalPlafond =+ $totalPlafond + $dataCONT['TOTAL_AMOUNT_VALUE'];
+									$totalBakiDebet =+ $totalBakiDebet + $dataCONT['OUTSTANDING_AMOUNT_VALUE'];
+									$totalJatuhTempo =+ $totalJatuhTempo + $dataCONT['PASTDUE_AMOUNT_VALUE'];
+									$totalUsiaTunggakan =+ $totalUsiaTunggakan + $dataCONT['PASTDUE_DAYS'];
+						?>
 						<thead>
 							<tr>
 								<th class="bg-td">JENIS LEMBAGA</th>
@@ -83,24 +105,6 @@ tr.child {
 							</tr>
 						</thead>						
 						<tbody>
-						<?php
-							$totalPlafond = 0;
-							$totalBakiDebet = 0;
-							$totalJatuhTempo = 0;
-							$totalUsiaTunggakan = 0;
-							
-							$callCONT = "{call SP_GET_TAB_CONTRACT_GUARANTOR_COMPANY(?)}";
-							$optionsCONT =  array( "Scrollable" => "buffered" );
-							$paramsCONT = array(array($id, SQLSRV_PARAM_IN));
-							$execCONT = sqlsrv_query( $conn, $callCONT, $paramsCONT,$optionsCONT) or die( print_r( sqlsrv_errors(), true));
-							$numRowsCONT = sqlsrv_num_rows($execCONT);
-							$checkCONT=sqlsrv_num_rows($execCONT);
-							while($dataCONT = sqlsrv_fetch_array($execCONT)){
-									$totalPlafond =+ $totalPlafond + $dataCONT['TOTAL_AMOUNT_VALUE'];
-									$totalBakiDebet =+ $totalBakiDebet + $dataCONT['OUTSTANDING_AMOUNT_VALUE'];
-									$totalJatuhTempo =+ $totalJatuhTempo + $dataCONT['PASTDUE_AMOUNT_VALUE'];
-									$totalUsiaTunggakan =+ $totalUsiaTunggakan + $dataCONT['PASTDUE_DAYS'];
-						?>
 							<tr>
 								<td align="left"><?php echo $dataCONT['CREDITOR_TYPE'];?></td>
 								<td align="left"><a href="#"><?php echo $dataCONT['CONTRACT_TYPE'];?></a></td>
@@ -111,9 +115,7 @@ tr.child {
 								<td align="right"><?php echo $dataCONT['PASTDUE_AMOUNT_CURRENCY']." ".number_format($dataCONT['PASTDUE_AMOUNT_VALUE'],0,',','.');?></td>
 								<td align="right"><?php echo $dataCONT['PASTDUE_DAYS'];?> Days</td>
 							</tr>
-							<?php
-								}
-							?>
+							
 							<tr>
 								<td align="left" colspan="4"><b>Jumlah</b></td>
 								<td align="right"><b>IDR <?php echo number_format($totalPlafond,0,',','.');?></b></td>
@@ -123,6 +125,10 @@ tr.child {
 							</tr>
 						</tbody>
 					</table>
+					<?php
+						}
+					}
+					?>
 				</div>
 				<br>
 				<?php
@@ -554,25 +560,19 @@ tr.child {
 										<td><?php echo $dataCONSUSECX['CONTRACT_STATUS'];?></td>
 									</tr>
 									<tr>
-										<td class="bg-td"><b>Sifat Kredit</b></td>
-										<td><?php echo $dataCONSUSECX['CREDIT_CHARACTERISTIC'];?></td>
+										<td class="bg-td"><b>Tujuan Pendanaan</b></td>
+										<td><?php echo $dataCONSUSECX['PURPOSE_OF_FINANCING'];?></td>
 										<td class="bg-td"><b>Kolektibilitas</b></td>
 										<td><?php echo $dataCONSUSECX['NEGATIVE_STATUS_OF_CONTRACT'];?></td>
 									</tr>
 									<tr>
-										<td class="bg-td"><b>Tujuan Pendanaan</b></td>
-										<td><?php echo $dataCONSUSECX['PURPOSE_OF_FINANCING'];?></td>
-										<td class="bg-td"><b>Orientasi Penggunaan</b></td>
-										<td><?php echo $dataCONSUSECX['ORIENTATION_OF_USE'];?></td>
-									</tr>
-									<tr>
 										<td class="bg-td"><b>Sektor Ekonomi</b></td>
-										<td><?php echo $dataCONSUSECX['ECONOMIC_SECTOR'];?></td>
+										<td><?php echo $dataCONSUSECX['SLIK_VALUE'];?></td>
 										<td class="bg-td"><b>Pinjaman sindikasi</b></td>
 										<td><?php echo $dataCONSUSECX['SYNDICATED_LOAN'];?></td>
 									</tr>
 									<tr>
-										<td class="bg-td"><b>Kode Kategori Debitur</b></td>
+										<td class="bg-td"><b>Klasifikasi Kredit</b></td>
 										<td><?php echo $dataCONSUSECX['CREDIT_CLASIFICATION'];?></td>
 										<td class="bg-td"><b>Nama Tertanggung</b></td>
 										<td><?php if($dataCONSUSECX['NAME_OF_INSURED']<>NULL){echo $dataCONSUSECX['NAME_OF_INSURED'];}else{echo"-";}?></td>
@@ -580,35 +580,14 @@ tr.child {
 									<tr>
 										<td class="bg-td"><b>Mata Uang Fasilitas</b></td>
 										<td><?php echo $dataCONSUSECX['CONTRACT_CURRENCY'];?></td>
-										<td class="bg-td"><b>Lokasi Proyek</b></td>
-										<td><?php if($dataCONSUSECX['PROJECT_LOCATION']<>NULL){echo $dataCONSUSECX['PROJECT_LOCATION'];}else{echo"-";}?></td>
-									</tr>
-									<tr>
-										<td class="bg-td"><b>Kode Fasilitas</b></td>
-										<td><?php echo $dataCONSUSECX['CONTRACT_CODE'];?></td>
-										<td class="bg-td"><b>Nilai Proyek</b></td>
-										<td><?php if(number_format($dataCONSUSECX['PROJECT_VALUE_VALUE'],0,',','.')<>NULL){echo number_format($dataCONSUSECX['PROJECT_VALUE_VALUE'],0,',','.');}else{echo"-";}?></td>
-									</tr>
-									<tr>
-										<td class="bg-td"><b>Program Pemerintah</b></td>
-										<td><?php echo $dataCONSUSECX['GOVERMENT_PROGRAM'];?></td>
-										<td class="bg-td"><b>Jenis Pemberi Pinjaman</b></td>
-										<td><?php echo $dataCONSUSECX['CREDITOR_TYPE'];?></td>
-									</tr>
-									<tr>
-										<td colspan="2"></td>
 										<td class="bg-td"><b>Pemberi Pinjaman</b></td>
 										<td><?php echo $dataCONSUSECX['CREDITOR'];?></td>
 									</tr>
 									<tr>
-										<td colspan="2"></td>
-										<td class="bg-td"><b>Branch</b></td>
-										<td><?php if($dataCONSUSECX['BRANCH']<>NULL){echo $dataCONSUSECX['BRANCH'];}else{echo"-";}?></td>
-									</tr>
-									<tr>
-										<td colspan="2"></td>
-										<td class="bg-td"><b>Akad Kredit</b></td>
-										<td><?php echo $dataCONSUSECX['CONTRACT_SUB_TYPE'];?></td>
+										<td class="bg-td"><b>Kode Fasilitas</b></td>
+										<td><?php echo $dataCONSUSECX['CONTRACT_CODE'];?></td>
+										<td class="bg-td"><b>Jenis Pemberi Pinjaman</b></td>
+										<td><?php echo $dataCONSUSECX['CREDITOR_TYPE'];?></td>
 									</tr>
 								</table>
 							</div>
@@ -697,32 +676,8 @@ tr.child {
 										<td align="right"><?php if($dataCONSUSECX['CREDIT_USAGE_LAST_30_DAYS']<>NULL){echo $dataCONSUSECX['CREDIT_USAGE_LAST_30_DAYS'];}else{echo"-";}?></td>
 									</tr>
 									<tr>
-										<td class="bg-td"><b>Bank Beneficiery</b></td>
-										<td align="right"><?php if($dataCONSUSECX['BANK_BENEFICIARY']<>NULL){echo $dataCONSUSECX['BANK_BENEFICIARY'];}else{echo"-";}?></td>
 										<td class="bg-td"><b>Denda</b></td>
 										<td align="right"><?php if($dataCONSUSECX['PENALTY_CURRENCY']." ".number_format($dataCONSUSECX['PENALTY_VALUE'],0,',','.')<>NULL){echo $dataCONSUSECX['PENALTY_CURRENCY']." ".number_format($dataCONSUSECX['PENALTY_VALUE'],0,',','.');}else{echo"-";}?></td>
-									</tr>
-									<tr>
-										<td class="bg-td"><b>Suku Bunga</b></td>
-										<td align="right"><?php if($dataCONSUSECX['LAST_INTEREST_RATE']<>NULL){echo $dataCONSUSECX['LAST_INTEREST_RATE'];}else {echo "0";}?>%</td>
-										<td class="bg-td"><b>Setoran Jaminan</b></td>
-										<td align="right"><?php if($dataCONSUSECX['GUARANTY_DEPOSIT_CURRENCY']." ".number_format($dataCONSUSECX['GUARANTY_DEPOSIT_VALUE'],0,',','.')<>NULL){echo $dataCONSUSECX['GUARANTY_DEPOSIT_CURRENCY']." ".number_format($dataCONSUSECX['GUARANTY_DEPOSIT_VALUE'],0,',','.');}else {echo "-";}?></td>
-									</tr>
-									<tr>
-										<td class="bg-td"><b>Frekuensi Restrukturisasi</b></td>
-										<td align="right"><?php if($dataCONSUSECX['RESTRUCTURED_COUNT']<>NULL){echo $dataCONSUSECX['RESTRUCTURED_COUNT'];}else {echo "-";}?></td>
-										<td class="bg-td"><b>Jenis Suku Bunga</b></td>
-										<td align="right"><?php if($dataCONSUSECX['LAST_INTEREST_RATE_TYPE']<>NULL){echo $dataCONSUSECX['LAST_INTEREST_RATE_TYPE'];}else {echo "-";}?></td>
-									</tr>
-									<tr>
-										<td class="bg-td"><b>Kode Cara Restrukturisasi</b></td>
-										<td align="right"><?php if($dataCONSUSECX['RESTRUCTURING_REASON']<>NULL){echo $dataCONSUSECX['RESTRUCTURING_REASON'];}else{echo"-";}?></td>
-										<td class="bg-td"><b>Frekuensi Perpanjangan</b></td>
-										<td align="right"><?php if($dataCONSUSECX['PROLONGATION_COUNTER']<>NULL){echo $dataCONSUSECX['PROLONGATION_COUNTER'];}else{echo"-";}?></td>
-									</tr>
-									<tr>
-										<td class="bg-td"><b>Keterangan</b></td>
-										<td align="right" colspan="3"></td>
 									</tr>
 								</table>
 							</div>
@@ -778,115 +733,43 @@ tr.child {
 							</div>
 							<div class="table-responsive">
 								<table class="table table-bordered">
-									<tr>
-										<td colspan="4" class="bg-td"><p class="text-default" style="font-size:14px;"><b>DEBITUR YANG BERSANGKUTAN LAINNYA</b></p></td>
-									</tr>
-									<tr>
-										<td width="20%" class="bg-td" > <b>NAMA</b> </td>
-										<td width="20%" class="bg-td" > <b>PERAN</b> </td>
-										<td width="40%" class="bg-td" > <b>JOINT ACCOUNT SEQUENCE</b> </td>
-										<td width="20%" class="bg-td" > <b>KETERANGAN PENJAMIN<b> </td>
-									</tr>
 									<?php
 										$callCORELSUB = "{call SP_GET_TAB_CONTRACT_RELATED_SUBJECT(?)}";
 										$paramsCORELSUB = array(array($id, SQLSRV_PARAM_IN));
 										$optionsCORELSUB =  array( "Scrollable" => "buffered" );
 										$execCORELSUB = sqlsrv_query( $conn, $callCORELSUB, $paramsCORELSUB) or die( print_r( sqlsrv_errors(), true));
 										$checkCORELSUB=sqlsrv_num_rows($execCORELSUB);
+										$numsCORELSUB = sqlsrv_num_rows($execCORELSUB);
+										if($numsCORELSUB == 0 ){
+											echo"<div style='border:1px solid #EEE;padding:5px;'> Tidak ada data</div>";
+										}else{
 										while($dataCORELSUB = sqlsrv_fetch_array($execCORELSUB)){
 									?>
-									<tr>
-										<td><?php if( $dataCORELSUB['NAME']<>NULL){echo $dataCORELSUB['NAME'];}else{echo "-";}?></td>
-										<td><?php if( $dataCORELSUB['ROLE_OF_CLIENT']<>NULL){echo $dataCORELSUB['ROLE_OF_CLIENT'];}else{echo "-";}?></td>
-										<td><?php if( $dataCORELSUB['JOINT_ACCOUNT_SEQUENCE']<>NULL){echo $dataCORELSUB['JOINT_ACCOUNT_SEQUENCE'];}else{echo "-";}?></td>
-										<td><?php if( $dataCORELSUB['GUARANCY_DESCRIPTION']<>NULL){echo $dataCORELSUB['GUARANCY_DESCRIPTION'];}else{echo "-";}?></td>
-									</tr>
-									<?php }?>
-								</table>
-							</div>
-							<div class="table-responsive">
-								<table class="table table-bordered">
-									<tr>
-										<td colspan="4" class="bg-td"><p class="text-default" style="font-size:14px;"><b>Jaminan</b></p></td>
-									</tr>
-										<?php
-											$callJaminan= "{call SP_GET_TAB_CONTRACT_COLLATERAL_LIST_COMPANY_NEW(?,?,?)}";
-											$paramsJaminan = array(array($id, SQLSRV_PARAM_IN),array("Open", SQLSRV_PARAM_IN),array("MainDebtor", SQLSRV_PARAM_IN));
-											$optionsJaminan =  array( "Scrollable" => "buffered" );
-											$execJaminan = sqlsrv_query( $conn, $callJaminan, $paramsJaminan) or die( print_r( sqlsrv_errors(), true));
-											$checkJaminan=sqlsrv_num_rows($execJaminan);
-											while($dataJaminan = sqlsrv_fetch_array($execJaminan)){
-										?>
-										<tr class="header expand">
-											<td><i class="fa fa-caret-square-o-down"></i></td>
-											<td><?php echo $dataJaminan['COLLATERAL_TYPE'];?></td>
-											<td><?php echo $dataJaminan['COLLATERAL_CODE'];?></td>											
+									<thead>
+										<tr>
+											<th colspan="4" class="bg-td"><p class="text-default" style="font-size:14px;"><b>DEBITUR YANG BERSANGKUTAN LAINNYA</b></p></th>
 										</tr>
-										<tr class="child">
-											<td colspan="3">
-												<div class="table-responsive">
-													<table class="table table-bordered">
-														<tr>
-															<td width="30%" class="bg-td"><b>Kode Agunan</b></td>
-															<td width="20%"><?php echo $dataJaminan['COLLATERAL_CODE'];?></td>
-															<td width="30%" class="bg-td"><b>Status Agunan</b></td>
-															<td width="20%"><?php echo $dataJaminan['COLLATERAL_STATUS'];?></td>
-														</tr>
-														<tr>
-															<td width="30%" class="bg-td"><b>Nilai Pajak</b></td>
-															<td width="20%"><?php echo $dataJaminan['COLLATERAL_VALUE_CURRENCY']." ".number_format($dataJaminan['COLLATERAL_VALUE_VALUE'],0,',','.');?></td>
-															<td width="30%" class="bg-td"><b>Tanggal Penilaian Agunan menurut Pelapor</b></td>
-															<td width="20%"><?php echo $dataJaminan['BANK_VALUATION_DATE']->format('Y-m-d');?></td>
-														</tr>
-														<tr>
-															<td width="30%" class="bg-td"><b>Nilai Agunan</b></td>
-															<td width="20%"><?php echo $dataJaminan['BANK_VALUE'];?></td>
-															<td width="30%" class="bg-td"><b>Tanggal Pengikatan</b></td>
-															<td width="20%"><?php echo $dataJaminan['COLLATERAL_ACCEPTANCE_DATE']->format('Y-m-d');?></td>
-														</tr>
-														<tr>
-															<td width="30%" class="bg-td"><b>Nilai Penaksiran</b></td>
-															<td width="20%"><?php echo $dataJaminan['APPRAISAL_VALUE_CURRENCY']." ".number_format($dataJaminan['APPRAISAL_VALUE_VALUE'],0,',','.');?></td>
-															<td width="30%" class="bg-td"><b>Tanggal Pemeringkatan</b></td>
-															<td width="20%"><?php echo $dataJaminan['VALUATION_DATE']->format('Y-m-d');?></td>
-														</tr>
-														<tr>
-															<td width="30%" class="bg-td"><b>Nama Penilai Independen</b></td>
-															<td width="20%"><?php echo $dataJaminan['COLLATERAL_APPRAISAL_AUTHORITY'];?></td>
-															<td width="30%" class="bg-td"><b>Peringkat Agunan</b></td>
-															<td width="20%"><?php echo $dataJaminan['COLLATERAL_RATING'];?></td>
-														</tr>
-														<tr>
-															<td width="30%" class="bg-td"><b>Status Paripasu</b></td>
-															<td width="20%"><?php echo $dataJaminan['IS_SHARED'];?></td>
-															<td width="30%" class="bg-td"><b>Persentase Paripasu</b></td>
-															<td width="20%"><?php echo round((float)$dataJaminan['SHARED_PORTION']).'%';?></td>
-														</tr>
-														<tr>
-															<td width="30%" class="bg-td"><b>Lembaga Pemeringkat</b></td>
-															<td width="20%"><?php echo $dataJaminan['RATING_AUTHORITY'];?></td>
-														</tr>
-														<tr>
-															<td width="30%" class="bg-td"><b>Nama Pemilik</b></td>
-															<td width="20%"><?php echo $dataJaminan['COLLATERAL_OWNER_NAME'];?></td>
-															<td width="30%" class="bg-td"><b>Asuransi</b></td>
-															<td width="20%"><?php echo $dataJaminan['INSURANCE'];?></td>
-														</tr>
-														<tr>
-															<td width="30%" class="bg-td"><b>Jenis Pengikatan</b></td>
-															<td width="20%"><?php echo $dataJaminan['SECURITY_ASSIGNMENT_TYPE'];?></td>
-															<td width="30%" class="bg-td"><b>Keterangan</b></td>
-															<td width="20%"><?php echo $dataJaminan['COLLATERAL_DESCRIPTION'];?></td>
-														</tr>
-													</table>
-												</div>
-											</td>
+										<tr>
+											<td width="20%" class="bg-td" > <b>NAMA</b> </td>
+											<td width="20%" class="bg-td" > <b>PERAN</b> </td>
+											<td width="40%" class="bg-td" > <b>JOINT ACCOUNT SEQUENCE</b> </td>
+											<td width="20%" class="bg-td" > <b>KETERANGAN PENJAMIN<b> </td>
 										</tr>
+									</thead>
+									<tbody>
+										<tr>
+											<td><?php if( $dataCORELSUB['NAME']<>NULL){echo $dataCORELSUB['NAME'];}else{echo "-";}?></td>
+											<td><?php if( $dataCORELSUB['ROLE_OF_CLIENT']<>NULL){echo $dataCORELSUB['ROLE_OF_CLIENT'];}else{echo "-";}?></td>
+											<td><?php if( $dataCORELSUB['JOINT_ACCOUNT_SEQUENCE']<>NULL){echo $dataCORELSUB['JOINT_ACCOUNT_SEQUENCE'];}else{echo "-";}?></td>
+											<td><?php if( $dataCORELSUB['GUARANCY_DESCRIPTION']<>NULL){echo $dataCORELSUB['GUARANCY_DESCRIPTION'];}else{echo "-";}?></td>
+										</tr>							
 										<?php 
-										} 
-										?>									
+								}
+							}?>
+									</tbody>
 								</table>
 							</div>
+
 							<div class="table-responsive">
 								<table class="table table-bordered">
 									<tr>
@@ -949,25 +832,19 @@ tr.child {
 										<td><?php echo $dataCONSUSECX2['CONTRACT_STATUS'];?></td>
 									</tr>
 									<tr>
-										<td class="bg-td"><b>Sifat Kredit</b></td>
-										<td><?php echo $dataCONSUSECX2['CREDIT_CHARACTERISTIC'];?></td>
+										<td class="bg-td"><b>Tujuan Pendanaan</b></td>
+										<td><?php echo $dataCONSUSECX2['PURPOSE_OF_FINANCING'];?></td>
 										<td class="bg-td"><b>Kolektibilitas</b></td>
 										<td><?php echo $dataCONSUSECX2['NEGATIVE_STATUS_OF_CONTRACT'];?></td>
 									</tr>
 									<tr>
-										<td class="bg-td"><b>Tujuan Pendanaan</b></td>
-										<td><?php echo $dataCONSUSECX2['PURPOSE_OF_FINANCING'];?></td>
-										<td class="bg-td"><b>Orientasi Penggunaan</b></td>
-										<td><?php echo $dataCONSUSECX2['ORIENTATION_OF_USE'];?></td>
-									</tr>
-									<tr>
 										<td class="bg-td"><b>Sektor Ekonomi</b></td>
-										<td><?php echo $dataCONSUSECX2['ECONOMIC_SECTOR'];?></td>
+										<td><?php echo $dataCONSUSECX2['SLIK_VALUE'];?></td>
 										<td class="bg-td"><b>Pinjaman sindikasi</b></td>
 										<td><?php echo $dataCONSUSECX2['SYNDICATED_LOAN'];?></td>
 									</tr>
 									<tr>
-										<td class="bg-td"><b>Kode Kategori Debitur</b></td>
+										<td class="bg-td"><b>Klasifikasi Kredit</b></td>
 										<td><?php echo $dataCONSUSECX2['CREDIT_CLASIFICATION'];?></td>
 										<td class="bg-td"><b>Nama Tertanggung</b></td>
 										<td><?php if($dataCONSUSECX2['NAME_OF_INSURED']<>NULL){echo $dataCONSUSECX2['NAME_OF_INSURED'];}else{echo"-";}?></td>
@@ -975,35 +852,14 @@ tr.child {
 									<tr>
 										<td class="bg-td"><b>Mata Uang Fasilitas</b></td>
 										<td><?php echo $dataCONSUSECX2['CONTRACT_CURRENCY'];?></td>
-										<td class="bg-td"><b>Lokasi Proyek</b></td>
-										<td><?php if($dataCONSUSECX2['PROJECT_LOCATION']<>NULL){echo $dataCONSUSECX2['PROJECT_LOCATION'];}else{echo"-";}?></td>
-									</tr>
-									<tr>
-										<td class="bg-td"><b>Kode Fasilitas</b></td>
-										<td><?php echo $dataCONSUSECX2['CONTRACT_CODE'];?></td>
-										<td class="bg-td"><b>Nilai Proyek</b></td>
-										<td><?php if(number_format($dataCONSUSECX2['PROJECT_VALUE_VALUE'],0,',','.')<>NULL){echo number_format($dataCONSUSECX2['PROJECT_VALUE_VALUE'],0,',','.');}else{echo"-";}?></td>
-									</tr>
-									<tr>
-										<td class="bg-td"><b>Program Pemerintah</b></td>
-										<td><?php echo $dataCONSUSECX2['GOVERMENT_PROGRAM'];?></td>
-										<td class="bg-td"><b>Jenis Pemberi Pinjaman</b></td>
-										<td><?php echo $dataCONSUSECX2['CREDITOR_TYPE'];?></td>
-									</tr>
-									<tr>
-										<td colspan="2"></td>
 										<td class="bg-td"><b>Pemberi Pinjaman</b></td>
 										<td><?php echo $dataCONSUSECX2['CREDITOR'];?></td>
 									</tr>
 									<tr>
-										<td colspan="2"></td>
-										<td class="bg-td"><b>Branch</b></td>
-										<td><?php if($dataCONSUSECX2['BRANCH']<>NULL){echo $dataCONSUSECX2['BRANCH'];}else{echo"-";}?></td>
-									</tr>
-									<tr>
-										<td colspan="2"></td>
-										<td class="bg-td"><b>Akad Kredit</b></td>
-										<td><?php echo $dataCONSUSECX2['CONTRACT_SUB_TYPE'];?></td>
+										<td class="bg-td"><b>Kode Fasilitas</b></td>
+										<td><?php echo $dataCONSUSECX2['CONTRACT_CODE'];?></td>
+										<td class="bg-td"><b>Jenis Pemberi Pinjaman</b></td>
+										<td><?php echo $dataCONSUSECX2['CREDITOR_TYPE'];?></td>
 									</tr>
 								</table>
 							</div>
@@ -1082,36 +938,8 @@ tr.child {
 									<tr>
 										<td class="bg-td"><b>Saldo Pokok</b></td>
 										<td align="right"><?php if($dataCONSUSECX2['PRINCIPAL_BALANCE_CURRENCY']." ".number_format($dataCONSUSECX2['PRINCIPAL_BALANCE_VALUE'],0,',','.')<>NULL){echo $dataCONSUSECX2['PRINCIPAL_BALANCE_CURRENCY']." ".number_format($dataCONSUSECX2['PRINCIPAL_BALANCE_VALUE'],0,',','.');}else{echo"-";}?></td>
-										<td class="bg-td"><b>Penggunaan Kredit Dalam 30 Hari Terakhir</b></td>
-										<td align="right"><?php if($dataCONSUSECX2['CREDIT_USAGE_LAST_30_DAYS']<>NULL){echo $dataCONSUSECX2['CREDIT_USAGE_LAST_30_DAYS'];}else{echo"-";}?></td>
-									</tr>
-									<tr>
-										<td class="bg-td"><b>Bank Beneficiery</b></td>
-										<td align="right"><?php if($dataCONSUSECX2['BANK_BENEFICIARY']<>NULL){echo $dataCONSUSECX2['BANK_BENEFICIARY'];}else{echo"-";}?></td>
 										<td class="bg-td"><b>Denda</b></td>
 										<td align="right"><?php if($dataCONSUSECX2['PENALTY_CURRENCY']." ".number_format($dataCONSUSECX2['PENALTY_VALUE'],0,',','.')<>NULL){echo $dataCONSUSECX2['PENALTY_CURRENCY']." ".number_format($dataCONSUSECX2['PENALTY_VALUE'],0,',','.');}else{echo"-";}?></td>
-									</tr>
-									<tr>
-										<td class="bg-td"><b>Suku Bunga</b></td>
-										<td align="right"><?php if($dataCONSUSECX2['LAST_INTEREST_RATE']<>NULL){echo $dataCONSUSECX2['LAST_INTEREST_RATE'];}else {echo "0";}?>%</td>
-										<td class="bg-td"><b>Setoran Jaminan</b></td>
-										<td align="right"><?php if($dataCONSUSECX2['GUARANTY_DEPOSIT_CURRENCY']." ".number_format($dataCONSUSECX2['GUARANTY_DEPOSIT_VALUE'],0,',','.')<>NULL){echo $dataCONSUSECX2['GUARANTY_DEPOSIT_CURRENCY']." ".number_format($dataCONSUSECX2['GUARANTY_DEPOSIT_VALUE'],0,',','.');}else {echo "-";}?></td>
-									</tr>
-									<tr>
-										<td class="bg-td"><b>Frekuensi Restrukturisasi</b></td>
-										<td align="right"><?php if($dataCONSUSECX2['RESTRUCTURED_COUNT']<>NULL){echo $dataCONSUSECX2['RESTRUCTURED_COUNT'];}else {echo "-";}?></td>
-										<td class="bg-td"><b>Jenis Suku Bunga</b></td>
-										<td align="right"><?php if($dataCONSUSECX2['LAST_INTEREST_RATE_TYPE']<>NULL){echo $dataCONSUSECX2['LAST_INTEREST_RATE_TYPE'];}else {echo "-";}?></td>
-									</tr>
-									<tr>
-										<td class="bg-td"><b>Kode Cara Restrukturisasi</b></td>
-										<td align="right"><?php if($dataCONSUSECX2['RESTRUCTURING_REASON']<>NULL){echo $dataCONSUSECX2['RESTRUCTURING_REASON'];}else{echo"-";}?></td>
-										<td class="bg-td"><b>Frekuensi Perpanjangan</b></td>
-										<td align="right"><?php if($dataCONSUSECX2['PROLONGATION_COUNTER']<>NULL){echo $dataCONSUSECX2['PROLONGATION_COUNTER'];}else{echo"-";}?></td>
-									</tr>
-									<tr>
-										<td class="bg-td"><b>Keterangan</b></td>
-										<td align="right" colspan="3"></td>
 									</tr>
 								</table>
 							</div>
@@ -1167,6 +995,19 @@ tr.child {
 							</div>
 							<div class="table-responsive">
 								<table class="table table-bordered">
+									<?php
+									$callCORELSUB = "{call SP_GET_TAB_CONTRACT_RELATED_SUBJECT(?)}";
+									$paramsCORELSUB = array(array($id, SQLSRV_PARAM_IN));
+									$optionsCORELSUB =  array( "Scrollable" => "buffered" );
+									$execCORELSUB = sqlsrv_query( $conn, $callCORELSUB, $paramsCORELSUB) or die( print_r( sqlsrv_errors(), true));
+									$checkCORELSUB=sqlsrv_num_rows($execCORELSUB);
+									$numsCORELSUB = sqlsrv_num_rows($execCORELSUB);
+									if($numsCORELSUB == 0 ){
+										echo"<div style='border:1px solid #EEE;padding:5px;'> Tidak ada data</div>";
+									}else{
+									while($dataCORELSUB = sqlsrv_fetch_array($execCORELSUB)){
+								?>
+								<thead>	
 									<tr>
 										<td colspan="4" class="bg-td"><p class="text-default" style="font-size:14px;"><b>DEBITUR YANG BERSANGKUTAN LAINNYA</b></p></td>
 									</tr>
@@ -1176,104 +1017,21 @@ tr.child {
 										<td width="40%" class="bg-td" > <b>JOINT ACCOUNT SEQUENCE</b> </td>
 										<td width="20%" class="bg-td" > <b>KETERANGAN PENJAMIN<b> </td>
 									</tr>
-									<?php
-										$callCORELSUB = "{call SP_GET_TAB_CONTRACT_RELATED_SUBJECT(?)}";
-										$paramsCORELSUB = array(array($id, SQLSRV_PARAM_IN));
-										$optionsCORELSUB =  array( "Scrollable" => "buffered" );
-										$execCORELSUB = sqlsrv_query( $conn, $callCORELSUB, $paramsCORELSUB) or die( print_r( sqlsrv_errors(), true));
-										$checkCORELSUB=sqlsrv_num_rows($execCORELSUB);
-										while($dataCORELSUB = sqlsrv_fetch_array($execCORELSUB)){
-									?>
+								</thead>
+								<tbody>
 									<tr>
 										<td><?php if( $dataCORELSUB['NAME']<>NULL){echo $dataCORELSUB['NAME'];}else{echo "-";}?></td>
 										<td><?php if( $dataCORELSUB['ROLE_OF_CLIENT']<>NULL){echo $dataCORELSUB['ROLE_OF_CLIENT'];}else{echo "-";}?></td>
 										<td><?php if( $dataCORELSUB['JOINT_ACCOUNT_SEQUENCE']<>NULL){echo $dataCORELSUB['JOINT_ACCOUNT_SEQUENCE'];}else{echo "-";}?></td>
 										<td><?php if( $dataCORELSUB['GUARANCY_DESCRIPTION']<>NULL){echo $dataCORELSUB['GUARANCY_DESCRIPTION'];}else{echo "-";}?></td>
 									</tr>
-									<?php }?>
+								</tbody>
 								</table>
 							</div>
-							<div class="table-responsive">
-								<table class="table table-bordered">
-									<tr>
-										<td colspan="4" class="bg-td"><p class="text-default" style="font-size:14px;"><b>Jaminan</b></p></td>
-									</tr>
-										<?php
-											$callJaminan2= "{call SP_GET_TAB_CONTRACT_COLLATERAL_LIST_COMPANY_NEW(?,?,?)}";
-											$paramsJaminan2 = array(array($id, SQLSRV_PARAM_IN),array("Closed", SQLSRV_PARAM_IN),array("MainDebtor", SQLSRV_PARAM_IN));
-											$optionsJaminan2 =  array( "Scrollable" => "buffered" );
-											$execJaminan2 = sqlsrv_query( $conn, $callJaminan2, $paramsJaminan2) or die( print_r( sqlsrv_errors(), true));
-											$checkJaminan2=sqlsrv_num_rows($execJaminan2);
-											while($dataJaminan2 = sqlsrv_fetch_array($execJaminan2)){
-										?>
-										<tr class="header expand">
-											<td><i class="fa fa-caret-square-o-down"></i></td>
-											<td><?php echo $dataJaminan2['COLLATERAL_TYPE'];?></td>
-											<td><?php echo $dataJaminan2['COLLATERAL_CODE'];?></td>											
-										</tr>
-										<tr class="child">
-											<td colspan="3">
-												<div class="table-responsive">
-													<table class="table table-bordered">
-														<tr>
-															<td width="30%" class="bg-td"><b>Kode Agunan</b></td>
-															<td width="20%"><?php echo $dataJaminan2['COLLATERAL_CODE'];?></td>
-															<td width="30%" class="bg-td"><b>Status Agunan</b></td>
-															<td width="20%"><?php echo $dataJaminan2['COLLATERAL_STATUS'];?></td>
-														</tr>
-														<tr>
-															<td width="30%" class="bg-td"><b>Nilai Pajak</b></td>
-															<td width="20%"><?php echo $dataJaminan2['COLLATERAL_VALUE_CURRENCY']." ".number_format($dataJaminan2['COLLATERAL_VALUE_VALUE'],0,',','.');?></td>
-															<td width="30%" class="bg-td"><b>Tanggal Penilaian Agunan menurut Pelapor</b></td>
-															<td width="20%"><?php echo $dataJaminan2['BANK_VALUATION_DATE']->format('Y-m-d');?></td>
-														</tr>
-														<tr>
-															<td width="30%" class="bg-td"><b>Nilai Agunan</b></td>
-															<td width="20%"><?php echo $dataJaminan2['BANK_VALUE'];?></td>
-															<td width="30%" class="bg-td"><b>Tanggal Pengikatan</b></td>
-															<td width="20%"><?php echo $dataJaminan2['COLLATERAL_ACCEPTANCE_DATE']->format('Y-m-d');?></td>
-														</tr>
-														<tr>
-															<td width="30%" class="bg-td"><b>Nilai Penaksiran</b></td>
-															<td width="20%"><?php echo $dataJaminan2['APPRAISAL_VALUE_CURRENCY']." ".number_format($dataJaminan2['APPRAISAL_VALUE_VALUE'],0,',','.');?></td>
-															<td width="30%" class="bg-td"><b>Tanggal Pemeringkatan</b></td>
-															<td width="20%"><?php echo $dataJaminan2['VALUATION_DATE']->format('Y-m-d');?></td>
-														</tr>
-														<tr>
-															<td width="30%" class="bg-td"><b>Nama Penilai Independen</b></td>
-															<td width="20%"><?php echo $dataJaminan2['COLLATERAL_APPRAISAL_AUTHORITY'];?></td>
-															<td width="30%" class="bg-td"><b>Peringkat Agunan</b></td>
-															<td width="20%"><?php echo $dataJaminan2['COLLATERAL_RATING'];?></td>
-														</tr>
-														<tr>
-															<td width="30%" class="bg-td"><b>Status Paripasu</b></td>
-															<td width="20%"><?php echo $dataJaminan2['IS_SHARED'];?></td>
-															<td width="30%" class="bg-td"><b>Persentase Paripasu</b></td>
-															<td width="20%"><?php echo $dataJaminan2['SHARED_PORTION'];?></td>
-														</tr>
-														<tr>
-															<td width="30%" class="bg-td"><b>Lembaga Pemeringkat</b></td>
-															<td width="20%"><?php echo $dataJaminan2['RATING_AUTHORITY'];?></td>
-														</tr>
-														<tr>
-															<td width="30%" class="bg-td"><b>Nama Pemilik</b></td>
-															<td width="20%"><?php echo $dataJaminan2['COLLATERAL_OWNER_NAME'];?></td>
-															<td width="30%" class="bg-td"><b>Asuransi</b></td>
-															<td width="20%"><?php echo $dataJaminan2['INSURANCE'];?></td>
-														</tr>
-														<tr>
-															<td width="30%" class="bg-td"><b>Jenis Pengikatan</b></td>
-															<td width="20%"><?php echo $dataJaminan2['SECURITY_ASSIGNMENT_TYPE'];?></td>
-															<td width="30%" class="bg-td"><b>Keterangan</b></td>
-															<td width="20%"><?php echo $dataJaminan2['COLLATERAL_DESCRIPTION'];?></td>
-														</tr>
-													</table>
-												</div>
-											</td>
-										</tr>
-										<?php } ?>									
-								</table>
-							</div>
+							<?php
+									}
+								}
+							?>
 							<div class="table-responsive">
 								<table class="table table-bordered">
 									<tr>
@@ -1299,6 +1057,10 @@ tr.child {
 					$callCONSUSECXx = "{call SP_GET_TAB_CONTRACT_COMPANY(?,?,?)}";
 					$paramsCONSUSECXx = array(array($id, SQLSRV_PARAM_IN),array("Guarantor", SQLSRV_PARAM_IN),array("Open", SQLSRV_PARAM_IN));
 					$execCONSUSECXx = sqlsrv_query( $conn, $callCONSUSECX, $paramsCONSUSECXx) or die( print_r( sqlsrv_errors(), true));
+					$numsx = sqlsrv_num_rows($execCONSUSECXx);
+					if($numsx == 0 ){
+						echo"<div style='border:1px solid #EEE;padding:5px;'> Tidak ada data</div>";
+					}else{
 					while($dataCONSUSECXx = sqlsrv_fetch_array($execCONSUSECXx)){
 						$no++;
 				?>
@@ -1679,6 +1441,7 @@ tr.child {
 					</div>
 				</div>
 				<?php
+					}
 				}
 				?>
 				<p class="name text-danger">Penjaminan NonAktif</p>	
@@ -1687,6 +1450,10 @@ tr.child {
 					$callCONSUSECXe = "{call SP_GET_TAB_CONTRACT_COMPANY(?,?,?)}";
 					$paramsCONSUSECXe = array(array($id, SQLSRV_PARAM_IN),array("Guarantor", SQLSRV_PARAM_IN),array("Closed", SQLSRV_PARAM_IN));
 					$execCONSUSECXe = sqlsrv_query( $conn, $callCONSUSECXe, $paramsCONSUSECXe) or die( print_r( sqlsrv_errors(), true));
+					$nums = sqlsrv_num_rows($execCONSUSECXe);
+					if($nums == 0 ){
+						echo"<div style='border:1px solid #EEE;padding:5px;'> Tidak ada fasilitas</div>";
+					}else{
 					while($dataCONSUSECXe = sqlsrv_fetch_array($execCONSUSECXe)){
 						$no++;
 				?>
@@ -2068,6 +1835,7 @@ tr.child {
 					</div>
 				</div>
 				<?php
+					}
 				}
 				?>
 			</div>									

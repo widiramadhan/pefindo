@@ -1,3 +1,18 @@
+<?php
+require_once("config/configuration.php");
+require_once("config/connection.php");
+$date=date("Y-m-d");
+
+
+if(isset($_POST['submit'])){
+	$startDate = $_POST['startDate'];
+	$endDate = $_POST['endDate'];
+}else{
+	$startDate = date("Y-m-d");
+	$endDate = date("Y-m-d");
+}
+
+?>
 <style>
 .th-custom{
 	text-align:center;
@@ -14,6 +29,36 @@
 				<p class="category">History Activity Request</p>
 			</div>
 			<div class="content">
+				<div class="row">
+					<form action="" method="post">
+						<div class="col-md-3">
+							<div class="form-group">
+								<label>Start Date</label>
+								<div class="input-group date">
+									<input type="text" class="form-control" name="startDate" id="startDate" autocomplete="off" value="<?php echo $startDate;?>">
+									<div class="input-group-addon">
+										<span class="add-on"><i class="fa fa-calendar"></i></span>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="col-md-3">
+							<div class="form-group">
+								<label>End Date</label>
+								<div class="input-group date">
+									<input type="text" class="form-control" name="endDate" id="endDate" autocomplete="off" value="<?php echo $endDate;?>">
+									<div class="input-group-addon">
+										<span class="add-on"><i class="fa fa-calendar"></i></span>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="col-md-2">
+							&nbsp;<br>
+							<button type="submit" class="btn btn-primary" name="submit" style="width:100%;">Cari</button>
+						</div>
+					</form>
+				</div>
 				<table class="table table-bordered table-striped" id="history">
 					<thead>
 						<tr>
@@ -29,8 +74,9 @@
 					<tbody>
 						<?php
 							$no=0;
-							$call = "{call SP_GET_HISTORY}";
-							$exec = sqlsrv_query( $conn, $call) or die( print_r( sqlsrv_errors(), true)); 
+							$call = "{call SP_GET_HISTORY(?,?)}";
+							$param = array(array($startDate, SQLSRV_PARAM_IN),array($endDate, SQLSRV_PARAM_IN));
+							$exec = sqlsrv_query( $conn, $call, $param) or die( print_r( sqlsrv_errors(), true)); 
 							while($data = sqlsrv_fetch_array($exec)){
 								$no++;
 						?>
@@ -45,13 +91,20 @@
 								<?php 
 								if($data['CUST_TYPE']=="P"){
 								?>
-								<a href="index.php?username=<?php echo $user;?>&page=scoring-individual&id=<?php echo $data['PEFINDO_ID'];?>" class="btn btn-primary btn-sm" title="detail"><i class="fa fa-eye"></i></a>
+								<a href="index.php?USERNAME=<?php echo $user;?>&page=scoring-individual&id=<?php echo $data['PEFINDO_ID'];?>" class="btn btn-primary btn-sm" title="detail"><i class="fa fa-eye"></i></a>
 								<?php }else{?>
-								<a href="index.php?username=<?php echo $user;?>&page=scoring-company&id=<?php echo $data['PEFINDO_ID'];?>" class="btn btn-primary btn-sm" title="detail"><i class="fa fa-eye"></i></a>
+								<a href="index.php?USERNAME=<?php echo $user;?>&page=scoring-company&id=<?php echo $data['PEFINDO_ID'];?>" class="btn btn-primary btn-sm" title="detail"><i class="fa fa-eye"></i></a>
 								<?php
 								}
+								?>	
+								<a href="pages/getExcel.php?USERNAME=<?php echo $user;?>&id=<?php echo $data['PEFINDO_ID'];?>&type=<?php echo $data['CUST_TYPE'];?>" target="_blank" title="Export to Excel" class="btn btn-success btn-sm"><i class="fa fa-file-excel-o"></i></a>
+								<?php 
+									if($_GET['USERNAME'] == 'iman.santoso' || $_GET['USERNAME'] == 'djoko.andrew' || $_GET['USERNAME'] == 'ramandona'){
+										echo'<a href="pages/history-delete.php?USERNAME='.$user.'&id='.$data['PEFINDO_MAPPING_ID'].'&type='.$data['CUST_TYPE'].'" class="btn btn-danger btn-sm" title="delete" onclick="return confirm(\'Apakah anda yakin ingin menghapus data ini ?\');"><i class="fa fa-trash-o"></i></a>';
+									}else{
+										echo'';
+									}
 								?>
-								<a href="pages/history-delete.php?username=<?php echo $user;?>&id=<?php echo $data['PEFINDO_MAPPING_ID'];?>&type=<?php echo $data['CUST_TYPE'];?>" class="btn btn-danger btn-sm" title="delete"><i class="fa fa-trash-o"></i></a>
 							</td>
 						</tr>
 						<?php
@@ -66,6 +119,29 @@
 <script src="assets/js/jquery.3.2.1.min.js" type="text/javascript"></script>
 <script>
 $(document).ready(function() {
-    $('#history').DataTable();
+    $('#history').DataTable({
+		"bPaginate": true,
+		"bLengthChange": true,
+        "bFilter": true,
+        "bInfo": true
+	});
+	$('#startDate').datepicker({
+		dateFormat: 'yy-mm-dd',
+		changeMonth: true,
+		changeYear: true,
+		showButtonPanel: true,
+		onClose: function(selectedDate) {
+			$('#endDate').datepicker("option", "minDate", selectedDate);
+		}
+	});
+	$('#endDate').datepicker({
+		dateFormat: 'yy-mm-dd',
+		changeMonth: true,
+		changeYear: true,
+		showButtonPanel: true,
+		onClose: function(selectedDate) {
+			$('#startDate').datepicker("option", "maxDate", selectedDate);
+		}
+	});
 } );
 </script>

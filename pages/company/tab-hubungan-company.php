@@ -23,12 +23,9 @@ $paramsINVOLLIST = array(array($id, SQLSRV_PARAM_IN));
 $execINVOLLIST = sqlsrv_query( $conn, $callINVOLLIST, $paramsINVOLLIST) or die( print_r( sqlsrv_errors(), true));
 $dataINVOLLIST = sqlsrv_fetch_array($execINVOLLIST);
 
-/* select table RELATIONS_CONTRACT_RELATION_LIST_COMPANY */
-$callCONRELLIST = "{call SP_TAB_RELATIONS_CONTRACT_RELATION_LIST_COMPANY(?)}";
-$paramsCONRELLIST = array(array($id, SQLSRV_PARAM_IN));
-$execCONRELLIST = sqlsrv_query( $conn, $callCONRELLIST, $paramsCONRELLIST) or die( print_r( sqlsrv_errors(), true));
-$dataCONRELLIST = sqlsrv_fetch_array($execCONRELLIST);
+
 ?>
+
 <div class="card">
 	<div class="header"><p class="name">Pihak Terkait</p></div>
 	<div class="content">
@@ -57,7 +54,6 @@ $dataCONRELLIST = sqlsrv_fetch_array($execCONRELLIST);
 											<td><?php if($dataREPARLIST['VALID_FROM']<>NULL){echo $dataREPARLIST['VALID_FROM']->format('Y-m-d');}else{"";}?></td>
 											<td><b>Porsi Kepemilikan</td></b>
 											<td><?php echo round((float)$dataREPARLIST['OWNER_SHIP_SHARE']).'%';?></td>
-											
 										</tr>
 										<tr>
 											<td><b>Jenis Kelamin</td></b>
@@ -65,10 +61,6 @@ $dataCONRELLIST = sqlsrv_fetch_array($execCONRELLIST);
 											<td><b>Bagian yang Dijaminkan</td></b>
 											<td><?php echo $dataREPARLIST['LTV'];?></td>
 										</tr>
-										<tr>
-											<td><b>Status Pengurus/Pemilik</td></b>
-											<td><?php echo $dataREPARLIST['SUBJECT_STATUS'];?></td>
-										</tr>	
 										<tr>
 											<td rowspan="2" style="vertical-align:top;"><b>Alamat</td></b>
 											<td rowspan="2" style="vertical-align:top;"><?php echo $dataREPARLIST['MAIN_ADDRESS_STREET'].",".$dataREPARLIST['MAIN_ADDRESS_CITY'].",".$dataREPARLIST['MAIN_ADDRESS_DISTRICT'].",".$dataREPARLIST['MAIN_ADDRESS_PARISH'];?></td>
@@ -89,6 +81,17 @@ $dataCONRELLIST = sqlsrv_fetch_array($execCONRELLIST);
 					</div>
 					<br>
 					<p class="name">Pihak yang terkait dengan fasilitas debitur</p>
+					<?php
+					/* select table RELATIONS_CONTRACT_RELATION_LIST_COMPANY */
+					$callCONRELLIST = "{call SP_TAB_RELATIONS_CONTRACT_RELATION_LIST_COMPANY(?)}";
+					$paramsCONRELLIST = array(array($id, SQLSRV_PARAM_IN));
+					$execCONRELLIST = sqlsrv_query( $conn, $callCONRELLIST, $paramsCONRELLIST) or die( print_r( sqlsrv_errors(), true));
+					$nums = sqlsrv_num_rows($execCONRELLIST);
+					if($nums == 0 ){
+						echo"<div style='border:1px solid #EEE;padding:5px;'> Tidak ada data</div>";
+					}else{
+					while($dataCONRELLIST = sqlsrv_fetch_array($execCONRELLIST)){
+					?>
 					<div class="table-responsive">
 						<table class="table table-bordered" style="width:100%;">
 							<thead>
@@ -121,6 +124,9 @@ $dataCONRELLIST = sqlsrv_fetch_array($execCONRELLIST);
 							</tbody>
 						</table>
 					</div>
+				<?php
+				}	}
+				?>
 				</div>
 			</div>
 		</div>

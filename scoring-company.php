@@ -151,10 +151,10 @@ tr.child {
 }
 </style>
 <script src="assets/js/jquery.3.2.1.min.js" type="text/javascript"></script>
-<script src="https://code.highcharts.com/highcharts.js"></script>
+<!--<script src="https://code.highcharts.com/highcharts.js"></script>
 <script src="https://code.highcharts.com/modules/series-label.js"></script>
 <script src="https://code.highcharts.com/modules/exporting.js"></script>
-<script src="https://code.highcharts.com/modules/export-data.js"></script>
+<script src="https://code.highcharts.com/modules/export-data.js"></script>-->
 <script>
 $(document).ready(function(){
   $("#collapseOne").on("hide.bs.collapse", function(){
@@ -186,10 +186,10 @@ $data = sqlsrv_fetch_array($exec);
 					<h4 class="title">Scoring Report</h4>
 					<p class="category">Sistem Informasi Debitur</p>
 				</div>
-				<div class="pull-right">
-					<a href="pages/getPDF.php?username=<?php echo $user;?>&id=<?php echo $id;?>&type=<?php echo $data['CUST_TYPE'];?>"" target="_blank" class="btn btn-danger"><i class="fa fa-file-pdf-o"></i> Export Report to PDF</a>&nbsp;
-					<a href="pages/getExcel.php?username=<?php echo $user;?>&id=<?php echo $id;?>" target="_blank" class="btn btn-success"><i class="fa fa-file-excel-o"></i> Export Summary to Excel</a>
-				</div>
+				<!--<div class="pull-right">
+					<a href="pages/getPDF.php?USERNAME=<?php echo $user;?>&id=<?php echo $id;?>&type=<?php echo $data['CUST_TYPE'];?>"" target="_blank" class="btn btn-danger"><i class="fa fa-file-pdf-o"></i> Export Report to PDF</a>&nbsp;
+					<a href="pages/getExcel.php?USERNAME=<?php echo $user;?>&id=<?php echo $id;?>" target="_blank" class="btn btn-success"><i class="fa fa-file-excel-o"></i> Export Summary to Excel</a>
+				</div>-->
 				<div style="clear:both;"></div>
 			</div>
 			<div class="content">
@@ -234,7 +234,8 @@ $data = sqlsrv_fetch_array($exec);
 				</div>
 				
 				<ul class="nav nav-tabs">
-					<li class="active"><a data-toggle="tab" href="#dashboard">Dashboard</a></li>
+					<li class="active"><a data-toggle="tab" href="#summary">Summary</a></li>
+					<li><a data-toggle="tab" href="#dashboard">Dashboard</a></li>
 					<li><a data-toggle="tab" href="#informasi-perusahaan">Informasi perusahaan</a></li>
 					<li><a data-toggle="tab" href="#skorPS">Skor PS</a></li>
 					<li><a data-toggle="tab" href="#pefindo-alert-quest">PEFINDO Alert Quest</a></li>
@@ -246,10 +247,14 @@ $data = sqlsrv_fetch_array($exec);
 					<li><a data-toggle="tab" href="#hubungan">Hubungan</a></li>
 					<li><a data-toggle="tab" href="#permintaan-informasi">Permintaan Informasi</a></li>
 					<li><a data-toggle="tab" href="#pengaduan">Pengaduan</a></li>
+					<li><a data-toggle="tab" href="#financial">Financial Statement</a></li>
 				</ul>
 				<br>
 				<div class="tab-content">
-					<div id="dashboard" class="tab-pane fade in active">
+					<div id="summary" class="tab-pane fade in active">
+						<?php require_once("pages/company/tab-summary-company.php");?>
+					</div>
+					<div id="dashboard" class="tab-pane fade">
 						<?php require_once("pages/company/tab-dashboard-company.php");?>
 					</div>
 					<div id="informasi-perusahaan" class="tab-pane fade">
@@ -285,6 +290,9 @@ $data = sqlsrv_fetch_array($exec);
 					<div id="pengaduan" class="tab-pane fade">
 						<?php require_once("pages/company/tab-pengaduan-company.php");?>
 					</div>
+					<div id="financial" class="tab-pane fade">
+						<?php require_once("pages/company/tab-financial-company.php");?>
+					</div>
 					<div class="disclaimer">
 						<b>Disclaimer PBK</b><br>
 						Informasi Perkreditan ini didasarkan pada data yang dihimpun dari Sistem Informasi Debitur Bank Indonesia / Sistem Layanan Informasi Keuangan (SLIK) Otoritas Jasa Keuangan (OJK), Lembaga Keuangan yang menjadi Anggota atau Mitra PEFINDO Biro Kredit (PBK), serta instansi pemerintah maupun pihak swasta yang menjadi sumber data PBK.<br>
@@ -301,6 +309,7 @@ $data = sqlsrv_fetch_array($exec);
 $callCIP3 = "{call SP_GET_TAB_SKOR_PS_TBL_CIP_COMPANY(?)}";
 $paramsCIP3 = array(array($id, SQLSRV_PARAM_IN),array($dataCIPCOM['M_CIP_ID'], SQLSRV_PARAM_IN));
 ?>
+<script src="assets/js/jquery.3.2.1.min.js" type="text/javascript"></script>
 <script type="text/javascript">
 	$(window).on("load", function(){
 		setTimeout(function(){
@@ -309,7 +318,7 @@ $paramsCIP3 = array(array($id, SQLSRV_PARAM_IN),array($dataCIPCOM['M_CIP_ID'], S
 	});
 </script>
 <script>
-	Highcharts.chart('container', {
+/*	Highcharts.chart('container', {
 		credits: {
 			 enabled: false
 		},
@@ -355,7 +364,7 @@ $paramsCIP3 = array(array($id, SQLSRV_PARAM_IN),array($dataCIPCOM['M_CIP_ID'], S
 			}]
 		}
 
-	});
+	});*/
 </script>
 
 <script>

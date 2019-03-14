@@ -68,13 +68,13 @@ $dataCOLSUM = sqlsrv_fetch_array($execCOLSUM);
 										</tr>
 										<tr>
 											<td class="bg-td"><b>Appraisal Value</td></b>
-											<td align="right"><?php echo $dataCOLIST['APPRAISALVALUE'];?></td>
+											<td align="right"><?php echo number_format($dataCOLIST['APPRAISALVALUE'],0,',','.');?></td>
 											<td class="bg-td"><b>Owner Name</td></b>
 											<td align="right"><?php echo $dataCOLIST['OWNER_NAME'];?></td>
 										</tr>
 										<tr>
 											<td class="bg-td"><b>Valuation Date</td></b>
-											<td align="right"><?php echo $dataCOLIST['VALUATION_DATE']->format('Y-m-d');?></td>
+											<td align="right"><?php if($dataCOLIST['VALUATION_DATE']<>NULL){echo $dataCOLIST['VALUATION_DATE']->format('Y-m-d');}else{echo"";};?></td>
 											<td class="bg-td"><b>Ownership Proof</td></b>
 											<td align="right"><?php echo $dataCOLIST['OWNER_SHIP_PROOF'];?></td>
 										</tr>

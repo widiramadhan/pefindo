@@ -2,7 +2,7 @@
 /* COMPANY */
 if($array['GetCustomReportResponse']['GetCustomReportResult']['aCompany']['bGeneral']['bCompanyName']<>NULL){$company=$array['GetCustomReportResponse']['GetCustomReportResult']['aCompany']['bGeneral']['bCompanyName'];}else{$company=NULL;}
 
-if($array['GetCustomReportResponse']['GetCustomReportResult']['aCompany']['bContact']['bEmail']<>NULL){$CompanyEmail=$array['GetCustomReportResponse']['GetCustomReportResult']['aCompany']['bContact']['bEmail'];}else{$CompanyEmail=NULL;}
+//if($array['GetCustomReportResponse']['GetCustomReportResult']['aCompany']['bContact']['bEmail']<>NULL){$CompanyEmail=$array['GetCustomReportResponse']['GetCustomReportResult']['aCompany']['bContact']['bEmail'];}else{$CompanyEmail=NULL;}
 
 if($array['GetCustomReportResponse']['GetCustomReportResult']['aCompany']['bContact']['bFixedLine']<>NULL){$CompanyFixedLine=$array['GetCustomReportResponse']['GetCustomReportResult']['aCompany']['bContact']['bFixedLine'];}else{$CompanyFixedLine=NULL;}
 
@@ -26,11 +26,11 @@ if($array['GetCustomReportResponse']['GetCustomReportResult']['aCompany']['bGene
 
 if($array['GetCustomReportResponse']['GetCustomReportResult']['aCompany']['bGeneral']['bMarketListed']<>NULL){$CompanyMarketListed=$array['GetCustomReportResponse']['GetCustomReportResult']['aCompany']['bGeneral']['bMarketListed'];}else{$CompanyMarketListed=NULL;}
 
-if($array['GetCustomReportResponse']['GetCustomReportResult']['aCompany']['bGeneral']['bRating']<>NULL){$CompanyRating=$array['GetCustomReportResponse']['GetCustomReportResult']['aCompany']['bGeneral']['bRating'];}else{$CompanyRating=NULL;}
+//if($array['GetCustomReportResponse']['GetCustomReportResult']['aCompany']['bGeneral']['bRating']<>NULL){$CompanyRating=$array['GetCustomReportResponse']['GetCustomReportResult']['aCompany']['bGeneral']['bRating'];}else{$CompanyRating=NULL;}
 
-if($array['GetCustomReportResponse']['GetCustomReportResult']['aCompany']['bGeneral']['bRatingAuthority']<>NULL){$CompanyRatingAuthority=$array['GetCustomReportResponse']['GetCustomReportResult']['aCompany']['bGeneral']['bRatingAuthority'];}else{$CompanyRatingAuthority=NULL;}
+//if($array['GetCustomReportResponse']['GetCustomReportResult']['aCompany']['bGeneral']['bRatingAuthority']<>NULL){$CompanyRatingAuthority=$array['GetCustomReportResponse']['GetCustomReportResult']['aCompany']['bGeneral']['bRatingAuthority'];}else{$CompanyRatingAuthority=NULL;}
 
-if($array['GetCustomReportResponse']['GetCustomReportResult']['aCompany']['bGeneral']['bRatingDate']<>NULL){$CompanyRatingDate=$array['GetCustomReportResponse']['GetCustomReportResult']['aCompany']['bGeneral']['bRatingDate'];}else{$CompanyRatingDate=NULL;}
+//if($array['GetCustomReportResponse']['GetCustomReportResult']['aCompany']['bGeneral']['bRatingDate']<>NULL){$CompanyRatingDate=$array['GetCustomReportResponse']['GetCustomReportResult']['aCompany']['bGeneral']['bRatingDate'];}else{$CompanyRatingDate=NULL;}
 
 if($array['GetCustomReportResponse']['GetCustomReportResult']['aCompany']['bIdentifications']['bLatestDateOfDeed']<>NULL){$CompanyLastDateDeed = $array['GetCustomReportResponse']['GetCustomReportResult']['aCompany']['bIdentifications']['bLatestDateOfDeed'];}else{$CompanyLastDateDeed=NULL;}
 
@@ -60,7 +60,7 @@ $paramsCompany = array(
 					array($mappingId, SQLSRV_PARAM_IN),
 					array($pefindoId,SQLSRV_PARAM_IN),
 					array($company,SQLSRV_PARAM_IN),
-					array($CompanyEmail,SQLSRV_PARAM_IN),
+					array(NULL,SQLSRV_PARAM_IN),//$CompanyEmail
 					array($CompanyFixedLine,SQLSRV_PARAM_IN),
 					array($CompanyMobilePhone,SQLSRV_PARAM_IN),
 					array($CompanyCategory,SQLSRV_PARAM_IN),
@@ -72,9 +72,9 @@ $paramsCompany = array(
 					array($CompanyGroupName,SQLSRV_PARAM_IN),
 					array($CompanyLegalForm,SQLSRV_PARAM_IN),
 					array($CompanyMarketListed,SQLSRV_PARAM_IN),
-					array($CompanyRating,SQLSRV_PARAM_IN),
-					array($CompanyRatingAuthority,SQLSRV_PARAM_IN),
-					array($CompanyRatingDate,SQLSRV_PARAM_IN),
+					array(NULL,SQLSRV_PARAM_IN),//$CompanyRating
+					array(NULL,SQLSRV_PARAM_IN),//$CompanyRatingAuthority
+					array(NULL,SQLSRV_PARAM_IN),//$CompanyRatingDate
 					array($CompanyLastDateDeed,SQLSRV_PARAM_IN),
 					array($CompanyLastDeedNumb,SQLSRV_PARAM_IN),
 					array($CompanyNpwp,SQLSRV_PARAM_IN),

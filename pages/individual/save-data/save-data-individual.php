@@ -1,6 +1,6 @@
 <?php
 /* Contact */
-if($array['GetCustomReportResponse']['GetCustomReportResult']['aIndividual']['bContact']['bEmail']<>NULL){$indivContEmail=$array['GetCustomReportResponse']['GetCustomReportResult']['aIndividual']['bContact']['bEmail'];}else{$indivContEmail=NULL;}		
+//if($array['GetCustomReportResponse']['GetCustomReportResult']['aIndividual']['bContact']['bEmail']<>NULL){$indivContEmail=$array['GetCustomReportResponse']['GetCustomReportResult']['aIndividual']['bContact']['bEmail'];}else{$indivContEmail=NULL;}		
 if($array['GetCustomReportResponse']['GetCustomReportResult']['aIndividual']['bContact']['bFixedLine']<>NULL){$indivContFixLine=$array['GetCustomReportResponse']['GetCustomReportResult']['aIndividual']['bContact']['bFixedLine'];}else{$indivContFixLine=NULL;}
 if($array['GetCustomReportResponse']['GetCustomReportResult']['aIndividual']['bContact']['bMobilePhone']<>NULL){$indivContPhone=$array['GetCustomReportResponse']['GetCustomReportResult']['aIndividual']['bContact']['bMobilePhone'];}else{$indivContPhone=NULL;}
 /* General */
@@ -13,12 +13,12 @@ if($array['GetCustomReportResponse']['GetCustomReportResult']['aIndividual']['bG
 if($array['GetCustomReportResponse']['GetCustomReportResult']['aIndividual']['bGeneral']['bEmployerSector']<>NULL){$IndivGenEmpSec=$array['GetCustomReportResponse']['GetCustomReportResult']['aIndividual']['bGeneral']['bEmployerSector'];}else{$IndivGenEmpSec=NULL;}
 if($array['GetCustomReportResponse']['GetCustomReportResult']['aIndividual']['bGeneral']['bEmployment']<>NULL){$IndivGenEmployee=$array['GetCustomReportResponse']['GetCustomReportResult']['aIndividual']['bGeneral']['bEmployment'];}else{$IndivGenEmployee=NULL;}
 if($array['GetCustomReportResponse']['GetCustomReportResult']['aIndividual']['bGeneral']['bFullName']<>NULL){$IndivGenFullname=$array['GetCustomReportResponse']['GetCustomReportResult']['aIndividual']['bGeneral']['bFullName'];}else{$IndivGenFullname=NULL;}
-if($array['GetCustomReportResponse']['GetCustomReportResult']['aIndividual']['bGeneral']['bFullNameLocal']<>NULL){$IndivGenFullnmLocal=$array['GetCustomReportResponse']['GetCustomReportResult']['aIndividual']['bGeneral']['bFullNameLocal'];}else{$IndivGenFullnmLocal=NULL;}
+//if($array['GetCustomReportResponse']['GetCustomReportResult']['aIndividual']['bGeneral']['bFullNameLocal']<>NULL){$IndivGenFullnmLocal=$array['GetCustomReportResponse']['GetCustomReportResult']['aIndividual']['bGeneral']['bFullNameLocal'];}else{$IndivGenFullnmLocal=NULL;}
 if($array['GetCustomReportResponse']['GetCustomReportResult']['aIndividual']['bGeneral']['bGender']<>NULL){$IndivGenGender=$array['GetCustomReportResponse']['GetCustomReportResult']['aIndividual']['bGeneral']['bGender'];}else{$IndivGenGender=NULL;}
-if($array['GetCustomReportResponse']['GetCustomReportResult']['aIndividual']['bGeneral']['bMaritalStatus']<>NULL){$IndivGenMartStatus=$array['GetCustomReportResponse']['GetCustomReportResult']['aIndividual']['bGeneral']['bMaritalStatus'];}else{$IndivGenMartStatus=NULL;}
+//if($array['GetCustomReportResponse']['GetCustomReportResult']['aIndividual']['bGeneral']['bMaritalStatus']<>NULL){$IndivGenMartStatus=$array['GetCustomReportResponse']['GetCustomReportResult']['aIndividual']['bGeneral']['bMaritalStatus'];}else{$IndivGenMartStatus=NULL;}
 if($array['GetCustomReportResponse']['GetCustomReportResult']['aIndividual']['bGeneral']['bMotherMaidenName']<>NULL){$IndivGenMotherName=$array['GetCustomReportResponse']['GetCustomReportResult']['aIndividual']['bGeneral']['bMotherMaidenName'];}else{$IndivGenMotherName=NULL;}
 if($array['GetCustomReportResponse']['GetCustomReportResult']['aIndividual']['bGeneral']['bPlaceOfBirth']<>NULL){$IndivGenPlaceBirth=$array['GetCustomReportResponse']['GetCustomReportResult']['aIndividual']['bGeneral']['bPlaceOfBirth'];}else{$IndivGenPlaceBirth=NULL;}
-if($array['GetCustomReportResponse']['GetCustomReportResult']['aIndividual']['bGeneral']['bResidency']<>NULL){$IndivGenResidency=$array['GetCustomReportResponse']['GetCustomReportResult']['aIndividual']['bGeneral']['bResidency'];}else{$IndivGenResidency=NULL;}	
+//if($array['GetCustomReportResponse']['GetCustomReportResult']['aIndividual']['bGeneral']['bResidency']<>NULL){$IndivGenResidency=$array['GetCustomReportResponse']['GetCustomReportResult']['aIndividual']['bGeneral']['bResidency'];}else{$IndivGenResidency=NULL;}	
 if($array['GetCustomReportResponse']['GetCustomReportResult']['aIndividual']['bGeneral']['bSocialStatus']<>NULL){$IndivGenSocStatus=$array['GetCustomReportResponse']['GetCustomReportResult']['aIndividual']['bGeneral']['bSocialStatus'];}else{$IndivGenSocStatus=NULL;}
 /* Identifications */
 if($array['GetCustomReportResponse']['GetCustomReportResult']['aIndividual']['bIdentifications']['bKTP']<>NULL){$IndivIdentKTP=$array['GetCustomReportResponse']['GetCustomReportResult']['aIndividual']['bIdentifications']['bKTP'];}else{$IndivIdentKTP=NULL;}		
@@ -38,7 +38,7 @@ $callIndividual = "{call SP_INSERT_INDIVIDUAL(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,
 $paramsIndividual = array(
 					array($mappingId, SQLSRV_PARAM_IN),
 					array($pefindoId,SQLSRV_PARAM_IN),
-					array($indivContEmail,SQLSRV_PARAM_IN),
+					array(NULL,SQLSRV_PARAM_IN),//$indivContEmail
 					array($indivContFixLine,SQLSRV_PARAM_IN),
 					array($indivContPhone,SQLSRV_PARAM_IN),
 					array($IndivGenAlias,SQLSRV_PARAM_IN),
@@ -50,12 +50,12 @@ $paramsIndividual = array(
 					array($IndivGenEmpSec,SQLSRV_PARAM_IN),
 					array($IndivGenEmployee,SQLSRV_PARAM_IN),
 					array($IndivGenFullname,SQLSRV_PARAM_IN),
-					array($IndivGenFullnmLocal,SQLSRV_PARAM_IN),
+					array(NULL,SQLSRV_PARAM_IN),//$IndivGenFullnmLocal
 					array($IndivGenGender,SQLSRV_PARAM_IN),
-					array($IndivGenMartStatus,SQLSRV_PARAM_IN),
+					array(NULL,SQLSRV_PARAM_IN),//$IndivGenMartStatus
 					array($IndivGenMotherName,SQLSRV_PARAM_IN),
 					array($IndivGenPlaceBirth,SQLSRV_PARAM_IN),
-					array($IndivGenResidency,SQLSRV_PARAM_IN),
+					array(null,SQLSRV_PARAM_IN), //$IndivGenResidency
 					array($IndivGenSocStatus,SQLSRV_PARAM_IN),
 					array($IndivIdentKTP,SQLSRV_PARAM_IN),
 					array($IndivIdentNPWP,SQLSRV_PARAM_IN),

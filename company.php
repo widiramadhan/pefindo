@@ -6,6 +6,16 @@ th{
 td{
 	text-align:center;
 }
+.loader {
+    position: fixed;
+    left: 0px;
+    top: 0px;
+    width: 100%;
+    height: 100%;
+    z-index: 99999999999999999999999999999;
+    background: url('assets/img/loading.gif') 50% 50% no-repeat rgb(255,255,255);
+    opacity: 1;
+}
 </style>
 <?php
 require_once("config/configuration.php");
@@ -58,7 +68,7 @@ curl_close($curl);
 
 if ($err) {
 	//echo "cURL Error #:" . $err;
-	echo"<script>window.location='index.php?username=".$user."&page=error'</script>";
+	echo"<script>window.location='index.php?USERNAME=".$user."&page=error'</script>";
 } else {
 	$response = preg_replace("/(<\/?)(\w+):([^>]*>)/", "$1$2$3", $response);
 	$xml = new SimpleXMLElement($response);
@@ -67,6 +77,7 @@ if ($err) {
 	//print_r($array);
 } 
 ?>
+<div class="loader" id="loader"></div>
 <div class="row">
 	<div class="col-md-12">
 		<div class="card">
@@ -130,7 +141,7 @@ if ($err) {
 							<td><?php echo $array['SmartSearchCompanyResponse']['SmartSearchCompanyResult']['aCompanyRecords']['aSearchCompanyRecord']['aCompanyName'];?></td>
 							<td><?php echo $array['SmartSearchCompanyResponse']['SmartSearchCompanyResult']['aCompanyRecords']['aSearchCompanyRecord']['aAddress'];?></td>
 							<td>
-								<a href="check.php?username=<?php echo $user;?>&request=company&no=<?php echo $prospect;?>&id=<?php echo $array['SmartSearchCompanyResponse']['SmartSearchCompanyResult']['aCompanyRecords']['aSearchCompanyRecord']['aPefindoId'];?>" class="btn btn-success"><i class="fa fa-search"></i> Check Scoring</a>
+								<a href="check.php?USERNAME=<?php echo $user;?>&request=company&no=<?php echo $prospect;?>&id=<?php echo $array['SmartSearchCompanyResponse']['SmartSearchCompanyResult']['aCompanyRecords']['aSearchCompanyRecord']['aPefindoId'];?>" class="btn btn-success"><i class="fa fa-search"></i> Check Scoring</a>
 							</td>
 						</tr>
 					<?php
@@ -145,7 +156,7 @@ if ($err) {
 							<td><?php echo $item['aCompanyName'];?></td>
 							<td><?php echo $item['aAddress'];?></td>
 							<td>
-								<a href="check.php?username=<?php echo $user;?>&request=company&no=<?php echo $prospect;?>&id=<?php echo $item['aPefindoId'];?>" class="btn btn-success"><i class="fa fa-search"></i> Check Scoring</a>
+								<a href="check.php?USERNAME=<?php echo $user;?>&request=company&no=<?php echo $prospect;?>&id=<?php echo $item['aPefindoId'];?>" class="btn btn-success"><i class="fa fa-search"></i> Check Scoring</a>
 							</td>
 						</tr>
 					<?php
@@ -166,3 +177,12 @@ if ($err) {
 		</div>
 	</div>
 </div>
+
+<script src="assets/js/jquery.3.2.1.min.js" type="text/javascript"></script>
+<script type="text/javascript">
+	$(window).on("load", function(){
+		setTimeout(function(){
+			$("#loader").fadeOut("slow");
+		}, 2000);
+	});
+</script>

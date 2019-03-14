@@ -36,41 +36,43 @@ if(isset($array['GetCustomReportResponse']['GetCustomReportResult']['aContractOv
 					);
 	$execContOverview = sqlsrv_query($conn, $callContOverview, $paramsContOverview) or die (print_r( sqlsrv_errors(),true ));
 }else{
-	foreach($array['GetCustomReportResponse']['GetCustomReportResult']['aContractOverview']['bContractList']['bContract'] as $itemContView){
-		if($itemContView['bContractStatus']<>NULL){$ContViewContStatus=$itemContView['bContractStatus'];}else{$ContViewContStatus=NULL;}				
-		if($itemContView['bOutstandingAmount']['cCurrency']<>NULL){$ContViewOutStandAmountCurency=$itemContView['bOutstandingAmount']['cCurrency'];}else{$ContViewOutStandAmountCurency=NULL;}				
-		if($itemContView['bOutstandingAmount']['cValue']<>NULL){$ContViewOutStandAmountVal=$itemContView['bOutstandingAmount']['cValue'];}else{$ContViewOutStandAmountVal=NULL;}
-		if($itemContView['bPastDueAmount']['cCurrency']<>NULL){$ContViewPastDueAmountCurency=$itemContView['bPastDueAmount']['cCurrency'];}else{$ContViewPastDueAmountCurency=NULL;}				
-		if($itemContView['bPastDueAmount']['cValue']<>NULL){$ContViewPastDueAmountVal=$itemContView['bPastDueAmount']['cValue'];}else{$ContViewPastDueAmountVal=NULL;}				
-		if($itemContView['bPastDueDays']<>NULL){$ContViewPastDueDays=$itemContView['bPastDueDays'];}else{$ContViewPastDueDays=NULL;}			
-		if($itemContView['bPhaseOfContract']<>NULL){$ContViewPhaseOfCont=$itemContView['bPhaseOfContract'];}else{$$ContViewPhaseOfCont=NULL;}	
-		if($itemContView['bRoleOfClient']<>NULL){$ContViewRoleClient=$itemContView['bRoleOfClient'];}else{$ContViewRoleClient=NULL;}				
-		if($itemContView['bSector']<>NULL){$ContViewSector=$itemContView['bSector'];}else{$ContViewSector=NULL;}				
-		if($itemContView['bRoleOfClient']<>NULL){$ContViewRoleClient=$itemContView['bRoleOfClient'];}else{$ContViewRoleClient=NULL;}				
-		if($itemContView['bStartDate']<>NULL){$ContViewStartDt=$itemContView['bStartDate'];}else{$ContViewRoleClient=NULL;}				
-		if($itemContView['bTotalAmount']['cCurrency']<>NULL){$ContViewTotAmountCurency=$itemContView['bTotalAmount']['cCurrency'];}else{$ContViewTotAmountCurency=NULL;}				
-		if($itemContView['bTotalAmount']['cValue']<>NULL){$ContViewTotAmountVal=$itemContView['bTotalAmount']['cValue'];}else{$ContViewTotAmountVal=NULL;}
-		if($itemContView['bTypeOfContract']<>NULL){$ContViewTypeCont=$itemContView['bTypeOfContract'];}else{$ContViewTypeCont=NULL;}
-		
-		$callContOverview = "{call SP_INSERT_CONTRACT_OVERVIEW(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}";
-		$paramsContOverview = array(
-							array($mappingId, SQLSRV_PARAM_IN),
-							array($pefindoId,SQLSRV_PARAM_IN),
-							array($ContViewContStatus,SQLSRV_PARAM_IN),
-							array($ContViewOutStandAmountCurency,SQLSRV_PARAM_IN),
-							array($ContViewOutStandAmountVal,SQLSRV_PARAM_IN),
-							array($ContViewPastDueAmountCurency,SQLSRV_PARAM_IN),
-							array($ContViewPastDueAmountVal,SQLSRV_PARAM_IN),
-							array($ContViewPastDueDays,SQLSRV_PARAM_IN),
-							array($ContViewPhaseOfCont,SQLSRV_PARAM_IN),
-							array($ContViewRoleClient,SQLSRV_PARAM_IN),
-							array($ContViewSector,SQLSRV_PARAM_IN),
-							array($ContViewStartDt,SQLSRV_PARAM_IN),
-							array($ContViewTotAmountCurency,SQLSRV_PARAM_IN),
-							array($ContViewTotAmountVal,SQLSRV_PARAM_IN),
-							array($ContViewTypeCont,SQLSRV_PARAM_IN)
-						);
-		$execContOverview = sqlsrv_query($conn, $callContOverview, $paramsContOverview) or die (print_r( sqlsrv_errors(),true ));
+	if(isset($array['GetCustomReportResponse']['GetCustomReportResult']['aContractOverview']['bContractList']['bContract'])){
+		foreach($array['GetCustomReportResponse']['GetCustomReportResult']['aContractOverview']['bContractList']['bContract'] as $itemContView){
+			if($itemContView['bContractStatus']<>NULL){$ContViewContStatus=$itemContView['bContractStatus'];}else{$ContViewContStatus=NULL;}				
+			if($itemContView['bOutstandingAmount']['cCurrency']<>NULL){$ContViewOutStandAmountCurency=$itemContView['bOutstandingAmount']['cCurrency'];}else{$ContViewOutStandAmountCurency=NULL;}				
+			if($itemContView['bOutstandingAmount']['cValue']<>NULL){$ContViewOutStandAmountVal=$itemContView['bOutstandingAmount']['cValue'];}else{$ContViewOutStandAmountVal=NULL;}
+			if($itemContView['bPastDueAmount']['cCurrency']<>NULL){$ContViewPastDueAmountCurency=$itemContView['bPastDueAmount']['cCurrency'];}else{$ContViewPastDueAmountCurency=NULL;}				
+			if($itemContView['bPastDueAmount']['cValue']<>NULL){$ContViewPastDueAmountVal=$itemContView['bPastDueAmount']['cValue'];}else{$ContViewPastDueAmountVal=NULL;}				
+			if($itemContView['bPastDueDays']<>NULL){$ContViewPastDueDays=$itemContView['bPastDueDays'];}else{$ContViewPastDueDays=NULL;}			
+			if($itemContView['bPhaseOfContract']<>NULL){$ContViewPhaseOfCont=$itemContView['bPhaseOfContract'];}else{$$ContViewPhaseOfCont=NULL;}	
+			if($itemContView['bRoleOfClient']<>NULL){$ContViewRoleClient=$itemContView['bRoleOfClient'];}else{$ContViewRoleClient=NULL;}				
+			if($itemContView['bSector']<>NULL){$ContViewSector=$itemContView['bSector'];}else{$ContViewSector=NULL;}				
+			if($itemContView['bRoleOfClient']<>NULL){$ContViewRoleClient=$itemContView['bRoleOfClient'];}else{$ContViewRoleClient=NULL;}				
+			if($itemContView['bStartDate']<>NULL){$ContViewStartDt=$itemContView['bStartDate'];}else{$ContViewRoleClient=NULL;}				
+			if($itemContView['bTotalAmount']['cCurrency']<>NULL){$ContViewTotAmountCurency=$itemContView['bTotalAmount']['cCurrency'];}else{$ContViewTotAmountCurency=NULL;}				
+			if($itemContView['bTotalAmount']['cValue']<>NULL){$ContViewTotAmountVal=$itemContView['bTotalAmount']['cValue'];}else{$ContViewTotAmountVal=NULL;}
+			if($itemContView['bTypeOfContract']<>NULL){$ContViewTypeCont=$itemContView['bTypeOfContract'];}else{$ContViewTypeCont=NULL;}
+			
+			$callContOverview = "{call SP_INSERT_CONTRACT_OVERVIEW(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}";
+			$paramsContOverview = array(
+								array($mappingId, SQLSRV_PARAM_IN),
+								array($pefindoId,SQLSRV_PARAM_IN),
+								array($ContViewContStatus,SQLSRV_PARAM_IN),
+								array($ContViewOutStandAmountCurency,SQLSRV_PARAM_IN),
+								array($ContViewOutStandAmountVal,SQLSRV_PARAM_IN),
+								array($ContViewPastDueAmountCurency,SQLSRV_PARAM_IN),
+								array($ContViewPastDueAmountVal,SQLSRV_PARAM_IN),
+								array($ContViewPastDueDays,SQLSRV_PARAM_IN),
+								array($ContViewPhaseOfCont,SQLSRV_PARAM_IN),
+								array($ContViewRoleClient,SQLSRV_PARAM_IN),
+								array($ContViewSector,SQLSRV_PARAM_IN),
+								array($ContViewStartDt,SQLSRV_PARAM_IN),
+								array($ContViewTotAmountCurency,SQLSRV_PARAM_IN),
+								array($ContViewTotAmountVal,SQLSRV_PARAM_IN),
+								array($ContViewTypeCont,SQLSRV_PARAM_IN)
+							);
+			$execContOverview = sqlsrv_query($conn, $callContOverview, $paramsContOverview) or die (print_r( sqlsrv_errors(),true ));
+		}
 	}
 }
 ?>

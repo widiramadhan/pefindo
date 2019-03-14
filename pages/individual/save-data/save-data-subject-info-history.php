@@ -31,24 +31,26 @@ if(isset($array['GetCustomReportResponse']['GetCustomReportResult']['aSubjectInf
 							);
 	$execSubInfoHisAddList = sqlsrv_query($conn, $callSubInfoHisAddList, $paramsSubInfoHisAddList) or die ( print_r( sqlsrv_errors(),true));
 }else{
-	foreach($array['GetCustomReportResponse']['GetCustomReportResult']['aSubjectInfoHistory']['bAddressList']['bAddress'] as $ItemSubInfoAdd){
-		if($ItemSubInfoAdd['bItem']<>NULL){$SubInfoAddListItem = $ItemSubInfoAdd['bItem'];}else{$SubInfoAddListItem=NULL;}
-		if($ItemSubInfoAdd['bSubscriber']<>NULL){$SubInfoAddListSubc = $ItemSubInfoAdd['bSubscriber'];}else{$SubInfoAddListSubc=NULL;}
-		if($ItemSubInfoAdd['bValidFrom']<>NULL){$SubInfoAddListValidFrom = $ItemSubInfoAdd['bValidFrom'];}else{$SubInfoAddListValidFrom=NULL;}
-		if($ItemSubInfoAdd['bValidTo']<>NULL){$SubInfoAddListValidTo = $ItemSubInfoAdd['bValidTo'];}else{$SubInfoAddListValidTo=NULL;}
-		if($ItemSubInfoAdd['bValue']<>NULL){$SubInfoAddListVal = $ItemSubInfoAdd['bValue'];}else{$SubInfoAddLisVal=NULL;}
-	
-		$callSubInfoHisAddList = "{call SP_INSERT_SUBJECT_INFO_HISTORY_ADDRESSLIST(?,?,?,?,?,?,?)}";
-		$paramsSubInfoHisAddList = array(
-								array($mappingId, SQLSRV_PARAM_IN),
-								array($subjectInfoId,SQLSRV_PARAM_IN),
-								array($SubInfoAddListItem,SQLSRV_PARAM_IN),
-								array($SubInfoAddListSubc,SQLSRV_PARAM_IN),
-								array($SubInfoAddListValidFrom,SQLSRV_PARAM_IN),
-								array($SubInfoAddListValidTo,SQLSRV_PARAM_IN),
-								array($SubInfoAddListVal,SQLSRV_PARAM_IN)
-								);
-		$execSubInfoHisAddList = sqlsrv_query($conn, $callSubInfoHisAddList, $paramsSubInfoHisAddList) or die ( print_r( sqlsrv_errors(),true));
+	if(isset($array['GetCustomReportResponse']['GetCustomReportResult']['aSubjectInfoHistory']['bAddressList']['bAddress'])){
+		foreach($array['GetCustomReportResponse']['GetCustomReportResult']['aSubjectInfoHistory']['bAddressList']['bAddress'] as $ItemSubInfoAdd){
+			if($ItemSubInfoAdd['bItem']<>NULL){$SubInfoAddListItem = $ItemSubInfoAdd['bItem'];}else{$SubInfoAddListItem=NULL;}
+			if($ItemSubInfoAdd['bSubscriber']<>NULL){$SubInfoAddListSubc = $ItemSubInfoAdd['bSubscriber'];}else{$SubInfoAddListSubc=NULL;}
+			if($ItemSubInfoAdd['bValidFrom']<>NULL){$SubInfoAddListValidFrom = $ItemSubInfoAdd['bValidFrom'];}else{$SubInfoAddListValidFrom=NULL;}
+			if($ItemSubInfoAdd['bValidTo']<>NULL){$SubInfoAddListValidTo = $ItemSubInfoAdd['bValidTo'];}else{$SubInfoAddListValidTo=NULL;}
+			if($ItemSubInfoAdd['bValue']<>NULL){$SubInfoAddListVal = $ItemSubInfoAdd['bValue'];}else{$SubInfoAddLisVal=NULL;}
+		
+			$callSubInfoHisAddList = "{call SP_INSERT_SUBJECT_INFO_HISTORY_ADDRESSLIST(?,?,?,?,?,?,?)}";
+			$paramsSubInfoHisAddList = array(
+									array($mappingId, SQLSRV_PARAM_IN),
+									array($subjectInfoId,SQLSRV_PARAM_IN),
+									array($SubInfoAddListItem,SQLSRV_PARAM_IN),
+									array($SubInfoAddListSubc,SQLSRV_PARAM_IN),
+									array($SubInfoAddListValidFrom,SQLSRV_PARAM_IN),
+									array($SubInfoAddListValidTo,SQLSRV_PARAM_IN),
+									array($SubInfoAddListVal,SQLSRV_PARAM_IN)
+									);
+			$execSubInfoHisAddList = sqlsrv_query($conn, $callSubInfoHisAddList, $paramsSubInfoHisAddList) or die ( print_r( sqlsrv_errors(),true));
+		}
 	}
 }
 

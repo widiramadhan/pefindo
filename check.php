@@ -7,8 +7,7 @@ $pefindoId=$_GET['id'];
 $ps_no=$_GET['no'];
 $request=$_GET['request'];
 $date=date("Y-m-d");
-$user=$_GET['username'];
-
+$user=$_GET['USERNAME'];
 
 if($request == "individual"){
 	/* cek ke database apakah id ini sudah ada didalam database ? */
@@ -19,9 +18,21 @@ if($request == "individual"){
 	$data = sqlsrv_fetch_array($exec);
 	$check=sqlsrv_num_rows($exec);
 	
-	/* jika sudah ada tampilkan dari database */
+	/* INSERT TO LOG */
+	$callSPInsertLog = "{call SP_INSERT_LOG_REQUEST(?,?,?)}";
+	$paramsInsertLog = array(array($pefindoId, SQLSRV_PARAM_IN),array($ps_no, SQLSRV_PARAM_IN),array($user, SQLSRV_PARAM_IN));
+	$execInsertLog = sqlsrv_query( $conn, $callSPInsertLog, $paramsInsertLog) or die( print_r( sqlsrv_errors(), true));
+	if($execInsertLog === false){
+		echo"<script>alert('Error insert log');</script>";
+	}
+	
+	/* jika sudah ada tampilkan dari database dan data tidak bisa di cek untuk ke 2 kalinya */
 	if($check > 0){ 
-		echo"<script>window.location='index.php?username=".$user."&page=scoring-individual&id=".$pefindoId."'</script>";
+		$cekdata = $data['CREATE_DATE']->format('d-m-Y');
+		$databranch = $data['OFFICE_NAME'];
+		echo"<script>alert('Data sudah pernah di cek pada tanggal $cekdata oleh cabang $databranch')</script>";
+		//echo"<script>window.location='index.php?username=".$user."&page=individual&id=".$pefindoId."'</script>";
+		echo"<script>window.location='index.php?USERNAME=".$user."&page=scoring-individual&id=".$pefindoId."'</script>";
 	/* jika tidak ada, request ke Pefindo kemudian save ke database dan tampilkan dari database */
 	}else{
 		/* request ke pefindo menggunakan curl */
@@ -49,7 +60,7 @@ if($request == "individual"){
 		curl_close($curl);
 		if ($err) {
 			//echo "cURL Error #:" . $err;
-			echo"<script>window.location='index.php?username=".$user."&page=error'</script>";
+			echo"<script>window.location='index.php?USERNAME=".$user."&page=error'</script>";
 		} else {
 			$response = preg_replace("/(<\/?)(\w+):([^>]*>)/", "$1$2$3", $response);
 			$xml = new SimpleXMLElement($response);
@@ -59,9 +70,12 @@ if($request == "individual"){
 		}
 		
 		/* INSERT TO PEFINDO_MAPPING */
-		$callSPInsert = "{call SP_INSERT_PEFINDO_ID(?,?)}";
-		$paramsInsert = array(array($pefindoId, SQLSRV_PARAM_IN),array($ps_no, SQLSRV_PARAM_IN));
+		$callSPInsert = "{call SP_INSERT_PEFINDO_ID(?,?,?)}";
+		$paramsInsert = array(array($pefindoId, SQLSRV_PARAM_IN),array($ps_no, SQLSRV_PARAM_IN),array($user, SQLSRV_PARAM_IN));
 		$execInsert = sqlsrv_query( $conn, $callSPInsert, $paramsInsert) or die( print_r( sqlsrv_errors(), true));
+		if($execInsert === false){
+			echo"<script>alert('Error insert log');</script>";
+		}
 		
 		/* GET MAPPING ID */
 		$callMappingId = "{call SP_GET_PEFINDO_MAPPING_ID(?)}";
@@ -91,7 +105,7 @@ if($request == "individual"){
 		/* SECURITY */ require_once("pages/individual/save-data/save-data-security.php");	
 		/* SUBJECT INFO HISTORY */ require_once("pages/individual/save-data/save-data-subject-info-history.php");	
 		
-		echo"<script>window.location='index.php?username=".$user."&page=scoring-individual&id=".$pefindoId."'</script>";	
+		echo"<script>window.location='index.php?USERNAME=".$user."&page=scoring-individual&id=".$pefindoId."'</script>";
 	}
 }else{
 	/* cek ke database apakah id ini sudah ada didalam database ? */
@@ -102,10 +116,16 @@ if($request == "individual"){
 	$data = sqlsrv_fetch_array($exec);
 	$check=sqlsrv_num_rows($exec);
 	
+	/* INSERT TO LOG */
+	$callSPInsertLog = "{call SP_INSERT_LOG_REQUEST(?,?,?)}";
+	$paramsInsertLog = array(array($pefindoId, SQLSRV_PARAM_IN),array($ps_no, SQLSRV_PARAM_IN),array($user, SQLSRV_PARAM_IN));
+	$execInsertLog = sqlsrv_query( $conn, $callSPInsertLog, $paramsInsertLog) or die( print_r( sqlsrv_errors(), true));
 	
 	/* jika sudah ada tampilkan dari database */
 	if($check > 0){
-		echo"<script>window.location='index.php?username=".$user."&page=scoring-company&id=".$pefindoId."'</script>";
+		$cekdata = $data['CREATE_DATE']->format('d-m-Y');
+		echo"<script>alert('Data sudah pernah di cek pada tanggal $cekdata')</script>";
+		echo"<script>window.location='index.php?USERNAME=".$user."&page=scoring-company&id=".$pefindoId."'</script>";
 	/* jika tidak ada request ke Pefindo kemudian save ke database dan tampilkan dari database */
 	}else{
 		/* request ke pefindo menggunakan curl */
@@ -133,7 +153,7 @@ if($request == "individual"){
 		curl_close($curl);
 		if ($err) {
 			//echo "cURL Error #:" . $err;
-			echo"<script>window.location='index.php?username=".$user."&page=error'</script>";
+			echo"<script>window.location='index.php?USERNAME=".$user."&page=error'</script>";
 		} else {
 			$response = preg_replace("/(<\/?)(\w+):([^>]*>)/", "$1$2$3", $response);
 			$xml = new SimpleXMLElement($response);
@@ -175,7 +195,7 @@ if($request == "individual"){
 		/* SECURITY */ require_once("pages/company/save-data/save-data-security.php");	
 		/* SUBJECT INFO HISTORY */ require_once("pages/company/save-data/save-data-subject-info-history.php");	
 		
-		echo"<script>window.location='index.php?username=".$user."&page=scoring-company&id=".$pefindoId."'</script>";	
+		echo"<script>window.location='index.php?USERNAME=".$user."&page=scoring-company&id=".$pefindoId."'</script>";	
 	}
 }
 ?>

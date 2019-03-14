@@ -114,10 +114,10 @@ if(isset($array['GetCustomReportResponse']['GetCustomReportResult']['aCurrentRel
 	if($array['GetCustomReportResponse']['GetCustomReportResult']['aCurrentRelations']['bRelatedPartyList']['bRelatedParty']['bMainAddress']['cPostalCode']<>NULL){$CurrentRelatPartyAddCode=$array['GetCustomReportResponse']['GetCustomReportResult']['aCurrentRelations']['bRelatedPartyList']['bRelatedParty']['bMainAddress']['cPostalCode'];}else{$CurrentRelatPartyAddCode=NULL;}
 	if($array['GetCustomReportResponse']['GetCustomReportResult']['aCurrentRelations']['bRelatedPartyList']['bRelatedParty']['bMainAddress']['cStreet']<>NULL){$CurrentRelatPartyAddStreet=$array['GetCustomReportResponse']['GetCustomReportResult']['aCurrentRelations']['bRelatedPartyList']['bRelatedParty']['bMainAddress']['cStreet'];}else{$CurrentRelatPartyAddStreet=NULL;}
 	if($array['GetCustomReportResponse']['GetCustomReportResult']['aCurrentRelations']['bRelatedPartyList']['bRelatedParty']['bOwnershipShare']<>NULL){$CurrentRelatPartyOwnerShip=$array['GetCustomReportResponse']['GetCustomReportResult']['aCurrentRelations']['bRelatedPartyList']['bOwnershipShare'];}else{$CurrentRelatPartyOwnerShip=NULL;}
-	if($array['GetCustomReportResponse']['GetCustomReportResult']['aCurrentRelations']['bRelatedPartyList']['bRelatedParty']['bProcura']['bProcuraRecordNumber']<>NULL){$CurrentRelatPartyProcuraRecordNumb=$array['GetCustomReportResponse']['GetCustomReportResult']['aCurrentRelations']['bRelatedPartyList']['bProcura']['bProcuraRecordNumber'];}else{$CurrentRelatPartyProcuraRecordNumb=NULL;}
-	if($array['GetCustomReportResponse']['GetCustomReportResult']['aCurrentRelations']['bRelatedPartyList']['bRelatedParty']['bProcura']['bRegistrationDate']<>NULL){$CurrentRelatPartyProcuraRegistDate=$array['GetCustomReportResponse']['GetCustomReportResult']['aCurrentRelations']['bRelatedPartyList']['bProcura']['bRegistrationDate'];}else{$CurrentRelatPartyProcuraRegistDate=NULL;}
-	if($array['GetCustomReportResponse']['GetCustomReportResult']['aCurrentRelations']['bRelatedPartyList']['bRelatedParty']['bProcura']['bTerminationDate']<>NULL){$CurrentRelatPartyProcuraTermintDate=$array['GetCustomReportResponse']['GetCustomReportResult']['aCurrentRelations']['bRelatedPartyList']['bProcura']['bTerminationDate'];}else{$CurrentRelatPartyProcuraTermintDate=NULL;}
-	if($array['GetCustomReportResponse']['GetCustomReportResult']['aCurrentRelations']['bRelatedPartyList']['bRelatedParty']['bSubjectStatus']<>NULL){$CurrentRelatPartySubStatus=$array['GetCustomReportResponse']['GetCustomReportResult']['aCurrentRelations']['bRelatedPartyList']['bRelatedParty']['bSubjectStatus'];}else{$CurrentRelatPartySubStatus=NULL;}
+	//if($array['GetCustomReportResponse']['GetCustomReportResult']['aCurrentRelations']['bRelatedPartyList']['bRelatedParty']['bProcura']['bProcuraRecordNumber']<>NULL){$CurrentRelatPartyProcuraRecordNumb=$array['GetCustomReportResponse']['GetCustomReportResult']['aCurrentRelations']['bRelatedPartyList']['bProcura']['bProcuraRecordNumber'];}else{$CurrentRelatPartyProcuraRecordNumb=NULL;}
+	//if($array['GetCustomReportResponse']['GetCustomReportResult']['aCurrentRelations']['bRelatedPartyList']['bRelatedParty']['bProcura']['bRegistrationDate']<>NULL){$CurrentRelatPartyProcuraRegistDate=$array['GetCustomReportResponse']['GetCustomReportResult']['aCurrentRelations']['bRelatedPartyList']['bProcura']['bRegistrationDate'];}else{$CurrentRelatPartyProcuraRegistDate=NULL;}
+	//if($array['GetCustomReportResponse']['GetCustomReportResult']['aCurrentRelations']['bRelatedPartyList']['bRelatedParty']['bProcura']['bTerminationDate']<>NULL){$CurrentRelatPartyProcuraTermintDate=$array['GetCustomReportResponse']['GetCustomReportResult']['aCurrentRelations']['bRelatedPartyList']['bProcura']['bTerminationDate'];}else{$CurrentRelatPartyProcuraTermintDate=NULL;}
+	//if($array['GetCustomReportResponse']['GetCustomReportResult']['aCurrentRelations']['bRelatedPartyList']['bRelatedParty']['bSubjectStatus']<>NULL){$CurrentRelatPartySubStatus=$array['GetCustomReportResponse']['GetCustomReportResult']['aCurrentRelations']['bRelatedPartyList']['bRelatedParty']['bSubjectStatus'];}else{$CurrentRelatPartySubStatus=NULL;}
 	if($array['GetCustomReportResponse']['GetCustomReportResult']['aCurrentRelations']['bRelatedPartyList']['bRelatedParty']['bSubjectType']<>NULL){$CurrentRelatPartySubType=$array['GetCustomReportResponse']['GetCustomReportResult']['aCurrentRelations']['bRelatedPartyList']['bRelatedParty']['bSubjectType'];}else{$CurrentRelatPartySubType=NULL;}
 	if($array['GetCustomReportResponse']['GetCustomReportResult']['aCurrentRelations']['bRelatedPartyList']['bRelatedParty']['bTypeOfRelation']<>NULL){$CurrentRelatPartyTypeRelation=$array['GetCustomReportResponse']['GetCustomReportResult']['aCurrentRelations']['bRelatedPartyList']['bRelatedParty']['bTypeOfRelation'];}else{$CurrentRelatPartyTypeRelation=NULL;}
 	if($array['GetCustomReportResponse']['GetCustomReportResult']['aCurrentRelations']['bRelatedPartyList']['bRelatedParty']['bValidFrom']<>NULL){$CurrentRelatPartyValidFrom=$array['GetCustomReportResponse']['GetCustomReportResult']['aCurrentRelations']['bRelatedPartyList']['bRelatedParty']['bValidFrom'];}else{$CurrentRelatPartyValidFrom=NULL;}						
@@ -142,10 +142,10 @@ if(isset($array['GetCustomReportResponse']['GetCustomReportResult']['aCurrentRel
 								array($CurrentRelatPartyAddCode,SQLSRV_PARAM_IN),
 								array($CurrentRelatPartyAddStreet,SQLSRV_PARAM_IN),
 								array($CurrentRelatPartyOwnerShip,SQLSRV_PARAM_IN),
-								array($CurrentRelatPartyProcuraRecordNumb,SQLSRV_PARAM_IN),
-								array($CurrentRelatPartyProcuraRegistDate,SQLSRV_PARAM_IN),
-								array($CurrentRelatPartyProcuraTermintDate,SQLSRV_PARAM_IN),
-								array($CurrentRelatPartySubStatus,SQLSRV_PARAM_IN),
+								array(NULL,SQLSRV_PARAM_IN),//$CurrentRelatPartyProcuraRecordNumb
+								array(NULL,SQLSRV_PARAM_IN),//$CurrentRelatPartyProcuraRegistDate
+								array(NULL,SQLSRV_PARAM_IN),//$CurrentRelatPartyProcuraTermintDate
+								array(NULL,SQLSRV_PARAM_IN),//$CurrentRelatPartySubStatus
 								array($CurrentRelatPartySubType,SQLSRV_PARAM_IN),
 								array($CurrentRelatPartyTypeRelation,SQLSRV_PARAM_IN),
 								array($CurrentRelatPartyValidFrom,SQLSRV_PARAM_IN)
@@ -170,10 +170,10 @@ if(isset($array['GetCustomReportResponse']['GetCustomReportResult']['aCurrentRel
 			if($itemCurentRelatPartyList['bMainAddress']['cPostalCode']<>NULL){$CurrentRelatPartyAddCode=$itemCurentRelatPartyList['bMainAddress']['cPostalCode'];}else{$CurrentRelatPartyAddCode=NULL;}				
 			if($itemCurentRelatPartyList['bMainAddress']['cStreet']<>NULL){$CurrentRelatPartyAddStreet=$itemCurentRelatPartyList['bMainAddress']['cStreet'];}else{$CurrentRelatPartyAddStreet=NULL;}								
 			if($itemCurentRelatPartyList['bOwnershipShare']<>NULL){$CurrentRelatPartyOwnerShip=$itemCurentRelatPartyList['bOwnershipShare'];}else{$CurrentRelatPartyOwnerShip=NULL;}				
-			if($itemCurentRelatPartyList['bProcura']['bProcuraRecordNumber']<>NULL){$CurrentRelatPartyProcuraRecordNumb=$itemCurentRelatPartyList['bProcura']['bProcuraRecordNumber'];}else{$CurrentRelatPartyProcuraRecordNumb=NULL;}					
-			if($itemCurentRelatPartyList['bProcura']['bRegistrationDate']<>NULL){$CurrentRelatPartyProcuraRegistDate=$itemCurentRelatPartyList['bProcura']['bRegistrationDate'];}else{$CurrentRelatPartyProcuraRegistDate=NULL;}
-			if($itemCurentRelatPartyList['bProcura']['bTerminationDate']<>NULL){$CurrentRelatPartyProcuraTermintDate=$itemCurentRelatPartyList['bProcura']['bTerminationDate'];}else{$CurrentRelatPartyProcuraTermintDate=NULL;}
-			if($itemCurentRelatPartyList['bSubjectStatus']<>NULL){$CurrentRelatPartySubStatus=$itemCurentRelatPartyList['bSubjectStatus'];}else{$CurrentRelatPartySubStatus=NULL;}
+			//if($itemCurentRelatPartyList['bProcura']['bProcuraRecordNumber']<>NULL){$CurrentRelatPartyProcuraRecordNumb=$itemCurentRelatPartyList['bProcura']['bProcuraRecordNumber'];}else{$CurrentRelatPartyProcuraRecordNumb=NULL;}					
+			//if($itemCurentRelatPartyList['bProcura']['bRegistrationDate']<>NULL){$CurrentRelatPartyProcuraRegistDate=$itemCurentRelatPartyList['bProcura']['bRegistrationDate'];}else{$CurrentRelatPartyProcuraRegistDate=NULL;}
+			//if($itemCurentRelatPartyList['bProcura']['bTerminationDate']<>NULL){$CurrentRelatPartyProcuraTermintDate=$itemCurentRelatPartyList['bProcura']['bTerminationDate'];}else{$CurrentRelatPartyProcuraTermintDate=NULL;}
+			//if($itemCurentRelatPartyList['bSubjectStatus']<>NULL){$CurrentRelatPartySubStatus=$itemCurentRelatPartyList['bSubjectStatus'];}else{$CurrentRelatPartySubStatus=NULL;}
 			if($itemCurentRelatPartyList['bSubjectType']<>NULL){$CurrentRelatPartySubType=$itemCurentRelatPartyList['bSubjectType'];}else{$CurrentRelatPartySubType=NULL;}
 			if($itemCurentRelatPartyList['bTypeOfRelation']<>NULL){$CurrentRelatPartyTypeRelation=$itemCurentRelatPartyList['bTypeOfRelation'];}else{$CurrentRelatPartyTypeRelation=NULL;}
 			if($itemCurentRelatPartyList['bValidFrom']<>NULL){$CurrentRelatPartyValidFrom=$itemCurentRelatPartyList['bValidFrom'];}else{$CurrentRelatPartyValidFrom=NULL;}						
@@ -198,10 +198,10 @@ if(isset($array['GetCustomReportResponse']['GetCustomReportResult']['aCurrentRel
 										array($CurrentRelatPartyAddCode,SQLSRV_PARAM_IN),
 										array($CurrentRelatPartyAddStreet,SQLSRV_PARAM_IN),
 										array($CurrentRelatPartyOwnerShip,SQLSRV_PARAM_IN),
-										array($CurrentRelatPartyProcuraRecordNumb,SQLSRV_PARAM_IN),
-										array($CurrentRelatPartyProcuraRegistDate,SQLSRV_PARAM_IN),
-										array($CurrentRelatPartyProcuraTermintDate,SQLSRV_PARAM_IN),
-										array($CurrentRelatPartySubStatus,SQLSRV_PARAM_IN),
+										array(NULL,SQLSRV_PARAM_IN),//$CurrentRelatPartyProcuraRecordNumb
+										array(NULL,SQLSRV_PARAM_IN),//$CurrentRelatPartyProcuraRegistDate
+										array(NULL,SQLSRV_PARAM_IN),//$CurrentRelatPartyProcuraTermintDate
+										array(NULL,SQLSRV_PARAM_IN),//$CurrentRelatPartySubStatus
 										array($CurrentRelatPartySubType,SQLSRV_PARAM_IN),
 										array($CurrentRelatPartyTypeRelation,SQLSRV_PARAM_IN),
 										array($CurrentRelatPartyValidFrom,SQLSRV_PARAM_IN)

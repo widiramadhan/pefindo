@@ -30,7 +30,11 @@ switch ($current_page) {
 	case 'history':
 	require_once('pages/history.php');
 	break;
-	
+
+	case 'pefindonodata':
+	require_once('pages/pefindonodata.php');
+	break;
+		
 	case 'test':
 	require_once('test.php');
 	break;
