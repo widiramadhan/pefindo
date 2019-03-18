@@ -34,6 +34,14 @@ switch ($current_page) {
 	case 'pefindonodata':
 	require_once('pages/pefindonodata.php');
 	break;
+	
+	case 'slik-result':
+	require_once('pages/slik-result.php');
+	break;
+	
+	case 'slik-detail':
+	require_once('pages/slik-detail.php');
+	break;
 		
 	case 'test':
 	require_once('test.php');

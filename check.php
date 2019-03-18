@@ -32,7 +32,7 @@ if($request == "individual"){
 		$databranch = $data['OFFICE_NAME'];
 		echo"<script>alert('Data sudah pernah di cek pada tanggal $cekdata oleh cabang $databranch')</script>";
 		//echo"<script>window.location='index.php?username=".$user."&page=individual&id=".$pefindoId."'</script>";
-		echo"<script>window.location='index.php?USERNAME=".$user."&page=scoring-individual&id=".$pefindoId."'</script>";
+		echo"<script>window.location='index.php?USERNAME=".$user."&page=scoring-individual&id=".$pefindoId."&no=".$ps_no."'</script>";
 	/* jika tidak ada, request ke Pefindo kemudian save ke database dan tampilkan dari database */
 	}else{
 		/* request ke pefindo menggunakan curl */
@@ -70,8 +70,8 @@ if($request == "individual"){
 		}
 		
 		/* INSERT TO PEFINDO_MAPPING */
-		$callSPInsert = "{call SP_INSERT_PEFINDO_ID(?,?,?)}";
-		$paramsInsert = array(array($pefindoId, SQLSRV_PARAM_IN),array($ps_no, SQLSRV_PARAM_IN),array($user, SQLSRV_PARAM_IN));
+		$callSPInsert = "{call SP_INSERT_PEFINDO_ID(?,?,?,?)}";
+		$paramsInsert = array(array($pefindoId, SQLSRV_PARAM_IN),array($ps_no, SQLSRV_PARAM_IN),array($user, SQLSRV_PARAM_IN),array("PEMOHON", SQLSRV_PARAM_IN));
 		$execInsert = sqlsrv_query( $conn, $callSPInsert, $paramsInsert) or die( print_r( sqlsrv_errors(), true));
 		if($execInsert === false){
 			echo"<script>alert('Error insert log');</script>";
@@ -105,7 +105,7 @@ if($request == "individual"){
 		/* SECURITY */ require_once("pages/individual/save-data/save-data-security.php");	
 		/* SUBJECT INFO HISTORY */ require_once("pages/individual/save-data/save-data-subject-info-history.php");	
 		
-		echo"<script>window.location='index.php?USERNAME=".$user."&page=scoring-individual&id=".$pefindoId."'</script>";
+		echo"<script>window.location='index.php?USERNAME=".$user."&page=scoring-individual&id=".$pefindoId."&no=".$ps_no."'</script>";
 	}
 }else{
 	/* cek ke database apakah id ini sudah ada didalam database ? */
@@ -125,7 +125,7 @@ if($request == "individual"){
 	if($check > 0){
 		$cekdata = $data['CREATE_DATE']->format('d-m-Y');
 		echo"<script>alert('Data sudah pernah di cek pada tanggal $cekdata')</script>";
-		echo"<script>window.location='index.php?USERNAME=".$user."&page=scoring-company&id=".$pefindoId."'</script>";
+		echo"<script>window.location='index.php?USERNAME=".$user."&page=scoring-company&id=".$pefindoId."&no=".$ps_no."'</script>";
 	/* jika tidak ada request ke Pefindo kemudian save ke database dan tampilkan dari database */
 	}else{
 		/* request ke pefindo menggunakan curl */
@@ -195,7 +195,7 @@ if($request == "individual"){
 		/* SECURITY */ require_once("pages/company/save-data/save-data-security.php");	
 		/* SUBJECT INFO HISTORY */ require_once("pages/company/save-data/save-data-subject-info-history.php");	
 		
-		echo"<script>window.location='index.php?USERNAME=".$user."&page=scoring-company&id=".$pefindoId."'</script>";	
+		echo"<script>window.location='index.php?USERNAME=".$user."&page=scoring-company&id=".$pefindoId."&no=".$ps_no."'</script>";	
 	}
 }
 ?>

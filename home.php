@@ -3,12 +3,12 @@
 		<div class="card">
 			<div class="header">
 				<h4 class="title">Dashboard</h4>
-				<p class="category">Sistem Informasi Debitur</p>
+				<p class="category">Host to Host SFI - Pefindo</p>
 			</div>
 			<div class="content all-icons">
 				<div class="row">
 					<!--<div style="text-align:center;font-size:48px;color:#EEE;margin-top:100px;margin-bottom:300px;">-->
-					<div style="padding:30px;font-size:14px;">
+					<div style="padding:30px;font-size:14px;color:#AAA;">
 						Selamat datang, <?php echo $_GET['USERNAME'];?>.<br>
 						Silahkan pilih menu Individual untuk pengecekan Prospek personal, dan pilih menu Company untuk pengecekan Prospek Perusahaan
 						<br><br><br><br><br><br><br><br><br><br>

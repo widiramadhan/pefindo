@@ -1,26 +1,10 @@
 <?php
 require_once("config/configuration.php");
-require_once("config/connection.php");
 $id=$_GET['id'];
-$user=$_GET['USERNAME'];
-$date=date("Y-m-d");
-$noProsepekPemohon=$_GET['no'];
-
-$callSP = "{call SP_GET_MASTER_INDIVIDUAL(?)}";
-$params = array(array($id, SQLSRV_PARAM_IN));
-$exec = sqlsrv_query( $conn, $callSP, $params) or die( print_r( sqlsrv_errors(), true));
-$data = sqlsrv_fetch_array($exec);
-
-$callJOB = "{call SP_GET_JOB_TITLE(?)}";
-$paramsJOB = array(array($user, SQLSRV_PARAM_IN));
-$execJOB = sqlsrv_query( $conn, $callJOB, $paramsJOB) or die( print_r( sqlsrv_errors(), true));
-$dataJOB = sqlsrv_fetch_array($execJOB);
-
-
 
 //penjamin atau pasangan
 $callPenjamin = "{call PEFINDO_GETDATA_PASANGAN(?)}";
-$paramsPenjamin = array(array($noProsepekPemohon, SQLSRV_PARAM_IN));
+$paramsPenjamin = array(array($id, SQLSRV_PARAM_IN));
 $execPenjamin = sqlsrv_query( $conn, $callPenjamin, $paramsPenjamin) or die( print_r( sqlsrv_errors(), true));
 $dataPenjamin = sqlsrv_fetch_array($execPenjamin);
 
@@ -34,7 +18,7 @@ $tgl_lahir_penjamin = $dataPenjamin['Penjamin_TglLahir'];
 if($ktp_pasangan <> ""){
 	$ktp2=$ktp_pasangan;
 	$nama2=$nama_pasangan;
-	$tglLahir2=$tgl_lahir_pasangan;
+	$tglLahir2=tgl_lahir_pasangan;
 }else{
 	$ktp2=$ktp_penjamin;
 	$nama2=$nama_penjamin;
@@ -174,14 +158,14 @@ if ($err) {
 ?>
 <style>
 a{
-	color:#035c7a;
+	color:red;
 }
 th{
 	text-align:center;
 	font-weight:bold;
 }
 a:hover{
-	color:#035c7a;
+	color:red;
 }
 .text-default{
 	color:#AAA;
@@ -197,10 +181,10 @@ ul > li > a {
 	color:black;
 }
 ul > li > a:hover {
-	color:#035c7a;
+	color:red;
 }
 ul > li > .active > a:focus {
-	color:#035c7a;
+	color:red;
 }
 .box-yellow{
 	padding:10px;
@@ -321,20 +305,28 @@ tr.child {
 <script>
 $(document).ready(function(){
   $("#collapseOne").on("hide.bs.collapse", function(){
-    $(".card-link").html('<span class="fa fa-chevron-down" style="color:#035c7a;"></span>');
+    $(".card-link").html('<span class="fa fa-chevron-down text-danger"></span>');
   });
   $("#collapseOne").on("show.bs.collapse", function(){
-    $(".card-link").html('<span class="fa fa-chevron-up" style="color:#035c7a;"></span>');
+    $(".card-link").html('<span class="fa fa-chevron-up text-danger"></span>');
   });
   $("#collapseOne2").on("hide.bs.collapse", function(){
-    $(".card-link2").html('<span class="fa fa-chevron-down" style="color:#035c7a;"></span>');
+    $(".card-link2").html('<span class="fa fa-chevron-down text-danger"></span>');
   });
   $("#collapseOne2").on("show.bs.collapse", function(){
-    $(".card-link2").html('<span class="fa fa-chevron-up" style="color:#035c7a;"></span>');
+    $(".card-link2").html('<span class="fa fa-chevron-up text-danger"></span>');
   });
 });
 </script>
-<div class="loader" id="loader"></div>
+<?php
+$callSP = "{call SP_GET_SLIK_INDIVIDUAL_REPORT(?)}";
+$options = array( "Scrollable" => "buffered" );
+$params = array(array($id, SQLSRV_PARAM_IN));
+$exec = sqlsrv_query( $conn, $callSP, $params, $options) or die( print_r( sqlsrv_errors(), true));
+$numrows = sqlsrv_num_rows($exec);
+$data = sqlsrv_fetch_array($exec);
+?>
+<!--<div class="loader" id="loader"></div>-->
 <div class="row">
 	<div class="col-md-12">
 		<div class="card">
@@ -345,177 +337,141 @@ $(document).ready(function(){
 				</div>
 				<div style="clear:both;"></div>
 			</div>
-			<div class="content">
-				<div id="accordion">
+			<?php
+				if($data['DATA_NOT_FOUND']==1){
+			?>
+				<div class="content">
 					<div class="card">
 						<div class="header">
-							<div class="pull-left">
-								<p class="name" style="color:#035c7a;"><?php echo $data['FULL_NAME'];?></p>
+							<div class="row">
+								<div class="col-md-11">
+									<p class="name pull-left">Summary</p>
+									<p class="pull-right">
+										<a href="#" data-target="#dataDukcapilPenjamin" data-toggle="modal" class="btn btn-primary btn-sm" style="cursor:pointer;border:1px solid #035c7a;color:#035c7a;">
+											CHECK SCORING PENJAMIN
+										</a>
+									</p>
+								</div>
 							</div>
-							<div class="pull-right">
-								<a class="card-link" data-toggle="collapse" href="#collapseOne">
-									<i class="fa fa-chevron-down" style="color:#035c7a;"></i>
-								</a>
-							</div>
-							<div style="clear:both"></div>
 						</div>
-						<div id="collapseOne" class="collapse content" data-parent="#accordion">
-							<div class="table-responsive">
-								<table class="table table-borderless">
-									<tbody>
-										<tr>
-											<td>KTP</td>
-											<td><?php echo $data['KTP'];?></td>
-											<td>Pefindo ID</td>
-											<td><?php echo $data['PEFINDO_ID'];?></td>
-										</tr>
-										<tr>
-											<td>Tanggal Lahir</td>
-											<td><?php if($data['DATE_OF_BIRTH']<>NULL){echo $data['DATE_OF_BIRTH']->format('Y-m-d');}else{echo"";}?></td>
-											<td rowspan="2" style="vertical-align:top;">Alamat</td>
-											<td rowspan="2" style="vertical-align:top;"><?php echo $data['ADDRESS_LINE'];?></td>
-										</tr>
-										<tr>
-											<td>Data Kredit tersedia</td>
-											<td>Ya</td>
-										</tr>
-									</tbody>
-								</table>
+						<div class="content">
+							<div class="row">
+								<div class="col-md-11">
+									<div class="card">
+										<div class="content" style="padding:0px;">
+											<div class="table-responsive">
+												<table class="table" style="width:100%;">
+													<tr>
+														<td style="padding:10px;width:100px;"><img src="assets/img/default-user.png" style="width:100%;border-radius:50%;border:1px solid #CCC;"></td>
+														<td style="vertical-align:middle;font-size:18px;"><b><?php echo strtoupper($data['CUST_NAME']);?></b><div style="font-size:16px;color:#AAA;"><?php echo $data['ID_NO'];?></div></td>
+														<td style="vertical-align:middle;font-size:36px;width:200px;text-align:center;background-color:#035c7a;color:#FFF;"><div style="font-size:16px;">SCORE</div><b><?php echo $data['SLIK_SCORE'];?></b><br><div style="font-size:14px;"><?php echo $data['RANGE_DAYS_OD'];?></div></td>
+													</tr>
+												</table>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-md-3">
+									<div class="card">
+										<div class="content">
+											<center>
+												<div style="color:#AAA;">TOTAL FASILITAS</div>
+												<div style="font-size:36px;font-weight:bold;"><?php echo $data['TOTAL_FASILITAS'];?></div>
+											</center>
+										</div>
+									</div>
+								</div>
+								<div class="col-md-4">
+									<div class="card">
+										<div class="content">
+											<center>
+												<div style="color:#AAA;">TOTAL PLAFOND</div>
+												<div style="font-size:36px;font-weight:bold;"><span style="color:#AAA;font-size:18px;">Rp.</span> <?php echo number_format($data['TOTAL_PLAFOND'],0,',','.');?></div>
+											</center>
+										</div>
+									</div>
+								</div>
+								<div class="col-md-4">
+									<div class="card">
+										<div class="content">
+											<center>
+												<div style="color:#AAA;">TOTAL BAKI DEBET</div>
+												<div style="font-size:36px;font-weight:bold;"><span style="color:#AAA;font-size:18px;">Rp.</span> <?php echo number_format($data['TOTAL_BAKI_DEBET'],0,',','.');?></div>
+											</center>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-md-11">
+									<div class="table-responsive">
+										<table class="table table-bordered" style="width:100%;border:none;">
+											<thead>
+												<th class="bg-td" style="width:12.5%;font-weight:bold;">Lancar</th>
+												<th class="bg-td" style="width:12.5%;font-weight:bold;">1 - 30</th>
+												<th class="bg-td" style="width:12.5%;font-weight:bold;">31 - 60</th>
+												<th class="bg-td" style="width:12.5%;font-weight:bold;">61 - 90</th>
+												<th class="bg-td" style="width:12.5%;font-weight:bold;">91 - 120</th>
+												<th class="bg-td" style="width:12.5%;font-weight:bold;">121 - 150</th>
+												<th class="bg-td" style="width:12.5%;font-weight:bold;">151 - 180</th>
+												<th class="bg-td" style="width:12.5%;font-weight:bold;">> 180</th>
+											</thead>
+											<tbody>
+												<tr>
+													<?php
+														if($numrows <> 0){
+													?>
+													<td align="center"><?php if($data['DAYS_OD']==0){ echo "<i class='fa fa-check'></i>";}?></td>
+													<td align="center"><?php if($data['DAYS_OD'] >= 1 && $data['DAYS_OD'] <= 30){ echo "<i class='fa fa-check'></i>";}?></td>
+													<td align="center"><?php if($data['DAYS_OD'] >= 31 && $data['DAYS_OD'] <= 60){ echo "<i class='fa fa-check'></i>";}?></td>
+													<td align="center"><?php if($data['DAYS_OD'] >= 61 && $data['DAYS_OD'] <= 90){ echo "<i class='fa fa-check'></i>";}?></td>
+													<td align="center"><?php if($data['DAYS_OD'] >= 91 && $data['DAYS_OD'] <= 120){ echo "<i class='fa fa-check'></i>";}?></td>
+													<td align="center"><?php if($data['DAYS_OD'] >= 121 && $data['DAYS_OD'] <= 150){ echo "<i class='fa fa-check'></i>";}?></td>
+													<td align="center"><?php if($data['DAYS_OD'] >= 151 && $data['DAYS_OD'] <= 180){ echo "<i class='fa fa-check'></i>";}?></td>
+													<td align="center"><?php if($data['DAYS_OD'] > 180){ echo "<i class='fa fa-check'></i>";}?></td>
+													<?php }else{ ?>
+													<td align="center"></td>
+													<td align="center"></td>
+													<td align="center"></td>
+													<td align="center"></td>
+													<td align="center"></td>
+													<td align="center"></td>
+													<td align="center"></td>
+													<td align="center"></td>
+													<?php } ?>
+												</tr>
+											</tbody>	
+										</table>
+									</div>	
+								</div>		
+							</div>		
+						</div>				
+					</div>
+				</div>
+			<?php
+				}else{
+			?>
+				<div class="content">
+					<div class="card">
+						<div class="header">
+							<div class="row">
+								<div class="col-md-11">
+									<center>
+										<h3>DATA TIDAK DITEMUKAN DI SLIK</h3><br>
+									</center>
+								</div>
 							</div>
 						</div>
 					</div>
 				</div>
-				
-				<ul class="nav nav-tabs">
-					<?php //if($dataJOB['JOB_TITLE_CODE'] <> "SFICA" || $dataJOB['JOB_TITLE_CODE'] <> "SFICA"?>
-					<li class="active"><a data-toggle="tab" href="#summary">Summary</a></li>
-					<li><a data-toggle="tab" href="#dashboard">Dashboard</a></li>
-					<li><a data-toggle="tab" href="#informasi-debitur">Informasi Debitur</a></li>
-					<li><a data-toggle="tab" href="#skorPS">Skor PS</a></li>
-					<li><a data-toggle="tab" href="#pefindo-alert-quest">PEFINDO Alert Quest</a></li>
-					<li><a data-toggle="tab" href="#fasilitas">Fasilitas</a></li>
-					<li><a data-toggle="tab" href="#agunan">Agunan</a></li>
-					<li><a data-toggle="tab" href="#surat-berharga">Surat Berharga</a></li>
-					<li><a data-toggle="tab" href="#tagihan-lainnya">Tagihan Lainnya</a></li>
-					<li><a data-toggle="tab" href="#penyertaan">Penyertaan</a></li>
-					<li><a data-toggle="tab" href="#hubungan">Hubungan</a></li>
-					<li><a data-toggle="tab" href="#permintaan-informasi">Permintaan Informasi</a></li>
-					<li><a data-toggle="tab" href="#pengaduan">Pengaduan</a></li>
-				</ul>
-				<br>
-				<div class="tab-content">
-					<div id="dashboard" class="tab-pane fade in">
-						<?php require_once("pages/individual/tab-dashboard.php");?>
-					</div>
-					<div id="informasi-debitur" class="tab-pane fade in">
-						<?php require_once("pages/individual/tab-informasi-debitur.php");?>
-					</div>
-					<div id="skorPS" class="tab-pane fade">
-						<?php require_once("pages/individual/tab-skor-ps.php");?>
-					</div>
-					<div id="pefindo-alert-quest" class="tab-pane fade">
-						<?php require_once("pages/individual/tab-PAQ.php");?>
-					</div>
-					<div id="fasilitas" class="tab-pane fade">
-						<?php require_once("pages/individual/tab-fasilitas.php");?>
-					</div>
-					<div id="agunan" class="tab-pane fade">
-						<?php require_once("pages/individual/tab-agunan.php");?>
-					</div>
-					<div id="surat-berharga" class="tab-pane fade">
-						<?php require_once("pages/individual/tab-surat-berharga.php");?>
-					</div>
-					<div id="tagihan-lainnya" class="tab-pane fade">
-						<?php require_once("pages/individual/tab-tagihan-lainnya.php");?>
-					</div>
-					<div id="penyertaan" class="tab-pane fade">
-						<?php require_once("pages/individual/tab-penyertaan.php");?>
-					</div>
-					<div id="hubungan" class="tab-pane fade">
-						<?php require_once("pages/individual/tab-hubungan.php");?>
-					</div>
-					<div id="permintaan-informasi" class="tab-pane fade">
-						<?php require_once("pages/individual/tab-permintaan-informasi.php");?>
-					</div>
-					<div id="pengaduan" class="tab-pane fade">
-						<?php require_once("pages/individual/tab-pengaduan.php");?>
-					</div>
-					<div id="summary" class="tab-pane fade in active">
-						<?php require_once("pages/individual/tab-summary.php");?>
-					</div>
-					<div class="disclaimer">
-						<b>Disclaimer PBK</b><br>
-						Informasi Perkreditan ini didasarkan pada data yang dihimpun dari Sistem Informasi Debitur Bank Indonesia / Sistem Layanan Informasi Keuangan (SLIK) Otoritas Jasa Keuangan (OJK), Lembaga Keuangan yang menjadi Anggota atau Mitra PEFINDO Biro Kredit (PBK), serta instansi pemerintah maupun pihak swasta yang menjadi sumber data PBK.<br>
-						PBK tidak bertanggungjawab atas kebenaran dan keakuratan data yang dihimpun dari pemberi data.<br>
-						PBK tidak bertanggungjawab terhadap segala akibat yang timbul sehubungan dengan ketidakbenaran dan ketidakakuratan data serta penggunaan Informasi Perkreditan ini di kemudian hari.<br>
-						PBK menerima aduan atas indikasi ketidakbenaran dan ketidakakuratan data dan akan menindaklanjuti sesuai ketentuan peraturan perundangan yang berlaku.	
-					</div>
-				</div>
-			</div>
+			<?php
+				}
+			?>
 		</div>
 	</div>
 </div>
-<?php
-$callCIP3 = "{call SP_GET_TAB_SKOR_PS_TBL_CIP(?)}";
-$paramsCIP3 = array(array($id, SQLSRV_PARAM_IN),array($dataCIP['M_CIP_ID'], SQLSRV_PARAM_IN));
-?>
-<script type="text/javascript">
-	$(window).on("load", function(){
-		setTimeout(function(){
-			$("#loader").fadeOut("slow");
-		}, 2000);
-	});
-</script>
-<script>
-	/*Highcharts.chart('container', {
-		credits: {
-			 enabled: false
-		},
-		exporting: { 
-			enabled: false 
-		},
-		title: {
-			text: ''
-		},
-		subtitle: {
-			text: ''
-		},
-		yAxis: {
-			title: {
-				enabled: true,
-				text: 'Score'
-			}
-		},
-		xAxis: {
-			categories: [<?php $execCIP3 = sqlsrv_query( $conn, $callCIP3, $paramsCIP3) or die( print_r( sqlsrv_errors(), true)); while($dataCIP3 = sqlsrv_fetch_array($execCIP3)){echo "'".$dataCIP3['DATE']->format('m/Y')."',";}?>]																
-		},
-		legend: {
-			layout: 'vertical',
-			align: 'right',
-			verticalAlign: 'middle'
-		},
-		series: [{
-			name: 'Pefindo Score',
-			data: [<?php $execCIP3 = sqlsrv_query( $conn, $callCIP3, $paramsCIP3) or die( print_r( sqlsrv_errors(), true)); while($dataCIP3 = sqlsrv_fetch_array($execCIP3)){echo $dataCIP3['SCORE'].",";}?>]
-		}],
-		responsive: {
-			rules: [{
-				condition: {
-					maxWidth: 500
-				},
-				chartOptions: {
-					legend: {
-						layout: 'horizontal',
-						align: 'center',
-						verticalAlign: 'bottom'
-					}
-				}
-			}]
-		}
-
-	});*/
-</script>
-
 <script>
 $('tr.header').click(function(){
     $(this).nextUntil('tr.header').css('display', function(i,v){

@@ -87,7 +87,7 @@ td{
 		if($checkBlacklist > 0){	//----# Cek Blacklist
 			echo"<script>alert('Customer tersebut terdaftar di Customer Blacklist Internal.');</script>";
 			//echo 'blacklist'.$no_ktp.' - '.$nama.' - '.$birth_dt_sbmt.' - '.$birth_plc_sbmt.' - '.$mother_nm_sbmt;
-			$Warning_Data = $Warning_Data." Customer ini terdaftar di Customer Blacklist Internal.!";
+			$Warning_Data = $Warning_Data." - Customer ini terdaftar di Customer Blacklist Internal.!<br>";
 		}
 		
 		//----# Cek Dukcapil
@@ -131,8 +131,8 @@ td{
 			//----# Insert LOG End
 
 			//echo"<script>window.location='index.php?USERNAME=".$user."&page=error'</script>";
-			echo "<script>alert('Error : ".$StatusLogDkUpilNtValid." (Pada saat pengecekan No KTP di Dukcapil.!)')</script>";
-			$Warning_Data = $Warning_Data." KTP TIDAK VALID (Pada saat pengecekan No KTP di Dukcapil.!) ";
+			echo "<script>alert('Error : ".$StatusLogDkUpilNtValid." (Pada saat pengecekan No KTP di Dukcapil.!)<br>')</script>";
+			$Warning_Data = $Warning_Data." - KTP TIDAK VALID (Pada saat pengecekan No KTP di Dukcapil.!) ";
 		}
 		else
 		{
@@ -208,15 +208,15 @@ td{
 						
 						if($DkcplNAMA_LGKP != $nama)
 						{
-							$Warning_Data = $Warning_Data." Nama Lengkap Tidak Sama dengan data di Dukcapil.!";
+							$Warning_Data = $Warning_Data." - Nama Lengkap Tidak Sama dengan data di Dukcapil.!<br>";
 						}
 						if($DkcplTGL_LHR != $birth_dt_sbmt)
 						{
-							$Warning_Data = $Warning_Data." Tanggal Lahir Tidak Sama dengan data di Dukcapil.!";
+							$Warning_Data = $Warning_Data." - Tanggal Lahir Tidak Sama dengan data di Dukcapil.!<br>";
 						}
 						if($DkcplNAMA_LGKP_IBU != $mother_nm_sbmt)
 						{
-							$Warning_Data = $Warning_Data." Nama Ibu Kandung Tidak Sama dengan data di Dukcapil.!";
+							$Warning_Data = $Warning_Data." - Nama Ibu Kandung Tidak Sama dengan data di Dukcapil.!<br>";
 						}
 
 						$Is_Similar = 0;
@@ -322,28 +322,66 @@ td{
 								//----# Insert LOG End
 							}
 						}else{
-							//----# Insert LOG
-							$SourceLogPfndNtfnd = "PEFINDO";
-							$StatusLogPfndNtfnd = "DATA TIDAK DITEMUKAN";
+							$callCheckSLIK = "{call SP_CHECK_DATA_SLIK(?)}";
+							$optionsCheckSLIK =  array( "Scrollable" => "buffered" );
+							$paramsCheckSLIK = array(array($prospect, SQLSRV_PARAM_IN));
+							$execCheckSLIK = sqlsrv_query( $conn, $callCheckSLIK, $paramsCheckSLIK, $optionsCheckSLIK) or die( print_r( sqlsrv_errors(), true));
+							$dataCheckSLIK = sqlsrv_fetch_array($execCheckSLIK);
+							$numrowsCheckSLIK = sqlsrv_num_rows($execCheckSLIK);
+							if($numrowsCheckSLIK <> 0){
+								//----# Insert LOG
+								$SourceLogSLIKScss = "SLIK";
+								$StatusLogSLIKScss = "DATA DITEMUKAN";
 
-							$callSPLogPfndNtfnd = "{call SP_INSERT_LOG_BYSOURCE(?,?,?,?)}";
-							$paramsLogPfndNtfnd = array(array($prospect, SQLSRV_PARAM_IN),array($SourceLogPfndNtfnd, SQLSRV_PARAM_IN),array($StatusLogPfndNtfnd, SQLSRV_PARAM_IN), array($user, SQLSRV_PARAM_IN));
-							$execLogPfndNtfnd = sqlsrv_query( $conn, $callSPLogPfndNtfnd, $paramsLogPfndNtfnd) or die( print_r( sqlsrv_errors(), true));
-							if($execLogPfndNtfnd === false){
-								echo"<script>alert('Error insert log Pefindo DataFound');</script>";
+								$callSPLogSLIKScss = "{call SP_INSERT_LOG_BYSOURCE(?,?,?,?)}";
+								$paramsLogSLIKScss = array(array($prospect, SQLSRV_PARAM_IN),array($SourceLogSLIKScss, SQLSRV_PARAM_IN),array($StatusLogSLIKScss, SQLSRV_PARAM_IN), array($user, SQLSRV_PARAM_IN));
+								$execLogSLIKScss = sqlsrv_query( $conn, $callSPLogSLIKScss, $paramsLogSLIKScss) or die( print_r( sqlsrv_errors(), true));
+								if($execLogSLIKScss === false){
+									echo"<script>alert('Error insert log SLIK DataFound');</script>";
+								}
+								//----# Insert LOG End
+								
+								$cekdata = $dataCheckSLIK['CREATE_DATE']->format('d-m-Y');
+								$databranch = $dataCheckSLIK['OFFICE_NAME'];
+								echo"<script>alert('Data sudah pernah di cek pada tanggal $cekdata oleh cabang $databranch')</script>";
+								echo"<script>window.location='index.php?USERNAME=".$user."&page=slik-detail&id=".$prospect."'</script>";
+							}else{
+								#
+								//----# Insert LOG
+								$SourceLogSLIKNtfnd = "SLIK";
+								$StatusLogSLIKNtfnd = "DATA TIDAK DITEMUKAN";
+
+								$callSPLogSLIKNtfnd = "{call SP_INSERT_LOG_BYSOURCE(?,?,?,?)}";
+								$paramsLogSLIKNtfnd = array(array($prospect, SQLSRV_PARAM_IN),array($SourceLogSLIKNtfnd, SQLSRV_PARAM_IN),array($StatusLogSLIKNtfnd, SQLSRV_PARAM_IN), array($user, SQLSRV_PARAM_IN));
+								$execLogSLIKNtfnd = sqlsrv_query( $conn, $callSPLogSLIKNtfnd, $paramsLogSLIKNtfnd) or die( print_r( sqlsrv_errors(), true));
+								if($execLogSLIKNtfnd === false){
+									echo"<script>alert('Error insert log Pefindo DataFound');</script>";
+								}
+								//----# Insert LOG End
+								
+								//----# Insert LOG
+								$SourceLogPfndNtfnd = "PEFINDO";
+								$StatusLogPfndNtfnd = "DATA TIDAK DITEMUKAN";
+
+								$callSPLogPfndNtfnd = "{call SP_INSERT_LOG_BYSOURCE(?,?,?,?)}";
+								$paramsLogPfndNtfnd = array(array($prospect, SQLSRV_PARAM_IN),array($SourceLogPfndNtfnd, SQLSRV_PARAM_IN),array($StatusLogPfndNtfnd, SQLSRV_PARAM_IN), array($user, SQLSRV_PARAM_IN));
+								$execLogPfndNtfnd = sqlsrv_query( $conn, $callSPLogPfndNtfnd, $paramsLogPfndNtfnd) or die( print_r( sqlsrv_errors(), true));
+								if($execLogPfndNtfnd === false){
+									echo"<script>alert('Error insert log Pefindo DataFound');</script>";
+								}
+								//----# Insert LOG End
+
+								//----# Insert Table NoData
+								$callSPNoData = "{call SP_INSERT_PEFINDO_NODATA(?,?,?,?,?,?,?,?)}";
+								$paramsNoData = array(array($prospect, SQLSRV_PARAM_IN),array($no_ktp, SQLSRV_PARAM_IN),array($nama, SQLSRV_PARAM_IN), array($birth_dt_sbmt, SQLSRV_PARAM_IN), array("P", SQLSRV_PARAM_IN), array("KTP", SQLSRV_PARAM_IN), array($user, SQLSRV_PARAM_IN), array("PEMOHON", SQLSRV_PARAM_IN));
+								$execNoData = sqlsrv_query( $conn, $callSPNoData, $paramsNoData) or die( print_r( sqlsrv_errors(), true));
+								if($execNoData === false){
+									echo"<script>alert('Error insert To Table NoData.!');</script>";
+								}
+
+								echo"<script>alert('Prospek atas nama ".$nama." dengan NIK ".$no_ktp." tidak mempunyai record di Pefindo, silahkan cek kembali lewat SLIK');window.location='index.php?USERNAME=".$user."&page=pefindonodata'</script>";
+								//----# Insert Table NoData
 							}
-							//----# Insert LOG End
-
-							//----# Insert Table NoData
-							$callSPNoData = "{call SP_INSERT_PEFINDO_NODATA(?,?,?,?,?,?,?,?)}";
-							$paramsNoData = array(array($prospect, SQLSRV_PARAM_IN),array($no_ktp, SQLSRV_PARAM_IN),array($nama, SQLSRV_PARAM_IN), array($birth_dt_sbmt, SQLSRV_PARAM_IN), array("P", SQLSRV_PARAM_IN), array("KTP", SQLSRV_PARAM_IN), array($user, SQLSRV_PARAM_IN), array("PEMOHON", SQLSRV_PARAM_IN));
-							$execNoData = sqlsrv_query( $conn, $callSPNoData, $paramsNoData) or die( print_r( sqlsrv_errors(), true));
-							if($execNoData === false){
-								echo"<script>alert('Error insert To Table NoData.!');</script>";
-							}
-
-							echo"<script>alert('Prospek atas nama ".$nama." dengan NIK ".$no_ktp." tidak mempunyai record di Pefindo, silahkan cek kembali lewat SLIK')</script>";
-							//----# Insert Table NoData
 						}
 					}
 				// }
@@ -484,7 +522,7 @@ td{
 					?>
 						<tr>
 							<td><?php echo $no;?></td>
-							<td><?php echo $item['aKTP'];?></td>
+							<td><a href="#" data-target="#dataDukcapil" data-toggle="modal" style="cursor:pointer; color: blue;"><?php echo $item['aKTP'];?></a></td>
 							<td><?php echo $item['aFullName'];?></td>
 							<td><?php echo date('d-m-Y', strtotime($item['aDateOfBirth']));?></td>
 							<td><?php echo $item['aAddress'];?></td>
@@ -507,7 +545,7 @@ td{
 					</tbody>
 				</table>
 
-				<b><label style="color:red; font-size: 14px"> &nbsp; <?php echo $Warning_Data;?></label></b>
+				<b><label style="color:red; font-size: 14px"><?php echo $Warning_Data;?></label></b>
 			</div>
 		</div>
 	</div>

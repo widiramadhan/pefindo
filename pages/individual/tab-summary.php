@@ -59,43 +59,99 @@ while($dataCONT2 = sqlsrv_fetch_array($execCONT2)){
 	$totalJatuhTempo2 =+ $totalJatuhTempo2 + $dataCONT2['PASTDUE_AMOUNT_VALUE'];
 	$totalUsiaTunggakan2 =+ $totalUsiaTunggakan2 + $dataCONT2['PASTDUE_DAYS'];
 }
+
+//cek apakah dia pemohon atau penjamin
+$call3= "{call SP_CHECK_TYPE_CUSTOMER(?)}";
+$options3 =  array( "Scrollable" => "buffered" );
+$params3 = array(array($noProsepekPemohon, SQLSRV_PARAM_IN));
+$exec3 = sqlsrv_query($conn, $call3, $params3, $options3) or die( print_r( sqlsrv_errors(), true));
+$data3 = sqlsrv_fetch_array($exec3);
+$numRows3 = sqlsrv_num_rows($exec3); 
 ?>
 
 <div class="card">
 	<div class="header">
-		<p class="name">Summary</p>
+		<div class="row">
+			<div class="col-md-11">
+				<p class="name pull-left">Summary</p>
+				<?php
+					if($data3['CUST_TYPE'] == "PEMOHON"){
+				?>
+				<p class="pull-right">
+					<a href="#" data-target="#dataDukcapilPenjamin" data-toggle="modal" class="btn btn-primary btn-sm" style="cursor:pointer;border:1px solid #035c7a;color:#035c7a;">
+						CHECK SCORING PENJAMIN
+					</a>
+				</p>
+				<?php } ?>
+			</div>
+		</div>
 	</div>
 	<div class="content">
 		<div class="row">
-			<div class="col-md-12">
+			<div class="col-md-11">
+				<div class="card">
+					<div class="content" style="padding:0px;">
+						<div class="table-responsive">
+							<table class="table" style="width:100%;">
+								<tr>
+									<td style="padding:10px;width:100px;"><img src="assets/img/default-user.png" style="width:100%;border-radius:50%;border:1px solid #CCC;"></td>
+									<td style="vertical-align:middle;font-size:18px;"><b><?php echo strtoupper($nama);?></b><div style="font-size:16px;color:#AAA;"><?php echo $ktp;?></div></td>
+									<td style="vertical-align:middle;font-size:36px;width:200px;text-align:center;background-color:#035c7a;color:#FFF;"><div style="font-size:16px;">SCORE</div><b><?php echo $dataCIP['SCORE'];?></b></td>
+								</tr>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-3">
+				<div class="card">
+					<div class="content">
+						<center>
+							<div style="color:#AAA;">TOTAL FASILITAS</div>
+							<div style="font-size:36px;font-weight:bold;"><?php echo $numRowsSummary;?></div>
+						</center>
+					</div>
+				</div>
+			</div>
+			<div class="col-md-4">
+				<div class="card">
+					<div class="content">
+						<center>
+							<div style="color:#AAA;">TOTAL PLAFOND</div>
+							<div style="font-size:36px;font-weight:bold;"><span style="color:#AAA;font-size:18px;">Rp.</span> <?php echo number_format($totalPlafond2,0,',','.');?></div>
+						</center>
+					</div>
+				</div>
+			</div>
+			<div class="col-md-4">
+				<div class="card">
+					<div class="content">
+						<center>
+							<div style="color:#AAA;">TOTAL BAKI DEBET</div>
+							<div style="font-size:36px;font-weight:bold;"><span style="color:#AAA;font-size:18px;">Rp.</span> <?php echo number_format($totalBakiDebet2,0,',','.');?></div>
+						</center>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-11">
 				<div class="table-responsive">
-					<table class="table table-bordered" style="width:100%;">
+					<table class="table table-bordered" style="width:100%;border:none;">
 						<thead>
-							<th>No</th>
-							<th>NIK</th>
-							<th>Customer Name</th>
-							<th>Pefindo Score</th>
-							<th>Total Fasilitas</th>
-							<th>Total Plafond</th>
-							<th>Total Baki Debet</th>
-							<th>Lancar</th>
-							<th>1-30</th>
-							<th>31-60</th>
-							<th>61-90</th>
-							<th>91-120</th>
-							<th>121-150</th>
-							<th>151-180</th>
-							<th>>180</th>
+							<th class="bg-td" style="width:12.5%;font-weight:bold;">Lancar</th>
+							<th class="bg-td" style="width:12.5%;font-weight:bold;">1 - 30</th>
+							<th class="bg-td" style="width:12.5%;font-weight:bold;">31 - 60</th>
+							<th class="bg-td" style="width:12.5%;font-weight:bold;">61 - 90</th>
+							<th class="bg-td" style="width:12.5%;font-weight:bold;">91 - 120</th>
+							<th class="bg-td" style="width:12.5%;font-weight:bold;">121 - 150</th>
+							<th class="bg-td" style="width:12.5%;font-weight:bold;">151 - 180</th>
+							<th class="bg-td" style="width:12.5%;font-weight:bold;">> 180</th>
 						</thead>
 						<tbody>
 							<tr>
-								<td align="center">1</td>
-								<td align="center"><?php echo $ktp;?></td>
-								<td align="center"><?php echo $nama;?></td>
-								<td align="center"><?php echo $dataCIP['SCORE'];?>
-								<td align="center"><?php echo $numRowsSummary;?></td>
-								<td align="right">IDR <?php echo number_format($totalPlafond2,0,',','.');?></td>
-								<td align="right">IDR <?php echo number_format($totalBakiDebet2,0,',','.');?></td>
 								<td align="center"><?php echo $lancar;?></td>
 								<td align="center"><?php echo $days_1_30;?></td>
 								<td align="center"><?php echo $days_31_60;?></td>
@@ -108,7 +164,7 @@ while($dataCONT2 = sqlsrv_fetch_array($execCONT2)){
 						</tbody>	
 					</table>
 					<p class="name">Daftar Fasilitas</p>
-					<table class="table table-bordered" style="width:100%;">
+					<table class="table table-bordered" style="width:100%;font-size:10px;">
 						<thead>
 							<tr>
 								<th class="bg-td">JENIS LEMBAGA</th>

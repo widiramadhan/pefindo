@@ -5,7 +5,7 @@
 	<link rel="icon" type="image/png" href="assets/img/favicon.ico">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 
-	<title>Sistem Informasi Debitur</title>
+	<title>Host to Host SFI - Pefindo</title>
 
 	<meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' name='viewport' />
     <meta name="viewport" content="width=device-width" />
@@ -44,6 +44,11 @@
 	}else{
 		$prospect_dkcupil="";
 	}
+	
+	
+	$ktp2="";
+	$nama2="";
+	$tglLahir2="";
 ?>
 <body>
 
@@ -52,7 +57,7 @@
     	<div class="sidebar-wrapper" style="background-color: #035c7a">
             <div class="logo">
                 <a href="index.php" class="simple-text">
-                    H2H PEFINDO - SFI
+                    H2H SFI - PEFINDO
                 </a>
             </div>
 
@@ -71,20 +76,20 @@
                 </li>
                 <li>
                     <a href="index.php?USERNAME=<?php echo $user;?>&page=company">
-                        <i class="pe-7s-id"></i>
+                        <i class="pe-7s-culture"></i>
                         <p>Company</p>
-                    </a>
-                </li>
-				<li>
-                    <a href="index.php?USERNAME=<?php echo $user;?>&page=history">
-                        <i class="pe-7s-note"></i>
-                        <p>History</p>
                     </a>
                 </li>
                 <li>
                     <a href="index.php?USERNAME=<?php echo $user;?>&page=pefindonodata">
-                        <i class="pe-7s-note"></i>
-                        <p>Pefindo No Data</p>
+                        <i class="pe-7s-note2"></i>
+                        <p>Tasklist SLIK</p>
+                    </a>
+                </li>
+				<li>
+                    <a href="index.php?USERNAME=<?php echo $user;?>&page=history">
+                        <i class="pe-7s-refresh-2"></i>
+                        <p>History</p>
                     </a>
                 </li>
             </ul>
@@ -255,11 +260,12 @@
 		<div class="modal-content">
 			<div class="modal-header">
 				<button type="button" class="close" data-dismiss="modal">&times;</button>
-				<h4 class="modal-title">Data Dukcapil</h4>
+				<h4 class="modal-title">Compare Data Prospek</h4>
 			</div>
 			<div class="modal-body">
 				<div class="row">
 					<div class="col-md-12">
+						<span style="font-weight:bold;font-size:14px">Data Dukcapil :</span>
 						<div class="table-responsive">
 							<table id="exampleCompany" class="table table-bordered" style="width:100%">
 								<thead>
@@ -267,10 +273,10 @@
 										<th>No</th>
 										<th>NIK</th>
 										<th>Nama</th>
-										<th>Tanggal_Lahir</th>
-										<th>Tempat_Lahir</th>
-										<th>Jenis_Kelamin</th>
-										<th>Nama_Ibu_Kandung</th>
+										<th>Tanggal Lahir</th>
+										<th>Tempat Lahir</th>
+										<th>Jenis Kelamin</th>
+										<th>Nama_Ibu Kandung</th>
 										<th>ALAMAT</th>
 									</tr>
 								</thead>
@@ -294,6 +300,165 @@
 										<td><?php echo $rowGetDukcapil['ALAMAT'];?></td>
 									</tr>
 									<?php } ?>
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-12">
+						<span style="font-weight:bold;font-size:14px">Data Prospek :</span>
+						<div class="table-responsive">
+							<table id="exampleCompany" class="table table-bordered" style="width:100%">
+								<thead>
+									<tr>
+										<th>No</th>
+										<th>NIK</th>
+										<th>Nama</th>
+										<th>Tanggal Lahir</th>
+										<th>Nama Ibu Kandung</th>
+									</tr>
+								</thead>
+								<tbody>
+									<?php
+										$callPros = "{call SP_GET_PROSPEK_COMPARE (?)}";
+										$paramsPros = array(array($prospect_dkcupil, SQLSRV_PARAM_IN));
+										$execPros = sqlsrv_query($conn, $callPros, $paramsPros) or die( print_r( sqlsrv_errors(), true));
+										$no=0;
+										while($rowPros = sqlsrv_fetch_array($execPros)){
+											$no++;
+									?>
+									<tr>
+										<td><?php echo $no;?></td>
+										<td><?php echo $rowPros['ID_NO'];?></td>
+										<td><?php echo $rowPros['CUST_NAME'];?></td>
+										<td><?php echo $rowPros['BIRTH_DT']->format('Y-m-d');?></td>
+										<td><?php echo $rowPros['MOTHER_NM'];?></td>
+									</tr>
+									<?php } ?>
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- MODAL DUKCAPIL PENJAMIN -->
+<div id="dataDukcapilPenjamin" class="modal fade" role="dialog">
+	<div class="modal-dialog modal-lg" style="width:80%;">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">&times;</button>
+				<h4 class="modal-title">Data Penjamin</h4>
+			</div>
+			<div class="modal-body">
+				<div class="row">
+					<div class="col-md-12">
+						<b><label style="font-size: 14px">Data from CONFINS :</b>
+						<div class="table-responsive">
+							<table id="exampleCompany" class="table table-bordered" style="width:100%">
+								<thead>
+									<tr>
+										<th style="text-align:center;">NIK</th>
+										<th style="text-align:center;">Nama</th>
+										<th style="text-align:center;">Tanggal Lahir</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<td style="text-align:center;"><?php echo $ktp2;?></td>
+										<td style="text-align:center;"><?php echo $nama2;?></td>
+										<td style="text-align:center;"><?php if($tglLahir2<>""){echo $tglLahir2->format("Y-m-d");}else{echo"";}?></td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-12">
+						<b><label style="font-size: 14px">Data from Dukcapil :</b>
+						<div class="table-responsive">
+							<table id="exampleCompany" class="table table-bordered" style="width:100%">
+								<thead>
+									<tr>
+										<th style="text-align:center;">NIK</th>
+										<th style="text-align:center;">Nama</th>
+										<th style="text-align:center;">Tanggal Lahir</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<td style="text-align:center;"><?php echo $DkcplNIKPenjamin;?></td>
+										<td style="text-align:center;"><?php echo $DkcplNAMA_LGKPPenjamin;?></td>
+										<td style="text-align:center;"><?php if($DkcplTGL_LHRPenjamin <> ""){echo date("Y-m-d", strtotime($DkcplTGL_LHRPenjamin));}else{ echo"";}?></td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+				<b><label style="color:red; font-size: 14px"><?php echo $Warning_DataPenjamin;?></label></b>
+				<hr>
+				<div class="row">
+					<div class="col-md-12">
+						<b><label style="font-size: 14px">Data from Pefindo :</b>
+						<div class="table-responsive">
+							<table id="exampleCompany" class="table table-bordered" style="width:100%">
+								<thead>
+									<tr>
+										<th style="text-align:center;">No</th>
+										<th style="text-align:center;">KTP Number</th>
+										<th style="text-align:center;">Fullname</th>
+										<th style="text-align:center;">Date of Birth</th>
+										<th style="text-align:center;">Address</th>
+										<th style="width:50px;text-align:center;">Action</th>
+									</tr>
+								</thead>
+								<tbody>
+								<?php
+									if($array['SmartSearchIndividualResponse']['SmartSearchIndividualResult']['aStatus'] == 'SubjectFound'){
+										if($array['SmartSearchIndividualResponse']['SmartSearchIndividualResult']['aPefindoId'] <> NULL){
+								?>
+									<tr>
+										<td style="text-align:center;">1</td>
+										<td style="text-align:center;"><?php echo $array['SmartSearchIndividualResponse']['SmartSearchIndividualResult']['aIndividualRecords']['aSearchIndividualRecord']['aKTP'];?></td>
+										<td style="text-align:center;"><?php echo $array['SmartSearchIndividualResponse']['SmartSearchIndividualResult']['aIndividualRecords']['aSearchIndividualRecord']['aFullName'];?></td>
+										<td style="text-align:center;"><?php echo date('d-m-Y', strtotime($array['SmartSearchIndividualResponse']['SmartSearchIndividualResult']['aIndividualRecords']['aSearchIndividualRecord']['aDateOfBirth']));?></td>
+										<td style="text-align:center;"><?php echo $array['SmartSearchIndividualResponse']['SmartSearchIndividualResult']['aIndividualRecords']['aSearchIndividualRecord']['aAddress'];?></td>
+										<td style="text-align:center;">
+											<a href="check-penjamin.php?USERNAME=<?php echo $user;?>&request=individual&no=<?php echo $noProsepekPemohon;?>&id=<?php echo $array['SmartSearchIndividualResponse']['SmartSearchIndividualResult']['aIndividualRecords']['aSearchIndividualRecord']['aPefindoId'];?>" class="btn btn-success"><i class="fa fa-search"></i> Check Scoring</a>
+										</td>
+									</tr>
+								<?php
+										}else{
+											$no=0;
+											foreach($array['SmartSearchIndividualResponse']['SmartSearchIndividualResult']['aIndividualRecords']['aSearchIndividualRecord'] as $item) {
+												$no++;
+								?>
+									<tr>
+										<td style="text-align:center;"><?php echo $no;?></td>
+										<td style="text-align:center;"><?php echo $item['aKTP'];?></td>
+										<td style="text-align:center;"><?php echo $item['aFullName'];?></td>
+										<td style="text-align:center;"><?php echo date('d-m-Y', strtotime($item['aDateOfBirth']));?></td>
+										<td style="text-align:center;"><?php echo $item['aAddress'];?></td>
+										<td style="text-align:center;">
+											<a href="check-penjamin.php?USERNAME=<?php echo $user;?>&request=individual&no=<?php echo $noProsepekPemohon;?>&id=<?php echo $item['aPefindoId'];?>" class="btn btn-success"><i class="fa fa-search"></i> Check Scoring</a>								
+										</td>
+									</tr>
+								<?php		
+											}
+										}
+									}else{
+										echo"<b><label style='color:red'>- Data Penjamin tidak ditemukan di record Pefindo, silahkan cek lewat SLIK</b>";
+								?>
+									<tr>
+										<td colspan="6" style="text-align:center;">Not Found</td>
+									</tr>
+								<?php } ?>
 								</tbody>
 							</table>
 						</div>

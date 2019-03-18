@@ -59,14 +59,17 @@ if(isset($_POST['submit'])){
 						</div>
 					</form>
 				</div>
-				<table class="table table-bordered table-striped" id="history">
+				<table class="table table-bordered table-striped" id="history" style="font-size:10px;">
 					<thead>
 						<tr>
 							<th class="th-custom">NO</th>
 							<th class="th-custom">PROSPECT NO</th>
-							<th class="th-custom">PEFINDO ID</th>
+							<!--<th class="th-custom">PEFINDO ID</th>-->
+							<th class="th-custom">ID NO</th>
 							<th class="th-custom">NAME</th>
+							<th class="th-custom">SEARCH TYPE</th>
 							<th class="th-custom">CUSTOMER TYPE</th>
+							<th class="th-custom">CHECKED BY</th>
 							<th class="th-custom">CREATE DATE</th>
 							<th class="th-custom" width="200">ACTION</th>
 						</tr>
@@ -74,7 +77,7 @@ if(isset($_POST['submit'])){
 					<tbody>
 						<?php
 							$no=0;
-							$call = "{call SP_GET_HISTORY(?,?)}";
+							$call = "{call PEFINDO_GETDATA_HISTORY_SOURCEBY(?,?)}";
 							$param = array(array($startDate, SQLSRV_PARAM_IN),array($endDate, SQLSRV_PARAM_IN));
 							$exec = sqlsrv_query( $conn, $call, $param) or die( print_r( sqlsrv_errors(), true)); 
 							while($data = sqlsrv_fetch_array($exec)){
@@ -83,24 +86,33 @@ if(isset($_POST['submit'])){
 						<tr>
 							<td class="td-center"><?php echo $no;?></td>
 							<td class="td-center"><?php echo $data['PROSPECT_NO'];?></td>
-							<td class="td-center"><?php echo $data['PEFINDO_ID'];?></td>
-							<td class="td-center"><?php echo $data['CUST_NAME'];?></td>
+							<!--<td class="td-center"><?php //echo $data['PEFINDO_ID'];?></td>-->
+							<td class="td-center"><?php echo $data['ID_NO'];?></td>
+							<td class=""><?php echo $data['CUST_NAME'];?></td>
 							<td class="td-center"><?php if($data['CUST_TYPE']=="P"){echo"Individual";}else{echo"Company";}?></td>
+							<td class="td-center"><?php echo $data['TYPE'];?></td>
+							<td class="td-center"><?php echo $data['SOURCE_BY'];?></td>
 							<td class="td-center"><?php echo $data['CREATE_DATE']->format("d-m-Y");?></td>
 							<td class="td-center">
 								<?php 
-								if($data['CUST_TYPE']=="P"){
-								?>
-								<a href="index.php?USERNAME=<?php echo $user;?>&page=scoring-individual&id=<?php echo $data['PEFINDO_ID'];?>" class="btn btn-primary btn-sm" title="detail"><i class="fa fa-eye"></i></a>
-								<?php }else{?>
-								<a href="index.php?USERNAME=<?php echo $user;?>&page=scoring-company&id=<?php echo $data['PEFINDO_ID'];?>" class="btn btn-primary btn-sm" title="detail"><i class="fa fa-eye"></i></a>
-								<?php
+								if($data['CUST_TYPE']=="P" && $data['SOURCE_BY'] == "PEFINDO"){
+									echo'<a href="index.php?USERNAME='.$user.'&page=scoring-individual&id='.$data['PEFINDO_ID'].'&no='.$data['PROSPECT_NO'].'" class="btn btn-primary btn-sm" title="detail"><i class="fa fa-eye"></i></a>';
+								}else if($data['CUST_TYPE']=="C" && $data['SOURCE_BY'] == "PEFINDO"){
+									echo'<a href="index.php?USERNAME='.$user.'&page=scoring-company&id='.$data['PEFINDO_ID'].'&no='.$data['PROSPECT_NO'].'" class="btn btn-primary btn-sm" title="detail"><i class="fa fa-eye"></i></a>';
+								}else if($data['CUST_TYPE']=="P" && $data['SOURCE_BY'] == "SLIK"){
+									echo'<a href="index.php?USERNAME='.$user.'&page=slik-detail&id='.$data['PROSPECT_NO'].'" class="btn btn-primary btn-sm" title="detail"><i class="fa fa-eye"></i></a>';
+								}else if($data['CUST_TYPE']=="C" && $data['SOURCE_BY'] == "SLIK"){
+									echo'<a href="index.php?USERNAME='.$user.'&page=slik-detail&id='.$data['PROSPECT_NO'].'" class="btn btn-primary btn-sm" title="detail"><i class="fa fa-eye"></i></a>';
 								}
 								?>	
 								<a href="pages/getExcel.php?USERNAME=<?php echo $user;?>&id=<?php echo $data['PEFINDO_ID'];?>&type=<?php echo $data['CUST_TYPE'];?>" target="_blank" title="Export to Excel" class="btn btn-success btn-sm"><i class="fa fa-file-excel-o"></i></a>
 								<?php 
 									if($_GET['USERNAME'] == 'iman.santoso' || $_GET['USERNAME'] == 'djoko.andrew' || $_GET['USERNAME'] == 'ramandona'){
-										echo'<a href="pages/history-delete.php?USERNAME='.$user.'&id='.$data['PEFINDO_MAPPING_ID'].'&type='.$data['CUST_TYPE'].'" class="btn btn-danger btn-sm" title="delete" onclick="return confirm(\'Apakah anda yakin ingin menghapus data ini ?\');"><i class="fa fa-trash-o"></i></a>';
+										if($data['SOURCE_BY'] == "PEFINDO"){
+											echo'<a href="pages/history-delete.php?USERNAME='.$user.'&id='.$data['PEFINDO_MAPPING_ID'].'&type='.$data['CUST_TYPE'].'&flag=1" class="btn btn-danger btn-sm" title="delete" onclick="return confirm(\'Apakah anda yakin ingin menghapus data ini ?\');"><i class="fa fa-trash-o"></i></a>';
+										}else{
+											echo'<a href="pages/history-delete.php?USERNAME='.$user.'&id='.$data['PEFINDO_MAPPING_ID'].'&type='.$data['CUST_TYPE'].'&flag=2" class="btn btn-danger btn-sm" title="delete" onclick="return confirm(\'Apakah anda yakin ingin menghapus data ini ?\');"><i class="fa fa-trash-o"></i></a>';
+										}
 									}else{
 										echo'';
 									}
@@ -116,7 +128,7 @@ if(isset($_POST['submit'])){
 		</div>
 	</div>
 </div>
-<script src="assets/js/jquery.3.2.1.min.js" type="text/javascript"></script>
+<script src="assets/js/jquery.3.2.1.min.js"></script>
 <script>
 $(document).ready(function() {
     $('#history').DataTable({

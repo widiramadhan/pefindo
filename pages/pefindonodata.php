@@ -13,12 +13,20 @@
     }
 ?>
 
+<style>
+.th-custom{
+	text-align:center;
+}
+.td-center{
+	text-align:center;
+}
+</style>
 <div class="row">
     <div class="col-md-12">
         <div class="card">
             <div class="header">
-                <h4 class="title">Pefindo Data Not Found</h4>
-                <p class="category">Data Not Found in Pefindo</p>
+                <h4 class="title">Tasklist SLIK</h4>
+                <p class="category">Please search for data not found in Pefindo here</p>
             </div>
             <div class="content">
                 <div class="row">
@@ -51,7 +59,7 @@
                         </div>
                     </form>
                 </div>
-                <table class="table table-bordered table-striped" id="nodata">
+                <table class="table table-bordered table-striped" id="nodata" style="font-size:10px;">
                     <thead>
                         <tr>
                             <th class="th-custom">NO</th>
@@ -61,7 +69,8 @@
                             <th class="th-custom">CUSTOMER TYPE</th>
                             <th class="th-custom">CUSTOMER</th>
                             <th class="th-custom">CREATE DATE</th>
-                            <!-- <th class="th-custom" width="200">ACTION</th> -->
+							<th class="th-custom">STATUS</th>
+                            <th class="th-custom">ACTION</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -81,6 +90,26 @@
                             <td class="td-center"><?php if($data['CUST_TYPE']=="P"){echo"Individual";}else{echo"Company";}?></td>
                             <td class="td-center"><?php echo $data['TIPE_CUST'];?></td>
                             <td class="td-center"><?php echo $data['CREATE_DATE']->format("d-m-Y");?></td>
+							<td class="td-center">
+								<?php
+									if($data['SUB_PARAM_ID'] == "0"){
+										echo"<span class='badge' style='background-color:#d9534f;'>".$data['DESC_SUB_PARAM']."</span>";
+									}else if($data['SUB_PARAM_ID'] == "1"){
+										echo"<span class='badge' style='background-color:#428bca;'>".$data['DESC_SUB_PARAM']."</span>";
+									}else{
+										echo"<span class='badge' style='background-color:#5cb85c;'>".$data['DESC_SUB_PARAM']."</span>";
+									}
+								?>		
+							</td>
+							<td class="td-center">
+								<?php
+									if($data['SUB_PARAM_ID'] == "2"){
+										echo'<button type="button" class="btn btn-primary btn-sm" disabled>SLIK RESULT</button>';
+									}else{
+										echo'<a href="index.php?USERNAME='.$user.'&page=slik-result&id='.$data['PEFINDO_MAPPING_ID'].'" class="btn btn-primary btn-sm">SLIK RESULT</a>';
+									}
+								?>
+							</td>
                         </tr>
                         <?php
                             }

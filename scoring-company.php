@@ -184,7 +184,7 @@ $data = sqlsrv_fetch_array($exec);
 			<div class="header">
 				<div class="pull-left">
 					<h4 class="title">Scoring Report</h4>
-					<p class="category">Sistem Informasi Debitur</p>
+					<p class="category">Host to Host SFI - Pefindo</p>
 				</div>
 				<!--<div class="pull-right">
 					<a href="pages/getPDF.php?USERNAME=<?php echo $user;?>&id=<?php echo $id;?>&type=<?php echo $data['CUST_TYPE'];?>"" target="_blank" class="btn btn-danger"><i class="fa fa-file-pdf-o"></i> Export Report to PDF</a>&nbsp;
