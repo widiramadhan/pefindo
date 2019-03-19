@@ -21,21 +21,31 @@ $dataJOB = sqlsrv_fetch_array($execJOB);
 //penjamin atau pasangan
 $callPenjamin = "{call PEFINDO_GETDATA_PASANGAN(?)}";
 $paramsPenjamin = array(array($noProsepekPemohon, SQLSRV_PARAM_IN));
-$execPenjamin = sqlsrv_query( $conn, $callPenjamin, $paramsPenjamin) or die( print_r( sqlsrv_errors(), true));
+$optionsPenjamin =  array( "Scrollable" => "buffered" );
+$execPenjamin = sqlsrv_query( $conn, $callPenjamin, $paramsPenjamin, $optionsPenjamin) or die( print_r( sqlsrv_errors(), true));
 $dataPenjamin = sqlsrv_fetch_array($execPenjamin);
-
-$ktp_pasangan = $dataPenjamin['Pasangan_Noktp'];
-$nama_pasangan = $dataPenjamin['Pasangan_Nama'];
-$tgl_lahir_pasangan = $dataPenjamin['Pasangan_TglLahir'];
-$ktp_penjamin = $dataPenjamin['Penjamin_Noktp'];
-$nama_penjamin = $dataPenjamin['Penjamin_Nama'];
-$tgl_lahir_penjamin = $dataPenjamin['Penjamin_TglLahir'];
+$numrowsPenjamin = sqlsrv_num_rows($execPenjamin);
+if($numrowsPenjamin<>0){
+	$ktp_pasangan = $dataPenjamin['Pasangan_Noktp'];
+	$nama_pasangan = $dataPenjamin['Pasangan_Nama'];
+	$tgl_lahir_pasangan = $dataPenjamin['Pasangan_TglLahir'];
+	$ktp_penjamin = $dataPenjamin['Penjamin_Noktp'];
+	$nama_penjamin = $dataPenjamin['Penjamin_Nama'];
+	$tgl_lahir_penjamin = $dataPenjamin['Penjamin_TglLahir'];
+}else{
+	$ktp_pasangan = "0";
+	$nama_pasangan = "";
+	$tgl_lahir_pasangan = DateTime::createFromFormat('Y-m-d', '1970-01-01');
+	$ktp_penjamin = "0";
+	$nama_penjamin = "";
+	$tgl_lahir_penjamin = DateTime::createFromFormat('Y-m-d', '1970-01-01');
+}
 
 if($ktp_pasangan <> ""){
 	$ktp2=$ktp_pasangan;
 	$nama2=$nama_pasangan;
 	$tglLahir2=$tgl_lahir_pasangan;
-}else{
+}else if($ktp_penjamin <> ""){
 	$ktp2=$ktp_penjamin;
 	$nama2=$nama_penjamin;
 	$tglLahir2=$tgl_lahir_penjamin;
@@ -171,6 +181,15 @@ if ($err) {
 	$body = $xml->xpath('//sBody')[0];
 	$array = json_decode(json_encode((array)$body), TRUE); 
 }
+
+
+//cek apakah dia pemohon atau penjamin
+$call3= "{call SP_CHECK_TYPE_CUSTOMER(?,?)}";
+$options3 =  array( "Scrollable" => "buffered" );
+$params3 = array(array($id, SQLSRV_PARAM_IN),array($noProsepekPemohon, SQLSRV_PARAM_IN));
+$exec3 = sqlsrv_query($conn, $call3, $params3, $options3) or die( print_r( sqlsrv_errors(), true));
+$data3 = sqlsrv_fetch_array($exec3);
+$numRows3 = sqlsrv_num_rows($exec3); 
 ?>
 <style>
 a{
@@ -340,7 +359,7 @@ $(document).ready(function(){
 		<div class="card">
 			<div class="header">
 				<div class="pull-left">
-					<h4 class="title">Scoring Report</h4>
+					<h4 class="title">Scoring Report <?php echo $data3['CUST_TYPE'];?></h4>
 					<p class="category">Host to Host SFI - Pefindo</p>
 				</div>
 				<div style="clear:both;"></div>

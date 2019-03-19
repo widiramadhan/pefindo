@@ -1,28 +1,42 @@
 <?php
 require_once("config/configuration.php");
-$id=$_GET['id'];
+$noProsepekPemohonSLIK=$_GET['id'];
 
 //penjamin atau pasangan
 $callPenjamin = "{call PEFINDO_GETDATA_PASANGAN(?)}";
-$paramsPenjamin = array(array($id, SQLSRV_PARAM_IN));
-$execPenjamin = sqlsrv_query( $conn, $callPenjamin, $paramsPenjamin) or die( print_r( sqlsrv_errors(), true));
+$paramsPenjamin = array(array($noProsepekPemohonSLIK, SQLSRV_PARAM_IN));
+$optionsPenjamin =  array( "Scrollable" => "buffered" );
+$execPenjamin = sqlsrv_query( $conn, $callPenjamin, $paramsPenjamin, $optionsPenjamin) or die( print_r( sqlsrv_errors(), true));
 $dataPenjamin = sqlsrv_fetch_array($execPenjamin);
+$numrosPenjamin = sqlsrv_num_rows($execPenjamin);
+if($numrosPenjamin<>0){
+	$ktp_pasangan = $dataPenjamin['Pasangan_Noktp'];
+	$nama_pasangan = $dataPenjamin['Pasangan_Nama'];
+	$tgl_lahir_pasangan = $dataPenjamin['Pasangan_TglLahir'];
+	$ktp_penjamin = $dataPenjamin['Penjamin_Noktp'];
+	$nama_penjamin = $dataPenjamin['Penjamin_Nama'];
+	$tgl_lahir_penjamin = $dataPenjamin['Penjamin_TglLahir'];
+}else{
+	$ktp_pasangan = "";
+	$nama_pasangan = "";
+	$tgl_lahir_pasangan = "";
+	$ktp_penjamin = "";
+	$nama_penjamin = "";
+	$tgl_lahir_penjamin = "";
+}
 
-$ktp_pasangan = $dataPenjamin['Pasangan_Noktp'];
-$nama_pasangan = $dataPenjamin['Pasangan_Nama'];
-$tgl_lahir_pasangan = $dataPenjamin['Pasangan_TglLahir'];
-$ktp_penjamin = $dataPenjamin['Penjamin_Noktp'];
-$nama_penjamin = $dataPenjamin['Penjamin_Nama'];
-$tgl_lahir_penjamin = $dataPenjamin['Penjamin_TglLahir'];
-
-if($ktp_pasangan <> ""){
+if($ktp_pasangan <> "" && $ktp_penjamin == ""){
 	$ktp2=$ktp_pasangan;
 	$nama2=$nama_pasangan;
-	$tglLahir2=tgl_lahir_pasangan;
-}else{
+	$tglLahir2=$tgl_lahir_pasangan;
+}else if($ktp_penjamin <> "" || $ktp_pasangan == ""){
 	$ktp2=$ktp_penjamin;
 	$nama2=$nama_penjamin;
 	$tglLahir2=$tgl_lahir_penjamin;
+}else{
+	$ktp2="";
+	$nama2="";
+	$tglLahir2="";
 }
 
 //--# Cek Dukcapil
@@ -321,7 +335,7 @@ $(document).ready(function(){
 <?php
 $callSP = "{call SP_GET_SLIK_INDIVIDUAL_REPORT(?)}";
 $options = array( "Scrollable" => "buffered" );
-$params = array(array($id, SQLSRV_PARAM_IN));
+$params = array(array($noProsepekPemohonSLIK, SQLSRV_PARAM_IN));
 $exec = sqlsrv_query( $conn, $callSP, $params, $options) or die( print_r( sqlsrv_errors(), true));
 $numrows = sqlsrv_num_rows($exec);
 $data = sqlsrv_fetch_array($exec);
@@ -347,7 +361,7 @@ $data = sqlsrv_fetch_array($exec);
 								<div class="col-md-11">
 									<p class="name pull-left">Summary</p>
 									<p class="pull-right">
-										<a href="#" data-target="#dataDukcapilPenjamin" data-toggle="modal" class="btn btn-primary btn-sm" style="cursor:pointer;border:1px solid #035c7a;color:#035c7a;">
+										<a href="#" data-target="#dataDukcapilPenjaminSLIK" data-toggle="modal" class="btn btn-primary btn-sm" style="cursor:pointer;border:1px solid #035c7a;color:#035c7a;">
 											CHECK SCORING PENJAMIN
 										</a>
 									</p>

@@ -48,7 +48,7 @@
 	
 	$ktp2="";
 	$nama2="";
-	$tglLahir2="";
+	$tglLahir2=DateTime::createFromFormat('Y-m-d', '1970-01-01');
 ?>
 <body>
 
@@ -346,7 +346,7 @@
 	</div>
 </div>
 
-<!-- MODAL DUKCAPIL PENJAMIN -->
+<!-- MODAL DUKCAPIL PENJAMIN PEFINDO -->
 <div id="dataDukcapilPenjamin" class="modal fade" role="dialog">
 	<div class="modal-dialog modal-lg" style="width:80%;">
 		<div class="modal-content">
@@ -355,9 +355,17 @@
 				<h4 class="modal-title">Data Penjamin</h4>
 			</div>
 			<div class="modal-body">
+				<?php
+					$callCheckExists = "{call CHECK_EXISTS_SCORING_PENJAMIN(?)}";
+					$paramCheckExists = array(array($noProsepekPemohon, SQLSRV_PARAM_IN));
+					$execCheckExists = sqlsrv_query( $conn, $callCheckExists, $paramCheckExists) or die( print_r( sqlsrv_errors(), true));
+					$dataCheckExist = sqlsrv_fetch_array($execCheckExists);
+					
+					if($dataCheckExist['STATUS'] == 3){
+				?>
 				<div class="row">
 					<div class="col-md-12">
-						<b><label style="font-size: 14px">Data from CONFINS :</b>
+						<b><label style="font-size: 14px">Data from CONFINS :</label></b>
 						<div class="table-responsive">
 							<table id="exampleCompany" class="table table-bordered" style="width:100%">
 								<thead>
@@ -380,7 +388,7 @@
 				</div>
 				<div class="row">
 					<div class="col-md-12">
-						<b><label style="font-size: 14px">Data from Dukcapil :</b>
+						<b><label style="font-size: 14px">Data from Dukcapil :</label></b>
 						<div class="table-responsive">
 							<table id="exampleCompany" class="table table-bordered" style="width:100%">
 								<thead>
@@ -405,7 +413,10 @@
 				<hr>
 				<div class="row">
 					<div class="col-md-12">
-						<b><label style="font-size: 14px">Data from Pefindo :</b>
+						<b><label style="font-size: 14px">Data from Pefindo :</label></b>
+						<?php
+						if($array['SmartSearchIndividualResponse']['SmartSearchIndividualResult']['aStatus'] == 'SubjectFound'){
+						?>
 						<div class="table-responsive">
 							<table id="exampleCompany" class="table table-bordered" style="width:100%">
 								<thead>
@@ -420,8 +431,7 @@
 								</thead>
 								<tbody>
 								<?php
-									if($array['SmartSearchIndividualResponse']['SmartSearchIndividualResult']['aStatus'] == 'SubjectFound'){
-										if($array['SmartSearchIndividualResponse']['SmartSearchIndividualResult']['aPefindoId'] <> NULL){
+									if($array['SmartSearchIndividualResponse']['SmartSearchIndividualResult']['aPefindoId'] <> NULL){
 								?>
 									<tr>
 										<td style="text-align:center;">1</td>
@@ -434,10 +444,10 @@
 										</td>
 									</tr>
 								<?php
-										}else{
-											$no=0;
-											foreach($array['SmartSearchIndividualResponse']['SmartSearchIndividualResult']['aIndividualRecords']['aSearchIndividualRecord'] as $item) {
-												$no++;
+									}else{
+										$no=0;
+										foreach($array['SmartSearchIndividualResponse']['SmartSearchIndividualResult']['aIndividualRecords']['aSearchIndividualRecord'] as $item) {
+											$no++;
 								?>
 									<tr>
 										<td style="text-align:center;"><?php echo $no;?></td>
@@ -450,20 +460,593 @@
 										</td>
 									</tr>
 								<?php		
-											}
 										}
-									}else{
-										echo"<b><label style='color:red'>- Data Penjamin tidak ditemukan di record Pefindo, silahkan cek lewat SLIK</b>";
+									}
+								?>
+								</tbody>
+							</table>
+						</div>
+						<?php
+						}else{
+							echo"<br><b><label style='color:red'>- Data Penjamin tidak ditemukan di record Pefindo, silahkan cek lewat SLIK</b><br>";
+							echo"<center>
+									<form action='check-slik.php' method='post'>
+										<input name='prospect_no' type='hidden' value='".$noProsepekPemohon."'>
+										<input name='no_ktp' type='hidden' value='".$ktp2."'>
+										<input name='nama' type='hidden' value='".$nama2."'>
+										<input name='birth_dt' type='hidden' value='".$tglLahir2->format("Y-m-d")."'>
+										<input name='cust_type' type='hidden' value='P'>
+										<input name='id_type' type='hidden' value='KTP'>
+										<input name='username' type='hidden' value='".$user."'>
+										<input name='tipe_cust' type='hidden' value='PENJAMIN'>
+										<button type='submit' class='btn btn-danger'>CEK SCORING BY SLIK</div>
+									</form>
+								</center>";
+						}
+						?>
+					</div>
+				</div>
+				<?php
+					}else{
+						$callSPCheckExistPenjamin = "{call SP_GET_MASTER_INDIVIDUAL(?)}";
+						$paramsCheckExistPenjamin = array(array($dataCheckExist['PEFINDO_ID'], SQLSRV_PARAM_IN));
+						$execCheckExistPenjamin = sqlsrv_query( $conn, $callSPCheckExistPenjamin, $paramsCheckExistPenjamin) or die( print_r( sqlsrv_errors(), true));
+						$dataCheckExistPenjamin = sqlsrv_fetch_array($execCheckExistPenjamin);
+						
+						
+						$lancar_CheckExistPenjamin=0;
+						$days_1_30_CheckExistPenjamin=0;
+						$days_31_60_CheckExistPenjamin=0;
+						$days_61_90_CheckExistPenjamin=0;
+						$days_91_120_CheckExistPenjamin=0;
+						$days_121_150_CheckExistPenjamin=0;
+						$days_151_180_CheckExistPenjamin=0;
+						$lebih180_CheckExistPenjamin=0;
+
+						$callSummary_CheckExistPenjamin = "{call SP_GET_TAB_SUMMARY(?)}";
+						$optionsSummary_CheckExistPenjamin =  array( "Scrollable" => "buffered" );
+						$paramsSummary_CheckExistPenjamin = array(array($dataCheckExist['PEFINDO_ID'], SQLSRV_PARAM_IN));
+						$execSummary_CheckExistPenjamin = sqlsrv_query($conn, $callSummary_CheckExistPenjamin, $paramsSummary_CheckExistPenjamin, $optionsSummary_CheckExistPenjamin) or die( print_r( sqlsrv_errors(), true));
+						$numRowsSummary_CheckExistPenjamin = sqlsrv_num_rows($execSummary_CheckExistPenjamin);
+						while($dataSummary_CheckExistPenjamin = sqlsrv_fetch_array($execSummary_CheckExistPenjamin)){
+							$ktp_CheckExistPenjamin=$dataSummary_CheckExistPenjamin['KTP'];
+							$nama_CheckExistPenjamin=$dataSummary_CheckExistPenjamin['FULL_NAME'];
+							$duedays_CheckExistPenjamin=$dataSummary_CheckExistPenjamin['PASTDUE_DAYS'];
+							if($duedays_CheckExistPenjamin == 0){
+								$lancar_CheckExistPenjamin++;
+							}else if($duedays_CheckExistPenjamin >= 1 && $duedays_CheckExistPenjamin <= 30){
+								$days_1_30_CheckExistPenjamin++;
+							}else if($duedays_CheckExistPenjamin >= 31 && $duedays_CheckExistPenjamin <= 60){
+								$days_31_60_CheckExistPenjamin++;
+							}else if($duedays_CheckExistPenjamin >= 61 && $duedays_CheckExistPenjamin <= 90){
+								$days_61_90_CheckExistPenjamin++;
+							}else if($duedays_CheckExistPenjamin >= 91 && $duedays_CheckExistPenjamin <= 120){
+								$days_91_120_CheckExistPenjamin++;
+							}else if($duedays_CheckExistPenjamin >= 121 && $duedays_CheckExistPenjamin <= 150){
+								$days_121_150_CheckExistPenjamin++;
+							}else if($duedays_CheckExistPenjamin >= 151 && $duedays_CheckExistPenjamin <= 180){
+								$days_151_180_CheckExistPenjamin++;
+							}else if($duedays_CheckExistPenjamin > 180){
+								$lebih180_CheckExistPenjamin++;
+							}else{
+								
+							}
+						}	
+						/* select table cip */
+						$callCIP_CheckExistPenjamin = "{call SP_GET_TAB_DASHBOARD_TBL_CIP(?)}";
+						$paramsCIP_CheckExistPenjamin = array(array($dataCheckExist['PEFINDO_ID'], SQLSRV_PARAM_IN));
+						$execCIP_CheckExistPenjamin = sqlsrv_query( $conn, $callCIP_CheckExistPenjamin, $paramsCIP_CheckExistPenjamin) or die( print_r( sqlsrv_errors(), true));
+						$dataCIP_CheckExistPenjamin = sqlsrv_fetch_array($execCIP_CheckExistPenjamin);
+
+						$totalPlafond2_CheckExistPenjamin = 0;
+						$totalBakiDebet2_CheckExistPenjamin = 0;
+						$totalJatuhTempo2_CheckExistPenjamin = 0;
+						$totalUsiaTunggakan2_CheckExistPenjamin = 0;
+						
+						$callCONT2_CheckExistPenjamin = "{call SP_GET_TAB_CONTRACT_MAINDEBTOR(?)}";
+						$optionsCONT2_CheckExistPenjamin =  array( "Scrollable" => "buffered" );
+						$paramsCONT2_CheckExistPenjamin = array(array($dataCheckExist['PEFINDO_ID'], SQLSRV_PARAM_IN));
+						$execCONT2_CheckExistPenjamin = sqlsrv_query( $conn, $callCONT2_CheckExistPenjamin, $paramsCONT2_CheckExistPenjamin,$optionsCONT2_CheckExistPenjamin) or die( print_r( sqlsrv_errors(), true));
+												
+						while($dataCONT2_CheckExistPenjamin = sqlsrv_fetch_array($execCONT2_CheckExistPenjamin)){
+							$totalPlafond2_CheckExistPenjamin =+ $totalPlafond2_CheckExistPenjamin + $dataCONT2_CheckExistPenjamin['TOTAL_AMOUNT_VALUE'];
+							$totalBakiDebet2_CheckExistPenjamin =+ $totalBakiDebet2_CheckExistPenjamin + $dataCONT2_CheckExistPenjamin['OUTSTANDING_AMOUNT_VALUE'];
+							$totalJatuhTempo2_CheckExistPenjamin =+ $totalJatuhTempo2_CheckExistPenjamin + $dataCONT2_CheckExistPenjamin['PASTDUE_AMOUNT_VALUE'];
+							$totalUsiaTunggakan2_CheckExistPenjamin =+ $totalUsiaTunggakan2_CheckExistPenjamin + $dataCONT2_CheckExistPenjamin['PASTDUE_DAYS'];
+						}
+				?>
+				<div class="row">
+					<div class="col-md-12">
+						<div class="card">
+							<div class="content" style="padding:0px;">
+								<div class="table-responsive">
+									<table class="table" style="width:100%;">
+										<tr>
+											<td style="padding:10px;width:100px;"><img src="assets/img/default-user.png" style="width:100%;border-radius:50%;border:1px solid #CCC;"></td>
+											<td style="vertical-align:middle;font-size:18px;"><b><?php echo $nama_CheckExistPenjamin;?></b><div style="font-size:16px;color:#AAA;"><?php echo $ktp_CheckExistPenjamin;?></div></td>
+											<td style="vertical-align:middle;font-size:36px;width:200px;text-align:center;background-color:#035c7a;color:#FFF;"><div style="font-size:16px;">SCORE</div><b><?php echo $dataCIP_CheckExistPenjamin['SCORE'];?></b></td>
+										</tr>
+									</table>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-4">
+						<div class="card">
+							<div class="content">
+								<center>
+									<div style="color:#AAA;">TOTAL FASILITAS</div>
+									<div style="font-size:36px;font-weight:bold;"><?php echo $numRowsSummary_CheckExistPenjamin;?></div>
+								</center>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-4">
+						<div class="card">
+							<div class="content">
+								<center>
+									<div style="color:#AAA;">TOTAL PLAFOND</div>
+									<div style="font-size:36px;font-weight:bold;"><span style="color:#AAA;font-size:18px;">Rp.</span> <?php echo number_format($totalPlafond2_CheckExistPenjamin,0,',','.');?></div>
+								</center>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-4">
+						<div class="card">
+							<div class="content">
+								<center>
+									<div style="color:#AAA;">TOTAL BAKI DEBET</div>
+									<div style="font-size:36px;font-weight:bold;"><span style="color:#AAA;font-size:18px;">Rp.</span> <?php echo number_format($totalBakiDebet2_CheckExistPenjamin,0,',','.');?></div>
+								</center>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-12">
+						<div class="table-responsive">
+							<table class="table table-bordered" style="width:100%;border:none;">
+								<thead>
+									<th class="bg-td" style="width:12.5%;font-weight:bold;">Lancar</th>
+									<th class="bg-td" style="width:12.5%;font-weight:bold;">1 - 30</th>
+									<th class="bg-td" style="width:12.5%;font-weight:bold;">31 - 60</th>
+									<th class="bg-td" style="width:12.5%;font-weight:bold;">61 - 90</th>
+									<th class="bg-td" style="width:12.5%;font-weight:bold;">91 - 120</th>
+									<th class="bg-td" style="width:12.5%;font-weight:bold;">121 - 150</th>
+									<th class="bg-td" style="width:12.5%;font-weight:bold;">151 - 180</th>
+									<th class="bg-td" style="width:12.5%;font-weight:bold;">> 180</th>
+								</thead>
+								<tbody>
+									<tr>
+										<td align="center"><?php echo $lancar_CheckExistPenjamin;?></td>
+										<td align="center"><?php echo $days_1_30_CheckExistPenjamin;?></td>
+										<td align="center"><?php echo $days_31_60_CheckExistPenjamin;?></td>
+										<td align="center"><?php echo $days_61_90_CheckExistPenjamin;?></td>
+										<td align="center"><?php echo $days_91_120_CheckExistPenjamin;?></td>
+										<td align="center"><?php echo $days_121_150_CheckExistPenjamin;?></td>
+										<td align="center"><?php echo $days_151_180_CheckExistPenjamin;?></td>
+										<td align="center"><?php echo $lebih180_CheckExistPenjamin;?></td>
+									</tr>
+								</tbody>	
+							</table>
+							<p class="name">Daftar Fasilitas</p>
+							<table class="table table-bordered" style="width:100%;font-size:10px;">
+								<thead>
+									<tr>
+										<th class="bg-td">JENIS LEMBAGA</th>
+										<th class="bg-td">JENIS FASILITAS</th>
+										<th class="bg-td">TANGGAL PEMBUKAAN</th>
+										<th class="bg-td">STATUS</th>
+										<th class="bg-td">PLAFON</th>
+										<th class="bg-td">BAKI DEBET</th>
+										<th class="bg-td">JATUH TEMPO</th>
+										<th class="bg-td">USIA TUNGGAKAN</th>
+									</tr>
+								</thead>						
+								<tbody>
+								<?php
+									$totalPlafond_CheckExistPenjamin = 0;
+									$totalBakiDebet_CheckExistPenjamin = 0;
+									$totalJatuhTempo_CheckExistPenjamin = 0;
+									$totalUsiaTunggakan_CheckExistPenjamin = 0;
+									
+									$callCONT_CheckExistPenjamin = "{call SP_GET_TAB_CONTRACT_MAINDEBTOR(?)}";
+									$optionsCONT_CheckExistPenjamin =  array( "Scrollable" => "buffered" );
+									$paramsCONT_CheckExistPenjamin = array(array($dataCheckExist['PEFINDO_ID'], SQLSRV_PARAM_IN));
+									$execCONT_CheckExistPenjamin = sqlsrv_query( $conn, $callCONT_CheckExistPenjamin, $paramsCONT_CheckExistPenjamin,$optionsCONT_CheckExistPenjamin) or die( print_r( sqlsrv_errors(), true));
+									while($dataCONT_CheckExistPenjamin = sqlsrv_fetch_array($execCONT_CheckExistPenjamin)){
+										$totalPlafond_CheckExistPenjamin =+ $totalPlafond_CheckExistPenjamin + $dataCONT_CheckExistPenjamin['TOTAL_AMOUNT_VALUE'];
+										$totalBakiDebet_CheckExistPenjamin =+ $totalBakiDebet_CheckExistPenjamin + $dataCONT_CheckExistPenjamin['OUTSTANDING_AMOUNT_VALUE'];
+										$totalJatuhTempo_CheckExistPenjamin =+ $totalJatuhTempo_CheckExistPenjamin + $dataCONT_CheckExistPenjamin['PASTDUE_AMOUNT_VALUE'];
+										$totalUsiaTunggakan_CheckExistPenjamin =+ $totalUsiaTunggakan_CheckExistPenjamin + $dataCONT_CheckExistPenjamin['PASTDUE_DAYS'];
 								?>
 									<tr>
-										<td colspan="6" style="text-align:center;">Not Found</td>
+										<td align="left"><?php echo $dataCONT_CheckExistPenjamin['CREDITOR_TYPE'];?></td>
+										<td align="left"><a href="#"><?php echo $dataCONT_CheckExistPenjamin['CONTRACT_TYPE'];?></a></td>
+										<td align="center"><?php echo $dataCONT_CheckExistPenjamin['START_DATE']->format('Y-m-d');?></td>
+										<td align="left"><?php echo $dataCONT_CheckExistPenjamin['CONTRACT_STATUS'];?>
+										<td align="right"><?php echo $dataCONT_CheckExistPenjamin['TOTAL_AMOUNT_CURRENCY']." ".number_format($dataCONT_CheckExistPenjamin['TOTAL_AMOUNT_VALUE'],0,',','.');?></td>
+										<td align="right"><?php echo $dataCONT_CheckExistPenjamin['OUTSTANDING_AMOUNT_CURRENCY']." ".number_format($dataCONT_CheckExistPenjamin['OUTSTANDING_AMOUNT_VALUE'],0,',','.');?></td>
+										<td align="right"><?php echo $dataCONT_CheckExistPenjamin['PASTDUE_AMOUNT_CURRENCY']." ".number_format($dataCONT_CheckExistPenjamin['PASTDUE_AMOUNT_VALUE'],0,',','.');?></td>
+										<td align="right"><?php echo $dataCONT_CheckExistPenjamin['PASTDUE_DAYS'];?> Days</td>
 									</tr>
-								<?php } ?>
+									<?php
+										}
+									?>
+									<tr>
+										<td align="left" colspan="4"><b>Jumlah</b></td>
+										<td align="right"><b>IDR <?php echo number_format($totalPlafond_CheckExistPenjamin,0,',','.');?></b></td>
+										<td align="right"><b>IDR <?php echo number_format($totalBakiDebet_CheckExistPenjamin,0,',','.');?></b></td>
+										<td align="right"><b>IDR <?php echo number_format($totalJatuhTempo_CheckExistPenjamin,0,',','.');?></b></td>
+										<td align="right"><b><?php echo $totalUsiaTunggakan_CheckExistPenjamin;?> Days</b></td>
+									</tr>
+								</tbody>
+							</table>
+						</div>	
+					</div>	
+				</div>
+				<div class="row">
+					<div class="col-md-12">
+						<a href="index.php?USERNAME=iman.santoso&page=scoring-individual&id=<?php echo $dataCheckExist['PEFINDO_ID'];?>&no=<?php echo $noProsepekPemohon;?>" class="btn btn-primary" style="cursor:pointer;border:1px solid #035c7a;background-color:#035c7a;color:#FFF;width:100%;">DETAIL SCORING PENJAMIN</a>
+					</div>
+				</div>
+				<br>
+				<?php } ?>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- MODAL DUKCAPIL PENJAMIN SLIK -->
+<div id="dataDukcapilPenjaminSLIK" class="modal fade" role="dialog">
+	<div class="modal-dialog modal-lg" style="width:80%;">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">&times;</button>
+				<h4 class="modal-title">Data Penjamin</h4>
+			</div>
+			<div class="modal-body">
+				<?php
+					$callCheckExists = "{call CHECK_EXISTS_SCORING_PENJAMIN(?)}";
+					$paramCheckExists = array(array($noProsepekPemohonSLIK, SQLSRV_PARAM_IN));
+					$execCheckExists = sqlsrv_query( $conn, $callCheckExists, $paramCheckExists) or die( print_r( sqlsrv_errors(), true));
+					$dataCheckExist = sqlsrv_fetch_array($execCheckExists);
+					
+					if($dataCheckExist['STATUS'] == 3){
+				?>
+				<div class="row">
+					<div class="col-md-12">
+						<b><label style="font-size: 14px">Data from CONFINS :</label></b>
+						<div class="table-responsive">
+							<table id="exampleCompany" class="table table-bordered" style="width:100%">
+								<thead>
+									<tr>
+										<th style="text-align:center;">NIK</th>
+										<th style="text-align:center;">Nama</th>
+										<th style="text-align:center;">Tanggal Lahir</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<td style="text-align:center;"><?php echo $ktp2;?></td>
+										<td style="text-align:center;"><?php echo $nama2;?></td>
+										<td style="text-align:center;"><?php if($tglLahir2<>""){echo $tglLahir2->format("Y-m-d");}else{echo"";}?></td>
+									</tr>
 								</tbody>
 							</table>
 						</div>
 					</div>
 				</div>
+				<div class="row">
+					<div class="col-md-12">
+						<b><label style="font-size: 14px">Data from Dukcapil :</label></b>
+						<div class="table-responsive">
+							<table id="exampleCompany" class="table table-bordered" style="width:100%">
+								<thead>
+									<tr>
+										<th style="text-align:center;">NIK</th>
+										<th style="text-align:center;">Nama</th>
+										<th style="text-align:center;">Tanggal Lahir</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<td style="text-align:center;"><?php echo $DkcplNIKPenjamin;?></td>
+										<td style="text-align:center;"><?php echo $DkcplNAMA_LGKPPenjamin;?></td>
+										<td style="text-align:center;"><?php if($DkcplTGL_LHRPenjamin <> ""){echo date("Y-m-d", strtotime($DkcplTGL_LHRPenjamin));}else{ echo"";}?></td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+				<b><label style="color:red; font-size: 14px"><?php echo $Warning_DataPenjamin;?></label></b>
+				<hr>
+				<div class="row">
+					<div class="col-md-12">
+						<b><label style="font-size: 14px">Data from Pefindo :</label></b>
+						<?php
+						if($array['SmartSearchIndividualResponse']['SmartSearchIndividualResult']['aStatus'] == 'SubjectFound'){
+						?>
+						<div class="table-responsive">
+							<table id="exampleCompany" class="table table-bordered" style="width:100%">
+								<thead>
+									<tr>
+										<th style="text-align:center;">No</th>
+										<th style="text-align:center;">KTP Number</th>
+										<th style="text-align:center;">Fullname</th>
+										<th style="text-align:center;">Date of Birth</th>
+										<th style="text-align:center;">Address</th>
+										<th style="width:50px;text-align:center;">Action</th>
+									</tr>
+								</thead>
+								<tbody>
+								<?php
+									if($array['SmartSearchIndividualResponse']['SmartSearchIndividualResult']['aPefindoId'] <> NULL){
+								?>
+									<tr>
+										<td style="text-align:center;">1</td>
+										<td style="text-align:center;"><?php echo $array['SmartSearchIndividualResponse']['SmartSearchIndividualResult']['aIndividualRecords']['aSearchIndividualRecord']['aKTP'];?></td>
+										<td style="text-align:center;"><?php echo $array['SmartSearchIndividualResponse']['SmartSearchIndividualResult']['aIndividualRecords']['aSearchIndividualRecord']['aFullName'];?></td>
+										<td style="text-align:center;"><?php echo date('d-m-Y', strtotime($array['SmartSearchIndividualResponse']['SmartSearchIndividualResult']['aIndividualRecords']['aSearchIndividualRecord']['aDateOfBirth']));?></td>
+										<td style="text-align:center;"><?php echo $array['SmartSearchIndividualResponse']['SmartSearchIndividualResult']['aIndividualRecords']['aSearchIndividualRecord']['aAddress'];?></td>
+										<td style="text-align:center;">
+											<a href="check-penjamin.php?USERNAME=<?php echo $user;?>&request=individual&no=<?php echo $noProsepekPemohonSLIK;?>&id=<?php echo $array['SmartSearchIndividualResponse']['SmartSearchIndividualResult']['aIndividualRecords']['aSearchIndividualRecord']['aPefindoId'];?>" class="btn btn-success"><i class="fa fa-search"></i> Check Scoring</a>
+										</td>
+									</tr>
+								<?php
+									}else{
+										$no=0;
+										foreach($array['SmartSearchIndividualResponse']['SmartSearchIndividualResult']['aIndividualRecords']['aSearchIndividualRecord'] as $item) {
+											$no++;
+								?>
+									<tr>
+										<td style="text-align:center;"><?php echo $no;?></td>
+										<td style="text-align:center;"><?php echo $item['aKTP'];?></td>
+										<td style="text-align:center;"><?php echo $item['aFullName'];?></td>
+										<td style="text-align:center;"><?php echo date('d-m-Y', strtotime($item['aDateOfBirth']));?></td>
+										<td style="text-align:center;"><?php echo $item['aAddress'];?></td>
+										<td style="text-align:center;">
+											<a href="check-penjamin.php?USERNAME=<?php echo $user;?>&request=individual&no=<?php echo $noProsepekPemohonSLIK;?>&id=<?php echo $item['aPefindoId'];?>" class="btn btn-success"><i class="fa fa-search"></i> Check Scoring</a>								
+										</td>
+									</tr>
+								<?php		
+										}
+									}
+								?>
+								</tbody>
+							</table>
+						</div>
+						<?php
+						}else{
+							echo"<br><b><label style='color:red'>- Data Penjamin tidak ditemukan di record Pefindo, silahkan cek lewat SLIK</b><br>";
+							echo"<center>
+									<form action='check-slik.php' method='post'>
+										<input name='prospect_no' type='hidden' value='".$noProsepekPemohonSLIK."'>
+										<input name='no_ktp' type='hidden' value='".$ktp2."'>
+										<input name='nama' type='hidden' value='".$nama2."'>
+										<input name='birth_dt' type='hidden' value='".$tglLahir2->format("Y-m-d")."'>
+										<input name='cust_type' type='hidden' value='P'>
+										<input name='id_type' type='hidden' value='KTP'>
+										<input name='username' type='hidden' value='".$user."'>
+										<input name='tipe_cust' type='hidden' value='PENJAMIN'>
+										<button type='submit' class='btn btn-danger'>CEK SCORING BY SLIK</div>
+									</form>
+								</center>";
+						}
+						?>
+					</div>
+				</div>
+				<?php
+					}else{
+						$callSPCheckExistPenjamin = "{call SP_GET_MASTER_INDIVIDUAL(?)}";
+						$paramsCheckExistPenjamin = array(array($dataCheckExist['PEFINDO_ID'], SQLSRV_PARAM_IN));
+						$execCheckExistPenjamin = sqlsrv_query( $conn, $callSPCheckExistPenjamin, $paramsCheckExistPenjamin) or die( print_r( sqlsrv_errors(), true));
+						$dataCheckExistPenjamin = sqlsrv_fetch_array($execCheckExistPenjamin);
+						
+						
+						$lancar_CheckExistPenjamin=0;
+						$days_1_30_CheckExistPenjamin=0;
+						$days_31_60_CheckExistPenjamin=0;
+						$days_61_90_CheckExistPenjamin=0;
+						$days_91_120_CheckExistPenjamin=0;
+						$days_121_150_CheckExistPenjamin=0;
+						$days_151_180_CheckExistPenjamin=0;
+						$lebih180_CheckExistPenjamin=0;
+
+						$callSummary_CheckExistPenjamin = "{call SP_GET_TAB_SUMMARY(?)}";
+						$optionsSummary_CheckExistPenjamin =  array( "Scrollable" => "buffered" );
+						$paramsSummary_CheckExistPenjamin = array(array($dataCheckExist['PEFINDO_ID'], SQLSRV_PARAM_IN));
+						$execSummary_CheckExistPenjamin = sqlsrv_query($conn, $callSummary_CheckExistPenjamin, $paramsSummary_CheckExistPenjamin, $optionsSummary_CheckExistPenjamin) or die( print_r( sqlsrv_errors(), true));
+						$numRowsSummary_CheckExistPenjamin = sqlsrv_num_rows($execSummary_CheckExistPenjamin);
+						while($dataSummary_CheckExistPenjamin = sqlsrv_fetch_array($execSummary_CheckExistPenjamin)){
+							$ktp_CheckExistPenjamin=$dataSummary_CheckExistPenjamin['KTP'];
+							$nama_CheckExistPenjamin=$dataSummary_CheckExistPenjamin['FULL_NAME'];
+							$duedays_CheckExistPenjamin=$dataSummary_CheckExistPenjamin['PASTDUE_DAYS'];
+							if($duedays_CheckExistPenjamin == 0){
+								$lancar_CheckExistPenjamin++;
+							}else if($duedays_CheckExistPenjamin >= 1 && $duedays_CheckExistPenjamin <= 30){
+								$days_1_30_CheckExistPenjamin++;
+							}else if($duedays_CheckExistPenjamin >= 31 && $duedays_CheckExistPenjamin <= 60){
+								$days_31_60_CheckExistPenjamin++;
+							}else if($duedays_CheckExistPenjamin >= 61 && $duedays_CheckExistPenjamin <= 90){
+								$days_61_90_CheckExistPenjamin++;
+							}else if($duedays_CheckExistPenjamin >= 91 && $duedays_CheckExistPenjamin <= 120){
+								$days_91_120_CheckExistPenjamin++;
+							}else if($duedays_CheckExistPenjamin >= 121 && $duedays_CheckExistPenjamin <= 150){
+								$days_121_150_CheckExistPenjamin++;
+							}else if($duedays_CheckExistPenjamin >= 151 && $duedays_CheckExistPenjamin <= 180){
+								$days_151_180_CheckExistPenjamin++;
+							}else if($duedays_CheckExistPenjamin > 180){
+								$lebih180_CheckExistPenjamin++;
+							}else{
+								
+							}
+						}	
+						/* select table cip */
+						$callCIP_CheckExistPenjamin = "{call SP_GET_TAB_DASHBOARD_TBL_CIP(?)}";
+						$paramsCIP_CheckExistPenjamin = array(array($dataCheckExist['PEFINDO_ID'], SQLSRV_PARAM_IN));
+						$execCIP_CheckExistPenjamin = sqlsrv_query( $conn, $callCIP_CheckExistPenjamin, $paramsCIP_CheckExistPenjamin) or die( print_r( sqlsrv_errors(), true));
+						$dataCIP_CheckExistPenjamin = sqlsrv_fetch_array($execCIP_CheckExistPenjamin);
+
+						$totalPlafond2_CheckExistPenjamin = 0;
+						$totalBakiDebet2_CheckExistPenjamin = 0;
+						$totalJatuhTempo2_CheckExistPenjamin = 0;
+						$totalUsiaTunggakan2_CheckExistPenjamin = 0;
+						
+						$callCONT2_CheckExistPenjamin = "{call SP_GET_TAB_CONTRACT_MAINDEBTOR(?)}";
+						$optionsCONT2_CheckExistPenjamin =  array( "Scrollable" => "buffered" );
+						$paramsCONT2_CheckExistPenjamin = array(array($dataCheckExist['PEFINDO_ID'], SQLSRV_PARAM_IN));
+						$execCONT2_CheckExistPenjamin = sqlsrv_query( $conn, $callCONT2_CheckExistPenjamin, $paramsCONT2_CheckExistPenjamin,$optionsCONT2_CheckExistPenjamin) or die( print_r( sqlsrv_errors(), true));
+												
+						while($dataCONT2_CheckExistPenjamin = sqlsrv_fetch_array($execCONT2_CheckExistPenjamin)){
+							$totalPlafond2_CheckExistPenjamin =+ $totalPlafond2_CheckExistPenjamin + $dataCONT2_CheckExistPenjamin['TOTAL_AMOUNT_VALUE'];
+							$totalBakiDebet2_CheckExistPenjamin =+ $totalBakiDebet2_CheckExistPenjamin + $dataCONT2_CheckExistPenjamin['OUTSTANDING_AMOUNT_VALUE'];
+							$totalJatuhTempo2_CheckExistPenjamin =+ $totalJatuhTempo2_CheckExistPenjamin + $dataCONT2_CheckExistPenjamin['PASTDUE_AMOUNT_VALUE'];
+							$totalUsiaTunggakan2_CheckExistPenjamin =+ $totalUsiaTunggakan2_CheckExistPenjamin + $dataCONT2_CheckExistPenjamin['PASTDUE_DAYS'];
+						}
+				?>
+				<div class="row">
+					<div class="col-md-12">
+						<div class="card">
+							<div class="content" style="padding:0px;">
+								<div class="table-responsive">
+									<table class="table" style="width:100%;">
+										<tr>
+											<td style="padding:10px;width:100px;"><img src="assets/img/default-user.png" style="width:100%;border-radius:50%;border:1px solid #CCC;"></td>
+											<td style="vertical-align:middle;font-size:18px;"><b><?php echo $nama_CheckExistPenjamin;?></b><div style="font-size:16px;color:#AAA;"><?php echo $ktp_CheckExistPenjamin;?></div></td>
+											<td style="vertical-align:middle;font-size:36px;width:200px;text-align:center;background-color:#035c7a;color:#FFF;"><div style="font-size:16px;">SCORE</div><b><?php echo $dataCIP_CheckExistPenjamin['SCORE'];?></b></td>
+										</tr>
+									</table>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-4">
+						<div class="card">
+							<div class="content">
+								<center>
+									<div style="color:#AAA;">TOTAL FASILITAS</div>
+									<div style="font-size:36px;font-weight:bold;"><?php echo $numRowsSummary_CheckExistPenjamin;?></div>
+								</center>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-4">
+						<div class="card">
+							<div class="content">
+								<center>
+									<div style="color:#AAA;">TOTAL PLAFOND</div>
+									<div style="font-size:36px;font-weight:bold;"><span style="color:#AAA;font-size:18px;">Rp.</span> <?php echo number_format($totalPlafond2_CheckExistPenjamin,0,',','.');?></div>
+								</center>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-4">
+						<div class="card">
+							<div class="content">
+								<center>
+									<div style="color:#AAA;">TOTAL BAKI DEBET</div>
+									<div style="font-size:36px;font-weight:bold;"><span style="color:#AAA;font-size:18px;">Rp.</span> <?php echo number_format($totalBakiDebet2_CheckExistPenjamin,0,',','.');?></div>
+								</center>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-12">
+						<div class="table-responsive">
+							<table class="table table-bordered" style="width:100%;border:none;">
+								<thead>
+									<th class="bg-td" style="width:12.5%;font-weight:bold;">Lancar</th>
+									<th class="bg-td" style="width:12.5%;font-weight:bold;">1 - 30</th>
+									<th class="bg-td" style="width:12.5%;font-weight:bold;">31 - 60</th>
+									<th class="bg-td" style="width:12.5%;font-weight:bold;">61 - 90</th>
+									<th class="bg-td" style="width:12.5%;font-weight:bold;">91 - 120</th>
+									<th class="bg-td" style="width:12.5%;font-weight:bold;">121 - 150</th>
+									<th class="bg-td" style="width:12.5%;font-weight:bold;">151 - 180</th>
+									<th class="bg-td" style="width:12.5%;font-weight:bold;">> 180</th>
+								</thead>
+								<tbody>
+									<tr>
+										<td align="center"><?php echo $lancar_CheckExistPenjamin;?></td>
+										<td align="center"><?php echo $days_1_30_CheckExistPenjamin;?></td>
+										<td align="center"><?php echo $days_31_60_CheckExistPenjamin;?></td>
+										<td align="center"><?php echo $days_61_90_CheckExistPenjamin;?></td>
+										<td align="center"><?php echo $days_91_120_CheckExistPenjamin;?></td>
+										<td align="center"><?php echo $days_121_150_CheckExistPenjamin;?></td>
+										<td align="center"><?php echo $days_151_180_CheckExistPenjamin;?></td>
+										<td align="center"><?php echo $lebih180_CheckExistPenjamin;?></td>
+									</tr>
+								</tbody>	
+							</table>
+							<p class="name">Daftar Fasilitas</p>
+							<table class="table table-bordered" style="width:100%;font-size:10px;">
+								<thead>
+									<tr>
+										<th class="bg-td">JENIS LEMBAGA</th>
+										<th class="bg-td">JENIS FASILITAS</th>
+										<th class="bg-td">TANGGAL PEMBUKAAN</th>
+										<th class="bg-td">STATUS</th>
+										<th class="bg-td">PLAFON</th>
+										<th class="bg-td">BAKI DEBET</th>
+										<th class="bg-td">JATUH TEMPO</th>
+										<th class="bg-td">USIA TUNGGAKAN</th>
+									</tr>
+								</thead>						
+								<tbody>
+								<?php
+									$totalPlafond_CheckExistPenjamin = 0;
+									$totalBakiDebet_CheckExistPenjamin = 0;
+									$totalJatuhTempo_CheckExistPenjamin = 0;
+									$totalUsiaTunggakan_CheckExistPenjamin = 0;
+									
+									$callCONT_CheckExistPenjamin = "{call SP_GET_TAB_CONTRACT_MAINDEBTOR(?)}";
+									$optionsCONT_CheckExistPenjamin =  array( "Scrollable" => "buffered" );
+									$paramsCONT_CheckExistPenjamin = array(array($dataCheckExist['PEFINDO_ID'], SQLSRV_PARAM_IN));
+									$execCONT_CheckExistPenjamin = sqlsrv_query( $conn, $callCONT_CheckExistPenjamin, $paramsCONT_CheckExistPenjamin,$optionsCONT_CheckExistPenjamin) or die( print_r( sqlsrv_errors(), true));
+									while($dataCONT_CheckExistPenjamin = sqlsrv_fetch_array($execCONT_CheckExistPenjamin)){
+										$totalPlafond_CheckExistPenjamin =+ $totalPlafond_CheckExistPenjamin + $dataCONT_CheckExistPenjamin['TOTAL_AMOUNT_VALUE'];
+										$totalBakiDebet_CheckExistPenjamin =+ $totalBakiDebet_CheckExistPenjamin + $dataCONT_CheckExistPenjamin['OUTSTANDING_AMOUNT_VALUE'];
+										$totalJatuhTempo_CheckExistPenjamin =+ $totalJatuhTempo_CheckExistPenjamin + $dataCONT_CheckExistPenjamin['PASTDUE_AMOUNT_VALUE'];
+										$totalUsiaTunggakan_CheckExistPenjamin =+ $totalUsiaTunggakan_CheckExistPenjamin + $dataCONT_CheckExistPenjamin['PASTDUE_DAYS'];
+								?>
+									<tr>
+										<td align="left"><?php echo $dataCONT_CheckExistPenjamin['CREDITOR_TYPE'];?></td>
+										<td align="left"><a href="#"><?php echo $dataCONT_CheckExistPenjamin['CONTRACT_TYPE'];?></a></td>
+										<td align="center"><?php echo $dataCONT_CheckExistPenjamin['START_DATE']->format('Y-m-d');?></td>
+										<td align="left"><?php echo $dataCONT_CheckExistPenjamin['CONTRACT_STATUS'];?>
+										<td align="right"><?php echo $dataCONT_CheckExistPenjamin['TOTAL_AMOUNT_CURRENCY']." ".number_format($dataCONT_CheckExistPenjamin['TOTAL_AMOUNT_VALUE'],0,',','.');?></td>
+										<td align="right"><?php echo $dataCONT_CheckExistPenjamin['OUTSTANDING_AMOUNT_CURRENCY']." ".number_format($dataCONT_CheckExistPenjamin['OUTSTANDING_AMOUNT_VALUE'],0,',','.');?></td>
+										<td align="right"><?php echo $dataCONT_CheckExistPenjamin['PASTDUE_AMOUNT_CURRENCY']." ".number_format($dataCONT_CheckExistPenjamin['PASTDUE_AMOUNT_VALUE'],0,',','.');?></td>
+										<td align="right"><?php echo $dataCONT_CheckExistPenjamin['PASTDUE_DAYS'];?> Days</td>
+									</tr>
+									<?php
+										}
+									?>
+									<tr>
+										<td align="left" colspan="4"><b>Jumlah</b></td>
+										<td align="right"><b>IDR <?php echo number_format($totalPlafond_CheckExistPenjamin,0,',','.');?></b></td>
+										<td align="right"><b>IDR <?php echo number_format($totalBakiDebet_CheckExistPenjamin,0,',','.');?></b></td>
+										<td align="right"><b>IDR <?php echo number_format($totalJatuhTempo_CheckExistPenjamin,0,',','.');?></b></td>
+										<td align="right"><b><?php echo $totalUsiaTunggakan_CheckExistPenjamin;?> Days</b></td>
+									</tr>
+								</tbody>
+							</table>
+						</div>	
+					</div>	
+				</div>
+				<div class="row">
+					<div class="col-md-12">
+						<a href="index.php?USERNAME=iman.santoso&page=scoring-individual&id=<?php echo $dataCheckExist['PEFINDO_ID'];?>&no=<?php echo $noProsepekPemohonSLIK;?>" class="btn btn-primary" style="cursor:pointer;border:1px solid #035c7a;background-color:#035c7a;color:#FFF;width:100%;">DETAIL SCORING PENJAMIN</a>
+					</div>
+				</div>
+				<br>
+				<?php } ?>
 			</div>
 		</div>
 	</div>

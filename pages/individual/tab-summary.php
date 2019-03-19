@@ -59,14 +59,6 @@ while($dataCONT2 = sqlsrv_fetch_array($execCONT2)){
 	$totalJatuhTempo2 =+ $totalJatuhTempo2 + $dataCONT2['PASTDUE_AMOUNT_VALUE'];
 	$totalUsiaTunggakan2 =+ $totalUsiaTunggakan2 + $dataCONT2['PASTDUE_DAYS'];
 }
-
-//cek apakah dia pemohon atau penjamin
-$call3= "{call SP_CHECK_TYPE_CUSTOMER(?)}";
-$options3 =  array( "Scrollable" => "buffered" );
-$params3 = array(array($noProsepekPemohon, SQLSRV_PARAM_IN));
-$exec3 = sqlsrv_query($conn, $call3, $params3, $options3) or die( print_r( sqlsrv_errors(), true));
-$data3 = sqlsrv_fetch_array($exec3);
-$numRows3 = sqlsrv_num_rows($exec3); 
 ?>
 
 <div class="card">
@@ -78,9 +70,17 @@ $numRows3 = sqlsrv_num_rows($exec3);
 					if($data3['CUST_TYPE'] == "PEMOHON"){
 				?>
 				<p class="pull-right">
+					<?php
+						if($numrowsPenjamin<>0){
+					?>
 					<a href="#" data-target="#dataDukcapilPenjamin" data-toggle="modal" class="btn btn-primary btn-sm" style="cursor:pointer;border:1px solid #035c7a;color:#035c7a;">
 						CHECK SCORING PENJAMIN
 					</a>
+					<?php }else{ ?>
+					<a href="#" disabled class="btn btn-primary btn-sm" style="border:1px solid #035c7a;color:#035c7a;" data-toggle="tooltip" title="Prospek ini tidak memiliki penjamin">
+						CHECK SCORING PENJAMIN
+					</a>
+					<?php } ?>
 				</p>
 				<?php } ?>
 			</div>
