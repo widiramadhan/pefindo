@@ -129,6 +129,8 @@ if(isset($_POST['submit'])){
 	</div>
 </div>
 <script src="assets/js/jquery.3.2.1.min.js"></script>
+<script src="assets/js/jquery-ui.js"></script>
+<script src="assets/js/jquery.dataTables.min.js"></script>
 <script>
 $(document).ready(function() {
     $('#history').DataTable({
