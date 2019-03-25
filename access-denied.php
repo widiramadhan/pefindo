@@ -14,12 +14,15 @@
     <link href="assets/css/animate.min.css" rel="stylesheet"/>
     <link href="assets/css/light-bootstrap-dashboard.css?v=1.4.0" rel="stylesheet"/>
     <link href="assets/css/demo.css" rel="stylesheet" />
-    <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
-    <link href='http://fonts.googleapis.com/css?family=Roboto:400,700,300' rel='stylesheet' type='text/css'>
+    <!--<link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+	<!--<link rel="stylesheet" href="a/font-awesome/css/font-awesome.min.css">
+    <link href='http://fonts.googleapis.com/css?family=Roboto:400,700,300' rel='stylesheet' type='text/css'>-->
+	<link href="assets/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+	<link href='assets/css/fonts.css' rel='stylesheet' type='text/css'>
     <link href="assets/css/pe-icon-7-stroke.css" rel="stylesheet" />
-	<link rel="stylesheet" href="https://cdn.datatables.net/1.10.19/css/dataTables.bootstrap4.min.css" type="text/css">
+	<link rel="stylesheet" href="assets/css/dataTables.bootstrap4.min.css" type="text/css">
 	<!--<link href="assets/plugins/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css" rel="stylesheet" type='text/css'>-->
-	<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+	<link rel="stylesheet" href="assets/css/jquery-ui.css">
 </head>
 <body>
 <center>
@@ -30,18 +33,18 @@
 </body>
     <script src="assets/js/jquery.3.2.1.min.js" type="text/javascript"></script>
 	<!--<script src="https://code.jquery.com/jquery-1.12.4.js"></script>-->
-	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+	<script src="assets/js/jquery-ui.js"></script>
 	<script src="assets/js/bootstrap.min.js" type="text/javascript"></script>
 	<script src="assets/js/chartist.min.js"></script>
     <script src="assets/js/bootstrap-notify.js"></script>
 	<script src="assets/js/light-bootstrap-dashboard.js?v=1.4.0"></script>
 	<script src="assets/js/demo.js"></script>
 	<script src="assets/js/jquery.maskedinput.js"></script>
-	<script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
-	<script src="https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap4.min.js"></script>
+	<script src="assets/js/jquery.dataTables.min.js"></script>
+	<script src="assets/js/dataTables.bootstrap4.min.js"></script>
 	<!--<script src="assets/plugins/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>-->
-	<script src="https://code.highcharts.com/highcharts.js"></script>
-	<script src="https://code.highcharts.com/modules/series-label.js"></script>
-	<script src="https://code.highcharts.com/modules/exporting.js"></script>
-	<script src="https://code.highcharts.com/modules/export-data.js"></script>
+	<script src="assets/plugins/highcharts.js"></script>
+	<script src="assets/plugins/series-label.js"></script>
+	<script src="assets/plugins/exporting.js"></script>
+	<script src="assets/plugins/export-data.js"></script>
 </html>
