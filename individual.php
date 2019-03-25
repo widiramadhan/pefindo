@@ -344,7 +344,11 @@ td{
 								$cekdata = $dataCheckSLIK['CREATE_DATE']->format('d-m-Y');
 								$databranch = $dataCheckSLIK['OFFICE_NAME'];
 								echo"<script>alert('Data sudah pernah di cek pada tanggal $cekdata oleh cabang $databranch')</script>";
-								echo"<script>window.location='index.php?USERNAME=".$user."&page=slik-detail&id=".$prospect."'</script>";
+								if($dataCheckSLIK['SUB_PARAM_ID'] == 2){
+									echo"<script>window.location='index.php?USERNAME=".$user."&page=slik-detail&id=".$prospect."'</script>";
+								}else{
+									echo"<script>window.location='index.php?USERNAME=".$user."&page=pefindonodata'</script>";
+								}
 							}else{
 								#
 								//----# Insert LOG

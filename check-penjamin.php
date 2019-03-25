@@ -8,6 +8,7 @@ $ps_no=$_GET['no'];
 $request=$_GET['request'];
 $date=date("Y-m-d");
 $user=$_GET['USERNAME'];
+$cust=$_GET['cust'];
 
 /* cek ke database apakah id ini sudah ada didalam database ? */
 $call = "{call SP_CHECK_PEFINDO_ID(?,?)}";
@@ -69,7 +70,7 @@ if($check > 0){
 	
 	/* INSERT TO PEFINDO_MAPPING */
 	$callSPInsert = "{call SP_INSERT_PEFINDO_ID(?,?,?,?)}";
-	$paramsInsert = array(array($pefindoId, SQLSRV_PARAM_IN),array($ps_no, SQLSRV_PARAM_IN),array($user, SQLSRV_PARAM_IN),array("PENJAMIN", SQLSRV_PARAM_IN));
+	$paramsInsert = array(array($pefindoId, SQLSRV_PARAM_IN),array($ps_no, SQLSRV_PARAM_IN),array($user, SQLSRV_PARAM_IN),array($cust, SQLSRV_PARAM_IN));
 	$execInsert = sqlsrv_query( $conn, $callSPInsert, $paramsInsert) or die( print_r( sqlsrv_errors(), true));
 	if($execInsert === false){
 		echo"<script>alert('Error insert log');</script>";

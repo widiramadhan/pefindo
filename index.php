@@ -49,6 +49,7 @@
 	$ktp2="";
 	$nama2="";
 	$tglLahir2=DateTime::createFromFormat('Y-m-d', '1970-01-01');
+	$type_cust="";
 ?>
 <body>
 
@@ -352,7 +353,7 @@
 		<div class="modal-content">
 			<div class="modal-header">
 				<button type="button" class="close" data-dismiss="modal">&times;</button>
-				<h4 class="modal-title">Data Penjamin</h4>
+				<h4 class="modal-title">Data <?php echo $type_cust;?></h4>
 			</div>
 			<div class="modal-body">
 				<?php
@@ -440,7 +441,7 @@
 										<td style="text-align:center;"><?php echo date('d-m-Y', strtotime($array['SmartSearchIndividualResponse']['SmartSearchIndividualResult']['aIndividualRecords']['aSearchIndividualRecord']['aDateOfBirth']));?></td>
 										<td style="text-align:center;"><?php echo $array['SmartSearchIndividualResponse']['SmartSearchIndividualResult']['aIndividualRecords']['aSearchIndividualRecord']['aAddress'];?></td>
 										<td style="text-align:center;">
-											<a href="check-penjamin.php?USERNAME=<?php echo $user;?>&request=individual&no=<?php echo $noProsepekPemohon;?>&id=<?php echo $array['SmartSearchIndividualResponse']['SmartSearchIndividualResult']['aIndividualRecords']['aSearchIndividualRecord']['aPefindoId'];?>" class="btn btn-success"><i class="fa fa-search"></i> Check Scoring</a>
+											<a href="check-penjamin.php?USERNAME=<?php echo $user;?>&request=individual&no=<?php echo $noProsepekPemohon;?>&id=<?php echo $array['SmartSearchIndividualResponse']['SmartSearchIndividualResult']['aIndividualRecords']['aSearchIndividualRecord']['aPefindoId'];?>&cust=<?php echo $type_cust;?>" class="btn btn-success"><i class="fa fa-search"></i> Check Scoring</a>
 										</td>
 									</tr>
 								<?php
@@ -456,7 +457,7 @@
 										<td style="text-align:center;"><?php echo date('d-m-Y', strtotime($item['aDateOfBirth']));?></td>
 										<td style="text-align:center;"><?php echo $item['aAddress'];?></td>
 										<td style="text-align:center;">
-											<a href="check-penjamin.php?USERNAME=<?php echo $user;?>&request=individual&no=<?php echo $noProsepekPemohon;?>&id=<?php echo $item['aPefindoId'];?>" class="btn btn-success"><i class="fa fa-search"></i> Check Scoring</a>								
+											<a href="check-penjamin.php?USERNAME=<?php echo $user;?>&request=individual&no=<?php echo $noProsepekPemohon;?>&id=<?php echo $item['aPefindoId'];?>&cust=<?php echo $type_cust;?>" class="btn btn-success"><i class="fa fa-search"></i> Check Scoring</a>								
 										</td>
 									</tr>
 								<?php		
@@ -793,7 +794,7 @@
 										<td style="text-align:center;"><?php echo date('d-m-Y', strtotime($array['SmartSearchIndividualResponse']['SmartSearchIndividualResult']['aIndividualRecords']['aSearchIndividualRecord']['aDateOfBirth']));?></td>
 										<td style="text-align:center;"><?php echo $array['SmartSearchIndividualResponse']['SmartSearchIndividualResult']['aIndividualRecords']['aSearchIndividualRecord']['aAddress'];?></td>
 										<td style="text-align:center;">
-											<a href="check-penjamin.php?USERNAME=<?php echo $user;?>&request=individual&no=<?php echo $noProsepekPemohonSLIK;?>&id=<?php echo $array['SmartSearchIndividualResponse']['SmartSearchIndividualResult']['aIndividualRecords']['aSearchIndividualRecord']['aPefindoId'];?>" class="btn btn-success"><i class="fa fa-search"></i> Check Scoring</a>
+											<a href="check-penjamin.php?USERNAME=<?php echo $user;?>&request=individual&no=<?php echo $noProsepekPemohonSLIK;?>&id=<?php echo $array['SmartSearchIndividualResponse']['SmartSearchIndividualResult']['aIndividualRecords']['aSearchIndividualRecord']['aPefindoId'];?>&cust=<?php echo $type_cust;?>" class="btn btn-success"><i class="fa fa-search"></i> Check Scoring</a>
 										</td>
 									</tr>
 								<?php
@@ -809,7 +810,7 @@
 										<td style="text-align:center;"><?php echo date('d-m-Y', strtotime($item['aDateOfBirth']));?></td>
 										<td style="text-align:center;"><?php echo $item['aAddress'];?></td>
 										<td style="text-align:center;">
-											<a href="check-penjamin.php?USERNAME=<?php echo $user;?>&request=individual&no=<?php echo $noProsepekPemohonSLIK;?>&id=<?php echo $item['aPefindoId'];?>" class="btn btn-success"><i class="fa fa-search"></i> Check Scoring</a>								
+											<a href="check-penjamin.php?USERNAME=<?php echo $user;?>&request=individual&no=<?php echo $noProsepekPemohonSLIK;?>&id=<?php echo $item['aPefindoId'];?>&cust=<?php echo $type_cust;?>" class="btn btn-success"><i class="fa fa-search"></i> Check Scoring</a>								
 										</td>
 									</tr>
 								<?php		

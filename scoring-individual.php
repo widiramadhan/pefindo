@@ -45,10 +45,12 @@ if($ktp_pasangan <> ""){
 	$ktp2=$ktp_pasangan;
 	$nama2=$nama_pasangan;
 	$tglLahir2=$tgl_lahir_pasangan;
+	$type_cust="PASANGAN";
 }else if($ktp_penjamin <> ""){
 	$ktp2=$ktp_penjamin;
 	$nama2=$nama_penjamin;
 	$tglLahir2=$tgl_lahir_penjamin;
+	$type_cust="PENJAMIN";
 }
 
 //--# Cek Dukcapil
