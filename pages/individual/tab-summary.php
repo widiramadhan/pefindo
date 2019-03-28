@@ -74,11 +74,11 @@ while($dataCONT2 = sqlsrv_fetch_array($execCONT2)){
 						if($numrowsPenjamin<>0){
 					?>
 					<a href="#" data-target="#dataDukcapilPenjamin" data-toggle="modal" class="btn btn-primary btn-sm" style="cursor:pointer;border:1px solid #035c7a;color:#035c7a;">
-						CHECK SCORING PENJAMIN
+						CHECK SCORING <?php echo $type_cust;?>
 					</a>
 					<?php }else{ ?>
 					<a href="#" disabled class="btn btn-primary btn-sm" style="border:1px solid #035c7a;color:#035c7a;" data-toggle="tooltip" title="Prospek ini tidak memiliki penjamin">
-						CHECK SCORING PENJAMIN
+						CHECK SCORING <?php echo $type_cust;?>
 					</a>
 					<?php } ?>
 				</p>

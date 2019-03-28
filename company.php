@@ -1,3 +1,14 @@
+<script src="assets/js/jquery.3.2.1.min.js" type="text/javascript"></script>
+<!-- jquery ui -->
+<link rel="stylesheet" href="assets/css/jquery-ui.css">
+<script src="assets/js/jquery-ui.js"></script>
+<!-- end jquery ui -->
+
+<!-- Datatable -->
+<link rel="stylesheet" href="assets/css/dataTables.bootstrap4.min.css" type="text/css">
+<script src="assets/js/jquery.dataTables.min.js"></script>
+<script src="assets/js/dataTables.bootstrap4.min.js"></script>
+<!-- End Datatable -->
 <style>
 th{
 	text-align:center;
@@ -13,7 +24,7 @@ td{
     width: 100%;
     height: 100%;
     z-index: 99999999999999999999999999999;
-    background: url('assets/img/loading.gif') 50% 50% no-repeat rgb(255,255,255);
+    background: url('assets/img/basicloader.gif') 50% 50% no-repeat rgb(255,255,255);
     opacity: 1;
 }
 </style>

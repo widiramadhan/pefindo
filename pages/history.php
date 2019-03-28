@@ -13,6 +13,17 @@ if(isset($_POST['submit'])){
 }
 
 ?>
+<script src="assets/js/jquery.3.2.1.min.js" type="text/javascript"></script>
+<!-- jquery ui -->
+<link rel="stylesheet" href="assets/css/jquery-ui.css">
+<script src="assets/js/jquery-ui.js"></script>
+<!-- end jquery ui -->
+
+<!-- Datatable -->
+<link rel="stylesheet" href="assets/css/dataTables.bootstrap4.min.css" type="text/css">
+<script src="assets/js/jquery.dataTables.min.js"></script>
+<script src="assets/js/dataTables.bootstrap4.min.js"></script>
+<!-- End Datatable -->
 <style>
 .th-custom{
 	text-align:center;
@@ -20,7 +31,18 @@ if(isset($_POST['submit'])){
 .td-center{
 	text-align:center;
 }
+.loader {
+    position: fixed;
+    left: 0px;
+    top: 0px;
+    width: 100%;
+    height: 100%;
+    z-index: 99999999999999999999999999999;
+    background: url('assets/img/basicloader.gif') 50% 50% no-repeat rgb(255,255,255);
+    opacity: 1;
+}
 </style>
+<div class="loader" id="loader"></div>
 <div class="row">
 	<div class="col-md-12">
 		<div class="card">
@@ -104,8 +126,16 @@ if(isset($_POST['submit'])){
 								}else if($data['CUST_TYPE']=="C" && $data['SOURCE_BY'] == "SLIK"){
 									echo'<a href="index.php?USERNAME='.$user.'&page=slik-detail&id='.$data['PROSPECT_NO'].'" class="btn btn-primary btn-sm" title="detail"><i class="fa fa-eye"></i></a>';
 								}
-								?>	
-								<a href="pages/getExcel.php?USERNAME=<?php echo $user;?>&id=<?php echo $data['PEFINDO_ID'];?>&type=<?php echo $data['CUST_TYPE'];?>" target="_blank" title="Export to Excel" class="btn btn-success btn-sm"><i class="fa fa-file-excel-o"></i></a>
+								?>
+								
+								<?php
+								if($data['SOURCE_BY'] == "PEFINDO"){
+									echo'<a href="pages/getExcel.php?USERNAME=<?php echo $user;?>&id='.$data['PEFINDO_ID'].'&type='.$data['CUST_TYPE'].'" target="_blank" title="Export to Excel" class="btn btn-success btn-sm"><i class="fa fa-file-excel-o"></i></a>';
+								}else{
+									echo'<a href="#" title="Export to Excel" class="btn btn-success btn-sm"><i class="fa fa-file-excel-o"></i></a>';
+								}
+								?>
+								
 								<?php 
 									if($_GET['USERNAME'] == 'iman.santoso' || $_GET['USERNAME'] == 'djoko.andrew' || $_GET['USERNAME'] == 'ramandona'){
 										if($data['SOURCE_BY'] == "PEFINDO"){
@@ -128,9 +158,13 @@ if(isset($_POST['submit'])){
 		</div>
 	</div>
 </div>
-<script src="assets/js/jquery.3.2.1.min.js"></script>
-<script src="assets/js/jquery-ui.js"></script>
-<script src="assets/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript">
+	$(window).on("load", function(){
+		setTimeout(function(){
+			$("#loader").fadeOut("slow");
+		}, 2000);
+	});
+</script>
 <script>
 $(document).ready(function() {
     $('#history').DataTable({

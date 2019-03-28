@@ -5,6 +5,17 @@ $date=date("Y-m-d");
 
 $curl = curl_init();
 ?>
+<script src="assets/js/jquery.3.2.1.min.js" type="text/javascript"></script>
+<!-- jquery ui -->
+<link rel="stylesheet" href="assets/css/jquery-ui.css">
+<script src="assets/js/jquery-ui.js"></script>
+<!-- end jquery ui -->
+
+<!-- Datatable -->
+<link rel="stylesheet" href="assets/css/dataTables.bootstrap4.min.css" type="text/css">
+<script src="assets/js/jquery.dataTables.min.js"></script>
+<script src="assets/js/dataTables.bootstrap4.min.js"></script>
+<!-- End Datatable -->
 <style>
 a{
 	color:red;
@@ -139,7 +150,7 @@ ul > li > .active > a:focus {
     width: 100%;
     height: 100%;
     z-index: 99999999999999999999999999999;
-    background: url('assets/img/loading.gif') 50% 50% no-repeat rgb(255,255,255);
+    background: url('assets/img/basicloader.gif') 50% 50% no-repeat rgb(255,255,255);
     opacity: 1;
 }
 tr.header{
@@ -150,11 +161,6 @@ tr.child {
     display: none;
 }
 </style>
-<script src="assets/js/jquery.3.2.1.min.js" type="text/javascript"></script>
-<!--<script src="https://code.highcharts.com/highcharts.js"></script>
-<script src="https://code.highcharts.com/modules/series-label.js"></script>
-<script src="https://code.highcharts.com/modules/exporting.js"></script>
-<script src="https://code.highcharts.com/modules/export-data.js"></script>-->
 <script>
 $(document).ready(function(){
   $("#collapseOne").on("hide.bs.collapse", function(){
@@ -309,7 +315,6 @@ $data = sqlsrv_fetch_array($exec);
 $callCIP3 = "{call SP_GET_TAB_SKOR_PS_TBL_CIP_COMPANY(?)}";
 $paramsCIP3 = array(array($id, SQLSRV_PARAM_IN),array($dataCIPCOM['M_CIP_ID'], SQLSRV_PARAM_IN));
 ?>
-<script src="assets/js/jquery.3.2.1.min.js" type="text/javascript"></script>
 <script type="text/javascript">
 	$(window).on("load", function(){
 		setTimeout(function(){

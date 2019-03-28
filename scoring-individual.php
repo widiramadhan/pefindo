@@ -32,6 +32,13 @@ if($numrowsPenjamin<>0){
 	$ktp_penjamin = $dataPenjamin['Penjamin_Noktp'];
 	$nama_penjamin = $dataPenjamin['Penjamin_Nama'];
 	$tgl_lahir_penjamin = $dataPenjamin['Penjamin_TglLahir'];
+	
+	//cek di ceknya by slik or pefindo
+	$callCheckPenjamin = "{call PEFINDO_GETDATA_PASANGAN(?)}";
+	$paramsCheckPenjamin = array(array($noProsepekPemohon, SQLSRV_PARAM_IN));
+	$optionsCheckPenjamin =  array( "Scrollable" => "buffered" );
+	$execCheckPenjamin = sqlsrv_query( $conn, $callCheckPenjamin, $paramsCheckPenjamin, $optionsCheckPenjamin) or die( print_r( sqlsrv_errors(), true));
+	$dataCheckPenjamin = sqlsrv_fetch_array($execCheckPenjamin);
 }else{
 	$ktp_pasangan = "0";
 	$nama_pasangan = "";
@@ -69,7 +76,7 @@ if($checkBlacklistPenjamin > 0){
 	$Warning_DataPenjamin = $Warning_DataPenjamin." - Customer ini terdaftar di Customer Blacklist Internal.!<br>";
 }
 //----# Cek Dukcapil
-$curlDkUpilPenjamin = curl_init();
+/*$curlDkUpilPenjamin = curl_init();
 curl_setopt_array($curlDkUpilPenjamin, array(
   CURLOPT_URL => "http://172.16.160.128:8000/dukcapil/get_json/SUZUKI_FINANCE/CALL_NIK",
   CURLOPT_RETURNTRANSFER => true,
@@ -90,66 +97,67 @@ curl_setopt_array($curlDkUpilPenjamin, array(
 $responseDkUpilPenjamin = curl_exec($curlDkUpilPenjamin);
 $errDkUpilPenjamin = curl_error($curlDkUpilPenjamin);			
 curl_close($curlDkUpilPenjamin);
-$resultDukcapilPenjamin = json_decode($responseDkUpilPenjamin, true);
+$resultDukcapilPenjamin = json_decode($responseDkUpilPenjamin, true);*/
+$resultDukcapilPenjamin=null;
 if(empty($resultDukcapilPenjamin)){
-	$Warning_DataPenjamin = $Warning_DataPenjamin." - KTP TIDAK VALID (Pada saat pengecekan No KTP di Dukcapil.!)<br>";
-}
-
-if (isset($resultDukcapilPenjamin['content'][0]['RESPON'])) {
-	$StatusLogDkUpilnotfoundPenjamin = strtoupper($resultDukcapilPenjamin['content'][0]['RESPON']);
-	$Warning_DataPenjamin = $Warning_DataPenjamin." - ".$StatusLogDkUpilnotfoundPenjamin."  (Pada saat pengecekan No KTP di Dukcapil.!)<br>";
-	
-	$DkcplNIKPenjamin = "";
-	$DkcplNAMA_LGKPPenjamin = "";
-	$DkcplJENIS_KLMINPenjamin ="";
-	$DkcplTMPT_LHRPenjamin = "";
-	$DkcplTGL_LHRPenjamin = "";
-	$DkcplSTATUS_KAWINPenjamin = "";
-	$DkcplNAMA_LGKP_IBUPenjamin = "";
-	$DkcplJENIS_PKRJNPenjamin = "";
-	$DkcplALAMATPenjamin = "";
-	$DkcplNO_RTPenjamin = "";
-	$DkcplNO_RWPenjamin = "";
-	$DkcplNO_PROPPenjamin = "";
-	$DkcplPROP_NAMEPenjamin = "";
-	$DkcplNO_KABPenjamin = "";
-	$DkcplKAB_NAMEPenjamin = "";
-	$DkcplKEC_NAMEPenjamin = "";
-	$DkcplNO_KELPenjamin = "";
-	$DkcplNO_KECPenjamin = "";
-	$DkcplKEL_NAMEPenjamin = "";
+	//$Warning_DataPenjamin = $Warning_DataPenjamin." - KTP TIDAK VALID (Pada saat pengecekan No KTP di Dukcapil.!)<br>";
 }else{
-	foreach($resultDukcapilPenjamin['content'] as $contentdata){
-		$DkcplNIKPenjamin = number_format($contentdata['NIK'], 0, '', '');
-		$DkcplNAMA_LGKPPenjamin = $contentdata['NAMA_LGKP'];
-		$DkcplJENIS_KLMINPenjamin = $contentdata['JENIS_KLMIN'];
-		$DkcplTMPT_LHRPenjamin = $contentdata['TMPT_LHR'];
-		$DkcplTGL_LHRPenjamin = $contentdata['TGL_LHR'];
-		$DkcplSTATUS_KAWINPenjamin = $contentdata['STATUS_KAWIN'];
-		$DkcplNAMA_LGKP_IBUPenjamin = $contentdata['NAMA_LGKP_IBU'];
-		$DkcplJENIS_PKRJNPenjamin = $contentdata['JENIS_PKRJN'];
-		$DkcplALAMATPenjamin = $contentdata['ALAMAT'];
-		$DkcplNO_RTPenjamin = $contentdata['NO_RT'];
-		$DkcplNO_RWPenjamin = $contentdata['NO_RW'];
-		$DkcplNO_PROPPenjamin = $contentdata['NO_PROP'];
-		$DkcplPROP_NAMEPenjamin = $contentdata['PROP_NAME'];
-		$DkcplNO_KABPenjamin = $contentdata['NO_KAB'];
-		$DkcplKAB_NAMEPenjamin = $contentdata['KAB_NAME'];
-		$DkcplKEC_NAMEPenjamin = $contentdata['KEC_NAME'];
-		$DkcplNO_KELPenjamin = $contentdata['NO_KEL'];
-		$DkcplNO_KECPenjamin = $contentdata['NO_KEC'];
-		$DkcplKEL_NAMEPenjamin = $contentdata['KEL_NAME'];
+	if (isset($resultDukcapilPenjamin['content'][0]['RESPON'])) {
+		$StatusLogDkUpilnotfoundPenjamin = strtoupper($resultDukcapilPenjamin['content'][0]['RESPON']);
+		$Warning_DataPenjamin = $Warning_DataPenjamin." - ".$StatusLogDkUpilnotfoundPenjamin."  (Pada saat pengecekan No KTP di Dukcapil.!)<br>";
 		
-		if($DkcplNAMA_LGKPPenjamin != $nama2){
-			$Warning_DataPenjamin = $Warning_DataPenjamin." - Nama Lengkap Tidak Sama dengan data di Dukcapil.!<br>";
-		}
-		if($DkcplTGL_LHRPenjamin != $tglLahir2->format("Y-m-d")){
-			$Warning_DataPenjamin = $Warning_DataPenjamin." - Tanggal Lahir Tidak Sama dengan data di Dukcapil.!<br>";
-		}
-		
-		$Is_Similar = 0;
-		if($Warning_DataPenjamin != ""){
-			$Is_Similar = 1;
+		$DkcplNIKPenjamin = "";
+		$DkcplNAMA_LGKPPenjamin = "";
+		$DkcplJENIS_KLMINPenjamin ="";
+		$DkcplTMPT_LHRPenjamin = "";
+		$DkcplTGL_LHRPenjamin = "";
+		$DkcplSTATUS_KAWINPenjamin = "";
+		$DkcplNAMA_LGKP_IBUPenjamin = "";
+		$DkcplJENIS_PKRJNPenjamin = "";
+		$DkcplALAMATPenjamin = "";
+		$DkcplNO_RTPenjamin = "";
+		$DkcplNO_RWPenjamin = "";
+		$DkcplNO_PROPPenjamin = "";
+		$DkcplPROP_NAMEPenjamin = "";
+		$DkcplNO_KABPenjamin = "";
+		$DkcplKAB_NAMEPenjamin = "";
+		$DkcplKEC_NAMEPenjamin = "";
+		$DkcplNO_KELPenjamin = "";
+		$DkcplNO_KECPenjamin = "";
+		$DkcplKEL_NAMEPenjamin = "";
+	}else{
+		foreach($resultDukcapilPenjamin['content'] as $contentdata){
+			$DkcplNIKPenjamin = number_format($contentdata['NIK'], 0, '', '');
+			$DkcplNAMA_LGKPPenjamin = $contentdata['NAMA_LGKP'];
+			$DkcplJENIS_KLMINPenjamin = $contentdata['JENIS_KLMIN'];
+			$DkcplTMPT_LHRPenjamin = $contentdata['TMPT_LHR'];
+			$DkcplTGL_LHRPenjamin = $contentdata['TGL_LHR'];
+			$DkcplSTATUS_KAWINPenjamin = $contentdata['STATUS_KAWIN'];
+			$DkcplNAMA_LGKP_IBUPenjamin = $contentdata['NAMA_LGKP_IBU'];
+			$DkcplJENIS_PKRJNPenjamin = $contentdata['JENIS_PKRJN'];
+			$DkcplALAMATPenjamin = $contentdata['ALAMAT'];
+			$DkcplNO_RTPenjamin = $contentdata['NO_RT'];
+			$DkcplNO_RWPenjamin = $contentdata['NO_RW'];
+			$DkcplNO_PROPPenjamin = $contentdata['NO_PROP'];
+			$DkcplPROP_NAMEPenjamin = $contentdata['PROP_NAME'];
+			$DkcplNO_KABPenjamin = $contentdata['NO_KAB'];
+			$DkcplKAB_NAMEPenjamin = $contentdata['KAB_NAME'];
+			$DkcplKEC_NAMEPenjamin = $contentdata['KEC_NAME'];
+			$DkcplNO_KELPenjamin = $contentdata['NO_KEL'];
+			$DkcplNO_KECPenjamin = $contentdata['NO_KEC'];
+			$DkcplKEL_NAMEPenjamin = $contentdata['KEL_NAME'];
+			
+			if($DkcplNAMA_LGKPPenjamin != $nama2){
+				$Warning_DataPenjamin = $Warning_DataPenjamin." - Nama Lengkap Tidak Sama dengan data di Dukcapil.!<br>";
+			}
+			if($DkcplTGL_LHRPenjamin != $tglLahir2->format("Y-m-d")){
+				$Warning_DataPenjamin = $Warning_DataPenjamin." - Tanggal Lahir Tidak Sama dengan data di Dukcapil.!<br>";
+			}
+			
+			$Is_Similar = 0;
+			if($Warning_DataPenjamin != ""){
+				$Is_Similar = 1;
+			}
 		}
 	}
 }
@@ -193,6 +201,17 @@ $exec3 = sqlsrv_query($conn, $call3, $params3, $options3) or die( print_r( sqlsr
 $data3 = sqlsrv_fetch_array($exec3);
 $numRows3 = sqlsrv_num_rows($exec3); 
 ?>
+<script src="assets/js/jquery.3.2.1.min.js" type="text/javascript"></script>
+<!-- jquery ui -->
+<link rel="stylesheet" href="assets/css/jquery-ui.css">
+<script src="assets/js/jquery-ui.js"></script>
+<!-- end jquery ui -->
+
+<!-- Datatable -->
+<link rel="stylesheet" href="assets/css/dataTables.bootstrap4.min.css" type="text/css">
+<script src="assets/js/jquery.dataTables.min.js"></script>
+<script src="assets/js/dataTables.bootstrap4.min.js"></script>
+<!-- End Datatable -->
 <style>
 a{
 	color:#035c7a;
@@ -327,7 +346,7 @@ ul > li > .active > a:focus {
     width: 100%;
     height: 100%;
     z-index: 99999999999999999999999999999;
-    background: url('assets/img/loading.gif') 50% 50% no-repeat rgb(255,255,255);
+    background: url('assets/img/basicloader.gif') 50% 50% no-repeat rgb(255,255,255);
     opacity: 1;
 }
 tr.header{
@@ -338,7 +357,6 @@ tr.child {
     display: none;
 }
 </style>
-<script src="assets/js/jquery.3.2.1.min.js" type="text/javascript"></script>
 <script>
 $(document).ready(function(){
   $("#collapseOne").on("hide.bs.collapse", function(){

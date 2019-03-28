@@ -12,7 +12,17 @@
         $endDate = date("Y-m-d");
     }
 ?>
+<script src="assets/js/jquery.3.2.1.min.js" type="text/javascript"></script>
+<!-- jquery ui -->
+<link rel="stylesheet" href="assets/css/jquery-ui.css">
+<script src="assets/js/jquery-ui.js"></script>
+<!-- end jquery ui -->
 
+<!-- Datatable -->
+<link rel="stylesheet" href="assets/css/dataTables.bootstrap4.min.css" type="text/css">
+<script src="assets/js/jquery.dataTables.min.js"></script>
+<script src="assets/js/dataTables.bootstrap4.min.js"></script>
+<!-- End Datatable -->
 <style>
 .th-custom{
 	text-align:center;
@@ -20,7 +30,18 @@
 .td-center{
 	text-align:center;
 }
+.loader {
+    position: fixed;
+    left: 0px;
+    top: 0px;
+    width: 100%;
+    height: 100%;
+    z-index: 99999999999999999999999999999;
+    background: url('assets/img/basicloader.gif') 50% 50% no-repeat rgb(255,255,255);
+    opacity: 1;
+}
 </style>
+<div class="loader" id="loader"></div>
 <div class="row">
     <div class="col-md-12">
         <div class="card">
@@ -103,10 +124,22 @@
 							</td>
 							<td class="td-center">
 								<?php
-									if($data['SUB_PARAM_ID'] == "2"){
-										echo'<button type="button" class="btn btn-primary btn-sm" disabled>SLIK RESULT</button>';
+									if($data['SUB_PARAM_ID'] == "0" || $data['SUB_PARAM_ID'] == "1"){
+										echo'<button type="button" class="btn btn-primary btn-sm" disabled>SLIK RESULT</button> ';
+									}else if($data['SUB_PARAM_ID'] == "2"){
+										echo'<a href="index.php?USERNAME='.$user.'&page=slik-result&id='.$data['PEFINDO_MAPPING_ID'].'" class="btn btn-primary btn-sm">SLIK RESULT</a> ';
+									}
+									
+									if($_GET['USERNAME'] == 'iman.santoso' || $_GET['USERNAME'] == 'djoko.andrew' || $_GET['USERNAME'] == 'ramandona'){
+										if($data['SUB_PARAM_ID'] == "0"){
+											echo'&nbsp;&nbsp;<a href="pages/update-progress.php?USERNAME='.$user.'&id='.$data['PEFINDO_MAPPING_ID'].'&flag=0" class="btn btn-danger btn-sm"><i class="fa fa-thumbs-down"></i> Kerjakan</a>';
+										}else if($data['SUB_PARAM_ID'] == "1"){
+											echo'&nbsp;&nbsp;<a href="pages/update-progress.php?USERNAME='.$user.'&id='.$data['PEFINDO_MAPPING_ID'].'&flag=1" class="btn btn-warning btn-sm"><i class="fa fa-thumbs-down"></i> Selesaikan</a>';
+										}else if($data['SUB_PARAM_ID'] == "2"){
+											echo'&nbsp;&nbsp;<a href="#" disabled class="btn btn-success btn-sm"><i class="fa fa-thumbs-up"></i> Done</a>';
+										}
 									}else{
-										echo'<a href="index.php?USERNAME='.$user.'&page=slik-result&id='.$data['PEFINDO_MAPPING_ID'].'" class="btn btn-primary btn-sm">SLIK RESULT</a>';
+										
 									}
 								?>
 							</td>

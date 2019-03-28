@@ -14,18 +14,13 @@
     <link href="assets/css/animate.min.css" rel="stylesheet"/>
     <link href="assets/css/light-bootstrap-dashboard.css?v=1.4.0" rel="stylesheet"/>
     <link href="assets/css/demo.css" rel="stylesheet" />
-    <!--<link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
-	<!--<link rel="stylesheet" href="a/font-awesome/css/font-awesome.min.css">
-    <link href='http://fonts.googleapis.com/css?family=Roboto:400,700,300' rel='stylesheet' type='text/css'>-->
 	<link href="assets/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet">
 	<link href='assets/css/fonts.css' rel='stylesheet' type='text/css'>
     <link href="assets/css/pe-icon-7-stroke.css" rel="stylesheet" />
 	<link rel="stylesheet" href="assets/css/dataTables.bootstrap4.min.css" type="text/css">
-	<!--<link href="assets/plugins/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css" rel="stylesheet" type='text/css'>-->
 	<link rel="stylesheet" href="assets/css/jquery-ui.css">
 </head>
 <?php
-	//require_once("config/configuration.php");
 	require_once("config/connection.php");
 	if(isset($_GET['USERNAME'])){
 		$user=$_GET['USERNAME'];
@@ -50,6 +45,7 @@
 	$nama2="";
 	$tglLahir2=DateTime::createFromFormat('Y-m-d', '1970-01-01');
 	$type_cust="";
+	$noProsepekPemohonSLIK ="";
 ?>
 <body>
 
@@ -111,11 +107,11 @@
                 <div class="collapse navbar-collapse">
                     <ul class="nav navbar-nav navbar-right">
                         <li class="dropdown">
-                              <a href="">
-                                    <p>
-										<i class="fa fa-user"></i> <?php echo $user;?>
-									</p>
-                              </a>
+							<a href="">
+								<p>
+									<i class="fa fa-user"></i> <?php echo $user;?>
+								</p>
+							</a>
                         </li>
 						<li class="separator hidden-lg"></li>
                     </ul>
@@ -142,211 +138,231 @@
     </div>
 </div>
 </body>
-<!-- MODAL PROSPECT INDIVIDUAL -->
-<div id="prospect" class="modal fade" role="dialog">
-	<div class="modal-dialog modal-lg">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal">&times;</button>
-				<h4 class="modal-title">Data Prospect</h4>
-			</div>
-			<div class="modal-body">
-				<div class="row">
-					<div class="col-md-12">
-						<div class="table-responsive">
-							<table id="example" class="table table-bordered" style="width:100%">
-								<thead>
-									<tr>
-										<th>No</th>
-										<th>Prospect Number</th>
-										<th>KTP Number</th>
-										<th>Fullname</th>
-										<th>Date of Birth</th>
-										<th>Action</th>
-									</tr>
-								</thead>
-								<tbody>
-								<?php
-									$callGetProspect = "{call SP_GET_PROSPEK_NUMBER}";
-									$execGetProspect = sqlsrv_query($conn, $callGetProspect) or die( print_r( sqlsrv_errors(), true));
-									$no=0;
-									while($rowGetProspect = sqlsrv_fetch_array($execGetProspect)){
-										$no++;
-								?>
-									<tr>
-										<td><?php echo $no;?></td>
-										<td><?php echo $rowGetProspect['PROSPECT_NO'];?></td>
-										<td><?php echo $rowGetProspect['ID_NO'];?></td>
-										<td><?php echo $rowGetProspect['CUST_NAME'];?></td>
-										<td><?php echo date('Y-m-d', strtotime($rowGetProspect['BIRTH_DT']));?></td>
-										<td>
-											<form action="" method="post">
-												<input type="hidden" name="prospect_no" value="<?php echo $rowGetProspect['PROSPECT_NO'];?>">
-												<input type="hidden" name="id_no" value="<?php echo $rowGetProspect['ID_NO'];?>">
-												<input type="hidden" name="cust_name" value="<?php echo $rowGetProspect['CUST_NAME'];?>">
-												<input type="hidden" name="birth_dt" value="<?php echo date('Y-m-d', strtotime($rowGetProspect['BIRTH_DT']));?>">
-												<button type="submit" name="select" class="btn btn-success">Select</button>
-											</form>
-										</td>
-									</tr>
-								<?php } ?>
-								</tbody>
-							</table>
+
+<?php
+	if(isset($_GET['page'])){
+		if($_GET['page'] == "individual"){
+?>
+	<!-- MODAL PROSPECT INDIVIDUAL -->
+	<div id="prospect" class="modal fade" role="dialog">
+		<div class="modal-dialog modal-lg">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal">&times;</button>
+					<h4 class="modal-title">Data Prospect</h4>
+				</div>
+				<div class="modal-body">
+					<div class="row">
+						<div class="col-md-12">
+							<div class="table-responsive">
+								<table id="example" class="table table-bordered" style="width:100%">
+									<thead>
+										<tr>
+											<th>No</th>
+											<th>Prospect Number</th>
+											<th>KTP Number</th>
+											<th>Fullname</th>
+											<th>Date of Birth</th>
+											<th>Action</th>
+										</tr>
+									</thead>
+									<tbody>
+									<?php
+										$callGetProspect = "{call SP_GET_PROSPEK_NUMBER}";
+										$execGetProspect = sqlsrv_query($conn, $callGetProspect) or die( print_r( sqlsrv_errors(), true));
+										$no=0;
+										while($rowGetProspect = sqlsrv_fetch_array($execGetProspect)){
+											$no++;
+									?>
+										<tr>
+											<td><?php echo $no;?></td>
+											<td><?php echo $rowGetProspect['PROSPECT_NO'];?></td>
+											<td><?php echo $rowGetProspect['ID_NO'];?></td>
+											<td><?php echo $rowGetProspect['CUST_NAME'];?></td>
+											<td><?php echo date('Y-m-d', strtotime($rowGetProspect['BIRTH_DT']));?></td>
+											<td>
+												<form action="" method="post">
+													<input type="hidden" name="prospect_no" value="<?php echo $rowGetProspect['PROSPECT_NO'];?>">
+													<input type="hidden" name="id_no" value="<?php echo $rowGetProspect['ID_NO'];?>">
+													<input type="hidden" name="cust_name" value="<?php echo $rowGetProspect['CUST_NAME'];?>">
+													<input type="hidden" name="birth_dt" value="<?php echo date('Y-m-d', strtotime($rowGetProspect['BIRTH_DT']));?>">
+													<button type="submit" name="select" class="btn btn-success">Select</button>
+												</form>
+											</td>
+										</tr>
+									<?php } ?>
+									</tbody>
+								</table>
+							</div>
 						</div>
 					</div>
 				</div>
 			</div>
 		</div>
 	</div>
-</div>
+<?php } } ?>
 
-<!-- MODAL PROSPECT COMPANY -->
-<div id="prospectCompany" class="modal fade" role="dialog">
-	<div class="modal-dialog modal-lg">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal">&times;</button>
-				<h4 class="modal-title">Data Prospect</h4>
-			</div>
-			<div class="modal-body">
-				<div class="row">
-					<div class="col-md-12">
-						<div class="table-responsive">
-							<table id="exampleCompany" class="table table-bordered" style="width:100%">
-								<thead>
-									<tr>
-										<th>No</th>
-										<th>Prospect Number</th>
-										<th>NPWP</th>
-										<th>Company Name</th>
-										<th>Action</th>
-									</tr>
-								</thead>
-								<tbody>
-								<?php
-									$callGetProspect = "{call SP_GET_PROSPEK_NUMBER_COMPANY}";
-									$execGetProspect = sqlsrv_query($conn, $callGetProspect) or die( print_r( sqlsrv_errors(), true));
-									$no=0;
-									while($rowGetProspect = sqlsrv_fetch_array($execGetProspect)){
-										$no++;
-								?>
-									<tr>
-										<td><?php echo $no;?></td>
-										<td><?php echo $rowGetProspect['PROSPECT_NO'];?></td>
-										<td><?php echo $rowGetProspect['NPWP'];?></td>
-										<td><?php echo $rowGetProspect['CUST_NAME'];?></td>
-										<td>
-											<form action="" method="post">
-												<input type="hidden" name="prospect_no" value="<?php echo $rowGetProspect['PROSPECT_NO'];?>">
-												<input type="hidden" name="id_no" value="<?php echo $rowGetProspect['NPWP'];?>">
-												<input type="hidden" name="comp_name" value="<?php echo $rowGetProspect['CUST_NAME'];?>">
-												<button type="submit" name="select" class="btn btn-success">Select</button>
-											</form>
-										</td>
-									</tr>
-								<?php } ?>
-								</tbody>
-							</table>
+<?php
+	if(isset($_GET['page'])){
+		if($_GET['page'] == "company"){
+?>
+	<!-- MODAL PROSPECT COMPANY -->
+	<div id="prospectCompany" class="modal fade" role="dialog">
+		<div class="modal-dialog modal-lg">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal">&times;</button>
+					<h4 class="modal-title">Data Prospect</h4>
+				</div>
+				<div class="modal-body">
+					<div class="row">
+						<div class="col-md-12">
+							<div class="table-responsive">
+								<table id="exampleCompany" class="table table-bordered" style="width:100%">
+									<thead>
+										<tr>
+											<th>No</th>
+											<th>Prospect Number</th>
+											<th>NPWP</th>
+											<th>Company Name</th>
+											<th>Action</th>
+										</tr>
+									</thead>
+									<tbody>
+									<?php
+										$callGetProspect = "{call SP_GET_PROSPEK_NUMBER_COMPANY}";
+										$execGetProspect = sqlsrv_query($conn, $callGetProspect) or die( print_r( sqlsrv_errors(), true));
+										$no=0;
+										while($rowGetProspect = sqlsrv_fetch_array($execGetProspect)){
+											$no++;
+									?>
+										<tr>
+											<td><?php echo $no;?></td>
+											<td><?php echo $rowGetProspect['PROSPECT_NO'];?></td>
+											<td><?php echo $rowGetProspect['NPWP'];?></td>
+											<td><?php echo $rowGetProspect['CUST_NAME'];?></td>
+											<td>
+												<form action="" method="post">
+													<input type="hidden" name="prospect_no" value="<?php echo $rowGetProspect['PROSPECT_NO'];?>">
+													<input type="hidden" name="id_no" value="<?php echo $rowGetProspect['NPWP'];?>">
+													<input type="hidden" name="comp_name" value="<?php echo $rowGetProspect['CUST_NAME'];?>">
+													<button type="submit" name="select" class="btn btn-success">Select</button>
+												</form>
+											</td>
+										</tr>
+									<?php } ?>
+									</tbody>
+								</table>
+							</div>
 						</div>
 					</div>
 				</div>
 			</div>
 		</div>
 	</div>
-</div>
+<?php } } ?>
 
+<?php
+	if(isset($_GET['page'])){
+		if($_GET['page'] == "individual"){
+?>
 <!-- MODAL DUKCAPIL -->
-<div id="dataDukcapil" class="modal fade" role="dialog">
-	<div class="modal-dialog modal-lg" style="width: 90%">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal">&times;</button>
-				<h4 class="modal-title">Compare Data Prospek</h4>
-			</div>
-			<div class="modal-body">
-				<div class="row">
-					<div class="col-md-12">
-						<span style="font-weight:bold;font-size:14px">Data Dukcapil :</span>
-						<div class="table-responsive">
-							<table id="exampleCompany" class="table table-bordered" style="width:100%">
-								<thead>
-									<tr>
-										<th>No</th>
-										<th>NIK</th>
-										<th>Nama</th>
-										<th>Tanggal Lahir</th>
-										<th>Tempat Lahir</th>
-										<th>Jenis Kelamin</th>
-										<th>Nama_Ibu Kandung</th>
-										<th>ALAMAT</th>
-									</tr>
-								</thead>
-								<tbody>
-									<?php
-										$callGetDukcapil = "{call SP_DUKCAPIL_GETDATA_RESULT (?,?)}";
-										$paramsDukcapil = array(array($prospect_dkcupil, SQLSRV_PARAM_IN),array($no_ktp_dkcupil, SQLSRV_PARAM_IN));
-										$execGetDukcapil = sqlsrv_query($conn, $callGetDukcapil, $paramsDukcapil) or die( print_r( sqlsrv_errors(), true));
-										$no=0;
-										while($rowGetDukcapil = sqlsrv_fetch_array($execGetDukcapil)){
-											$no++;
-									?>
-									<tr>
-										<td><?php echo $no;?></td>
-										<td><?php echo $rowGetDukcapil['NIK'];?></td>
-										<td><?php echo $rowGetDukcapil['NAMA'];?></td>
-										<td><?php echo $rowGetDukcapil['BIRTH_DT']->format('Y-m-d');?></td>
-										<td><?php echo $rowGetDukcapil['TEMPAT_LAHIR'];?></td>
-										<td><?php echo $rowGetDukcapil['JENIS_KELAMIN'];?></td>
-										<td><?php echo $rowGetDukcapil['MOTHER_MAIDEN_NAME'];?></td>
-										<td><?php echo $rowGetDukcapil['ALAMAT'];?></td>
-									</tr>
-									<?php } ?>
-								</tbody>
-							</table>
+	<div id="dataDukcapil" class="modal fade" role="dialog">
+		<div class="modal-dialog modal-lg" style="width: 90%">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal">&times;</button>
+					<h4 class="modal-title">Compare Data Prospek</h4>
+				</div>
+				<div class="modal-body">
+					<div class="row">
+						<div class="col-md-12">
+							<span style="font-weight:bold;font-size:14px">Data Dukcapil :</span>
+							<div class="table-responsive">
+								<table id="exampleCompany" class="table table-bordered" style="width:100%">
+									<thead>
+										<tr>
+											<th>No</th>
+											<th>NIK</th>
+											<th>Nama</th>
+											<th>Tanggal Lahir</th>
+											<th>Tempat Lahir</th>
+											<th>Jenis Kelamin</th>
+											<th>Nama_Ibu Kandung</th>
+											<th>ALAMAT</th>
+										</tr>
+									</thead>
+									<tbody>
+										<?php
+											$callGetDukcapil = "{call SP_DUKCAPIL_GETDATA_RESULT (?,?)}";
+											$paramsDukcapil = array(array($prospect_dkcupil, SQLSRV_PARAM_IN),array($no_ktp_dkcupil, SQLSRV_PARAM_IN));
+											$execGetDukcapil = sqlsrv_query($conn, $callGetDukcapil, $paramsDukcapil) or die( print_r( sqlsrv_errors(), true));
+											$no=0;
+											while($rowGetDukcapil = sqlsrv_fetch_array($execGetDukcapil)){
+												$no++;
+										?>
+										<tr>
+											<td><?php echo $no;?></td>
+											<td><?php echo $rowGetDukcapil['NIK'];?></td>
+											<td><?php echo $rowGetDukcapil['NAMA'];?></td>
+											<td><?php echo $rowGetDukcapil['BIRTH_DT']->format('Y-m-d');?></td>
+											<td><?php echo $rowGetDukcapil['TEMPAT_LAHIR'];?></td>
+											<td><?php echo $rowGetDukcapil['JENIS_KELAMIN'];?></td>
+											<td><?php echo $rowGetDukcapil['MOTHER_MAIDEN_NAME'];?></td>
+											<td><?php echo $rowGetDukcapil['ALAMAT'];?></td>
+										</tr>
+										<?php } ?>
+									</tbody>
+								</table>
+							</div>
 						</div>
 					</div>
-				</div>
-				<div class="row">
-					<div class="col-md-12">
-						<span style="font-weight:bold;font-size:14px">Data Prospek :</span>
-						<div class="table-responsive">
-							<table id="exampleCompany" class="table table-bordered" style="width:100%">
-								<thead>
-									<tr>
-										<th>No</th>
-										<th>NIK</th>
-										<th>Nama</th>
-										<th>Tanggal Lahir</th>
-										<th>Nama Ibu Kandung</th>
-									</tr>
-								</thead>
-								<tbody>
-									<?php
-										$callPros = "{call SP_GET_PROSPEK_COMPARE (?)}";
-										$paramsPros = array(array($prospect_dkcupil, SQLSRV_PARAM_IN));
-										$execPros = sqlsrv_query($conn, $callPros, $paramsPros) or die( print_r( sqlsrv_errors(), true));
-										$no=0;
-										while($rowPros = sqlsrv_fetch_array($execPros)){
-											$no++;
-									?>
-									<tr>
-										<td><?php echo $no;?></td>
-										<td><?php echo $rowPros['ID_NO'];?></td>
-										<td><?php echo $rowPros['CUST_NAME'];?></td>
-										<td><?php echo $rowPros['BIRTH_DT']->format('Y-m-d');?></td>
-										<td><?php echo $rowPros['MOTHER_NM'];?></td>
-									</tr>
-									<?php } ?>
-								</tbody>
-							</table>
+					<div class="row">
+						<div class="col-md-12">
+							<span style="font-weight:bold;font-size:14px">Data Prospek :</span>
+							<div class="table-responsive">
+								<table id="exampleCompany" class="table table-bordered" style="width:100%">
+									<thead>
+										<tr>
+											<th>No</th>
+											<th>NIK</th>
+											<th>Nama</th>
+											<th>Tanggal Lahir</th>
+											<th>Nama Ibu Kandung</th>
+										</tr>
+									</thead>
+									<tbody>
+										<?php
+											$callPros = "{call SP_GET_PROSPEK_COMPARE (?)}";
+											$paramsPros = array(array($prospect_dkcupil, SQLSRV_PARAM_IN));
+											$execPros = sqlsrv_query($conn, $callPros, $paramsPros) or die( print_r( sqlsrv_errors(), true));
+											$no=0;
+											while($rowPros = sqlsrv_fetch_array($execPros)){
+												$no++;
+										?>
+										<tr>
+											<td><?php echo $no;?></td>
+											<td><?php echo $rowPros['ID_NO'];?></td>
+											<td><?php echo $rowPros['CUST_NAME'];?></td>
+											<td><?php echo $rowPros['BIRTH_DT']->format('Y-m-d');?></td>
+											<td><?php echo $rowPros['MOTHER_NM'];?></td>
+										</tr>
+										<?php } ?>
+									</tbody>
+								</table>
+							</div>
 						</div>
 					</div>
 				</div>
 			</div>
 		</div>
 	</div>
-</div>
+<?php } } ?>
 
+<?php
+	if(isset($_GET['page'])){
+		if($_GET['page'] == "scoring-individual" || $_GET['page'] == "slik-detail" ){
+?>
 <!-- MODAL DUKCAPIL PENJAMIN PEFINDO -->
 <div id="dataDukcapilPenjamin" class="modal fade" role="dialog">
 	<div class="modal-dialog modal-lg" style="width:80%;">
@@ -361,7 +377,7 @@
 					$paramCheckExists = array(array($noProsepekPemohon, SQLSRV_PARAM_IN));
 					$execCheckExists = sqlsrv_query( $conn, $callCheckExists, $paramCheckExists) or die( print_r( sqlsrv_errors(), true));
 					$dataCheckExist = sqlsrv_fetch_array($execCheckExists);
-					
+					//echo $dataCheckExist['STATUS'];
 					if($dataCheckExist['STATUS'] == 3){
 				?>
 				<div class="row">
@@ -387,7 +403,7 @@
 						</div>
 					</div>
 				</div>
-				<div class="row">
+				<!--<div class="row">
 					<div class="col-md-12">
 						<b><label style="font-size: 14px">Data from Dukcapil :</label></b>
 						<div class="table-responsive">
@@ -409,7 +425,7 @@
 							</table>
 						</div>
 					</div>
-				</div>
+				</div>-->
 				<b><label style="color:red; font-size: 14px"><?php echo $Warning_DataPenjamin;?></label></b>
 				<hr>
 				<div class="row">
@@ -488,7 +504,7 @@
 					</div>
 				</div>
 				<?php
-					}else{
+					}else if($dataCheckExist['STATUS'] == 1){
 						$callSPCheckExistPenjamin = "{call SP_GET_MASTER_INDIVIDUAL(?)}";
 						$paramsCheckExistPenjamin = array(array($dataCheckExist['PEFINDO_ID'], SQLSRV_PARAM_IN));
 						$execCheckExistPenjamin = sqlsrv_query( $conn, $callSPCheckExistPenjamin, $paramsCheckExistPenjamin) or die( print_r( sqlsrv_errors(), true));
@@ -694,12 +710,118 @@
 					</div>
 				</div>
 				<br>
+				<?php 
+				}else{ 
+					$callSPCheckExistPenjaminSLIK= "{call SP_GET_SLIK_INDIVIDUAL_REPORT(?)}";
+					$paramsCheckExistPenjaminSLIK = array(array($noProsepekPemohon, SQLSRV_PARAM_IN));
+					$optionsCheckExistPenjaminSLIK =  array( "Scrollable" => "buffered" );
+					$execCheckExistPenjaminSLIK = sqlsrv_query( $conn, $callSPCheckExistPenjaminSLIK, $paramsCheckExistPenjaminSLIK, $optionsCheckExistPenjaminSLIK) or die( print_r( sqlsrv_errors(), true));
+					$dataCheckExistPenjaminSLIK = sqlsrv_fetch_array($execCheckExistPenjaminSLIK);
+					$numrowsCheckExistPenjaminSLIK = sqlsrv_num_rows($execCheckExistPenjaminSLIK);
+				?>
+				<div class="row">
+					<div class="col-md-11">
+						<div class="card">
+							<div class="content" style="padding:0px;">
+								<div class="table-responsive">
+									<table class="table" style="width:100%;">
+										<tr>
+											<td style="padding:10px;width:100px;"><img src="assets/img/default-user.png" style="width:100%;border-radius:50%;border:1px solid #CCC;"></td>
+											<td style="vertical-align:middle;font-size:18px;"><b><?php echo strtoupper($dataCheckExistPenjaminSLIK['CUST_NAME']);?></b><div style="font-size:16px;color:#AAA;"><?php echo $dataCheckExistPenjaminSLIK['ID_NO'];?></div></td>
+											<td style="vertical-align:middle;font-size:36px;width:200px;text-align:center;background-color:#035c7a;color:#FFF;"><div style="font-size:16px;">SCORE</div><b><?php echo $dataCheckExistPenjaminSLIK['SLIK_SCORE'];?></b><br><div style="font-size:14px;"><?php echo $dataCheckExistPenjaminSLIK['RANGE_DAYS_OD'];?></div></td>
+										</tr>
+									</table>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-3">
+						<div class="card">
+							<div class="content">
+								<center>
+									<div style="color:#AAA;">TOTAL FASILITAS</div>
+									<div style="font-size:36px;font-weight:bold;"><?php echo $dataCheckExistPenjaminSLIK['TOTAL_FASILITAS'];?></div>
+								</center>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-4">
+						<div class="card">
+							<div class="content">
+								<center>
+									<div style="color:#AAA;">TOTAL PLAFOND</div>
+									<div style="font-size:36px;font-weight:bold;"><span style="color:#AAA;font-size:18px;">Rp.</span> <?php echo number_format($dataCheckExistPenjaminSLIK['TOTAL_PLAFOND'],0,',','.');?></div>
+								</center>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-4">
+						<div class="card">
+							<div class="content">
+								<center>
+									<div style="color:#AAA;">TOTAL BAKI DEBET</div>
+									<div style="font-size:36px;font-weight:bold;"><span style="color:#AAA;font-size:18px;">Rp.</span> <?php echo number_format($dataCheckExistPenjaminSLIK['TOTAL_BAKI_DEBET'],0,',','.');?></div>
+								</center>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-11">
+						<div class="table-responsive">
+							<table class="table table-bordered" style="width:100%;border:none;">
+								<thead>
+									<th class="bg-td" style="width:12.5%;font-weight:bold;">Lancar</th>
+									<th class="bg-td" style="width:12.5%;font-weight:bold;">1 - 30</th>
+									<th class="bg-td" style="width:12.5%;font-weight:bold;">31 - 60</th>
+									<th class="bg-td" style="width:12.5%;font-weight:bold;">61 - 90</th>
+									<th class="bg-td" style="width:12.5%;font-weight:bold;">91 - 120</th>
+									<th class="bg-td" style="width:12.5%;font-weight:bold;">121 - 150</th>
+									<th class="bg-td" style="width:12.5%;font-weight:bold;">151 - 180</th>
+									<th class="bg-td" style="width:12.5%;font-weight:bold;">> 180</th>
+								</thead>
+								<tbody>
+									<tr>
+										<?php
+											if($numrowsCheckExistPenjaminSLIK <> 0){
+										?>
+										<td align="center"><?php if($dataCheckExistPenjaminSLIK['DAYS_OD']==0){ echo "<i class='fa fa-check'></i>";}?></td>
+										<td align="center"><?php if($dataCheckExistPenjaminSLIK['DAYS_OD'] >= 1 && $dataCheckExistPenjaminSLIK['DAYS_OD'] <= 30){ echo "<i class='fa fa-check'></i>";}?></td>
+										<td align="center"><?php if($dataCheckExistPenjaminSLIK['DAYS_OD'] >= 31 && $dataCheckExistPenjaminSLIK['DAYS_OD'] <= 60){ echo "<i class='fa fa-check'></i>";}?></td>
+										<td align="center"><?php if($dataCheckExistPenjaminSLIK['DAYS_OD'] >= 61 && $dataCheckExistPenjaminSLIK['DAYS_OD'] <= 90){ echo "<i class='fa fa-check'></i>";}?></td>
+										<td align="center"><?php if($dataCheckExistPenjaminSLIK['DAYS_OD'] >= 91 && $dataCheckExistPenjaminSLIK['DAYS_OD'] <= 120){ echo "<i class='fa fa-check'></i>";}?></td>
+										<td align="center"><?php if($dataCheckExistPenjaminSLIK['DAYS_OD'] >= 121 && $dataCheckExistPenjaminSLIK['DAYS_OD'] <= 150){ echo "<i class='fa fa-check'></i>";}?></td>
+										<td align="center"><?php if($dataCheckExistPenjaminSLIK['DAYS_OD'] >= 151 && $dataCheckExistPenjaminSLIK['DAYS_OD'] <= 180){ echo "<i class='fa fa-check'></i>";}?></td>
+										<td align="center"><?php if($dataCheckExistPenjaminSLIK['DAYS_OD'] > 180){ echo "<i class='fa fa-check'></i>";}?></td>
+										<?php }else{ ?>
+										<td align="center"></td>
+										<td align="center"></td>
+										<td align="center"></td>
+										<td align="center"></td>
+										<td align="center"></td>
+										<td align="center"></td>
+										<td align="center"></td>
+										<td align="center"></td>
+										<?php } ?>
+									</tr>
+								</tbody>	
+							</table>
+						</div>	
+					</div>		
+				</div>
 				<?php } ?>
 			</div>
 		</div>
 	</div>
 </div>
+<?php }} ?>
 
+<?php
+	if(isset($_GET['page'])){
+		if($_GET['page'] == "scoring-individual" || $_GET['page'] == "slik-detail" ){
+?>
 <!-- MODAL DUKCAPIL PENJAMIN SLIK -->
 <div id="dataDukcapilPenjaminSLIK" class="modal fade" role="dialog">
 	<div class="modal-dialog modal-lg" style="width:80%;">
@@ -740,7 +862,7 @@
 						</div>
 					</div>
 				</div>
-				<div class="row">
+				<!--<div class="row">
 					<div class="col-md-12">
 						<b><label style="font-size: 14px">Data from Dukcapil :</label></b>
 						<div class="table-responsive">
@@ -754,15 +876,15 @@
 								</thead>
 								<tbody>
 									<tr>
-										<td style="text-align:center;"><?php echo $DkcplNIKPenjamin;?></td>
-										<td style="text-align:center;"><?php echo $DkcplNAMA_LGKPPenjamin;?></td>
-										<td style="text-align:center;"><?php if($DkcplTGL_LHRPenjamin <> ""){echo date("Y-m-d", strtotime($DkcplTGL_LHRPenjamin));}else{ echo"";}?></td>
+										<td style="text-align:center;"><?php //echo $DkcplNIKPenjamin;?></td>
+										<td style="text-align:center;"><?php //echo $DkcplNAMA_LGKPPenjamin;?></td>
+										<td style="text-align:center;"><?php //if($DkcplTGL_LHRPenjamin <> ""){echo date("Y-m-d", strtotime($DkcplTGL_LHRPenjamin));}else{ echo"";}?></td>
 									</tr>
 								</tbody>
 							</table>
 						</div>
 					</div>
-				</div>
+				</div>-->
 				<b><label style="color:red; font-size: 14px"><?php echo $Warning_DataPenjamin;?></label></b>
 				<hr>
 				<div class="row">
@@ -1052,9 +1174,9 @@
 		</div>
 	</div>
 </div>
+<?php }}?>
 
     <script src="assets/js/jquery.3.2.1.min.js" type="text/javascript"></script>
-	<!--<script src="https://code.jquery.com/jquery-1.12.4.js"></script>-->
 	<script src="assets/js/jquery-ui.js"></script>
 	<script src="assets/js/bootstrap.min.js" type="text/javascript"></script>
 	<script src="assets/js/chartist.min.js"></script>
@@ -1064,13 +1186,6 @@
 	<script src="assets/js/jquery.maskedinput.js"></script>
 	<script src="assets/js/jquery.dataTables.min.js"></script>
 	<script src="assets/js/dataTables.bootstrap4.min.js"></script>
-	<!--<script src="assets/plugins/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
-	<script src="https://code.highcharts.com/highcharts.js"></script>
-	<script src="https://code.highcharts.com/modules/series-label.js"></script>
-	<script src="https://code.highcharts.com/modules/exporting.js"></script>
-	<script src="https://code.highcharts.com/modules/export-data.js"></script>-->
-	
-
 </html>
 <script>
 $(document).ready(function() {
@@ -1080,13 +1195,5 @@ $(document).ready(function() {
 	$('#exampleCompany').DataTable({
 		"lengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]]
 	});
-	/*$('#datepicker').datepicker({
-		dateFormat: 'yy-mm-dd',
-		endDate: "today",
-		yearRange: '1950:2024',
-		changeMonth: true,
-		changeYear: true,
-		autoclose: true
-	});*/
 });
 </script>
