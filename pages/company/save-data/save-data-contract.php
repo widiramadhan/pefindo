@@ -5,7 +5,11 @@ if(isset($array['GetCustomReportResponse']['GetCustomReportResult']['aContracts'
 	$z=0;
 	//if($array['GetCustomReportResponse']['GetCustomReportResult']['aContracts']['bContractList']['bContract']['bBankBeneficiary']<>NULL){$ConctBankBenefic=$array['GetCustomReportResponse']['GetCustomReportResult']['aContracts']['bContractList']['bContract']['bBankBeneficiary'];}else{$ConctBankBenefic=NULL;}			
 	//if($array['GetCustomReportResponse']['GetCustomReportResult']['aContracts']['bContractList']['bContract']['bBranch']<>NULL){$ConctBranch=$array['GetCustomReportResponse']['GetCustomReportResult']['aContracts']['bContractList']['bContract']['bBranch'];}else{$ConctBranch=NULL;}				
-	if($array['GetCustomReportResponse']['GetCustomReportResult']['aContracts']['bContractList']['bContract']['bConditionDate']<>NULL){$ConctCondDate=$array['GetCustomReportResponse']['GetCustomReportResult']['aContracts']['bContractList']['bContract']['bConditionDate'];}else{$ConctCondDate=NULL;}				
+	if(isset($array['GetCustomReportResponse']['GetCustomReportResult']['aContracts']['bContractList']['bContract']['bConditionDate'])){
+		if($array['GetCustomReportResponse']['GetCustomReportResult']['aContracts']['bContractList']['bContract']['bConditionDate']<>NULL){$ConctCondDate=$array['GetCustomReportResponse']['GetCustomReportResult']['aContracts']['bContractList']['bContract']['bConditionDate'];}else{$ConctCondDate=NULL;}				
+	}else{
+		$ConctCondDate=null;
+	}
 	if($array['GetCustomReportResponse']['GetCustomReportResult']['aContracts']['bContractList']['bContract']['bContractCode']<>NULL){$ConctCode=$array['GetCustomReportResponse']['GetCustomReportResult']['aContracts']['bContractList']['bContract']['bContractCode'];}else{$ConctCode=NULL;}				
 	if($array['GetCustomReportResponse']['GetCustomReportResult']['aContracts']['bContractList']['bContract']['bContractCurrency']<>NULL){$ConctCurency=$array['GetCustomReportResponse']['GetCustomReportResult']['aContracts']['bContractList']['bContract']['bContractCurrency'];}else{$ConctCurency=NULL;}				
 	if($array['GetCustomReportResponse']['GetCustomReportResult']['aContracts']['bContractList']['bContract']['bContractStatus']<>NULL){$ConctStatus=$array['GetCustomReportResponse']['GetCustomReportResult']['aContracts']['bContractList']['bContract']['bContractStatus'];}else{$ConctStatus=NULL;}				
@@ -573,28 +577,100 @@ if(isset($array['GetCustomReportResponse']['GetCustomReportResult']['aContracts'
 		foreach($array['GetCustomReportResponse']['GetCustomReportResult']['aContracts']['bContractList']['bContract'] as $itemContract){
 			//if($itemContract['bBankBeneficiary']<>NULL){$ConctBankBenefic=$itemContract['bBankBeneficiary'];}else{$ConctBankBenefic=NULL;}			
 			//if($itemContract['bBranch']<>NULL){$ConctBranch=$itemContract['bBranch'];}else{$ConctBranch=NULL;}				
-			if($itemContract['bConditionDate']<>NULL){$ConctCondDate=$itemContract['bConditionDate'];}else{$ConctCondDate=NULL;}				
-			if($itemContract['bContractCode']<>NULL){$ConctCode=$itemContract['bContractCode'];}else{$ConctCode=NULL;}				
-			if($itemContract['bContractCurrency']<>NULL){$ConctCurency=$itemContract['bContractCurrency'];}else{$ConctCurency=NULL;}				
-			if($itemContract['bContractStatus']<>NULL){$ConctStatus=$itemContract['bContractStatus'];}else{$ConctStatus=NULL;}				
+			if(isset($itemContract['bConditionDate'])){
+				if($itemContract['bConditionDate']<>NULL){$ConctCondDate=$itemContract['bConditionDate'];}else{$ConctCondDate=NULL;}
+			}else{
+				$ConctCondDate=NULL;
+			}
+			if(isset($itemContract['bContractCode'])){
+				if($itemContract['bContractCode']<>NULL){$ConctCode=$itemContract['bContractCode'];}else{$ConctCode=NULL;}	
+			}else{
+				$ConctCode=NULL;
+			}
+			if(isset($itemContract['bContractCurrency'])){			
+				if($itemContract['bContractCurrency']<>NULL){$ConctCurency=$itemContract['bContractCurrency'];}else{$ConctCurency=NULL;}				
+			}else{
+				$ConctCurency=NULL;
+			}
+			if(isset($itemContract['bContractStatus'])){
+				if($itemContract['bContractStatus']<>NULL){$ConctStatus=$itemContract['bContractStatus'];}else{$ConctStatus=NULL;}				
+			}else{
+				$ConctStatus=NULL;
+			}
 			//if($itemContract['bContractSubtype']<>NULL){$ConctSubType=$itemContract['bContractSubtype'];}else{$ConctSubType=NULL;}
-			if($itemContract['bContractType']<>NULL){$ConctType=$itemContract['bContractType'];}else{$ConctType=NULL;}			
+			if(isset($itemContract['bContractType'])){
+				if($itemContract['bContractType']<>NULL){$ConctType=$itemContract['bContractType'];}else{$ConctType=NULL;}			
+			}else{
+				$ConctType=NULL;
+			}
 			//if($itemContract['bCreditCharacteristics']<>NULL){$ConctCreditChar=$itemContract['bCreditCharacteristics'];}else{$ConctCreditChar=NULL;}				
-			if($itemContract['bCreditClassification']<>NULL){$ConctCreditClassifict=$itemContract['bCreditClassification'];}else{$ConctCreditClassifict=NULL;}				
-			if($itemContract['bCreditUsageInLast30Days']<>NULL){$ConctCreditUsageLast30days=$itemContract['bCreditUsageInLast30Days'];}else{$ConctCreditUsageLast30days=NULL;}				
-			if($itemContract['bCreditor']<>NULL){$ConctCreditor=$itemContract['bCreditor'];}else{$ConctCreditor=NULL;}				
-			if($itemContract['bCreditorType']<>NULL){$ConctCreditorType=$itemContract['bCreditorType'];}else{$ConctCreditorType=NULL;}			
-			if($itemContract['bDefaultDate']<>NULL){$ConctDefaultDate=$itemContract['bDefaultDate'];}else{$ConctDefaultDate=NULL;}			
-			if($itemContract['bDefaultReason']<>NULL){$ConctDefaultReason=$itemContract['bDefaultReason'];}else{$ConctDefaultReason=NULL;}				
-			//if($itemContract['bDefaultReasonDescription']<>NULL){$ConctDefaultReasonDesc=$itemContract['bDefaultReasonDescription'];}else{$ConctDefaultReasonDesc=NULL;}				
-			if($itemContract['bDefaultDescription']<>NULL){$ConctDefaultReasonDesc=$itemContract['bDefaultDescription'];}else{$ConctDefaultReasonDesc=NULL;}
-			if($itemContract['bDelinquencyDate']<>NULL){$ConctDeleqDate=$itemContract['bDelinquencyDate'];}else{$ConctDeleqDate=NULL;}			
-			//if($itemContract['bDescription']<>NULL){$ConctDescription=$itemContract['bDescription'];}else{$ConctDescription=NULL;}				
-			if($itemContract['bDisbursementDate']<>NULL){$ConctDisBursDate=$itemContract['bDisbursementDate'];}else{$ConctDisBursDate=NULL;}			
-			if($itemContract['bDisputes']['bClosedDisputes']<>NULL){$ConctDispCloseDisp=$itemContract['bDisputes']['bClosedDisputes'];}else{$ConctDispCloseDisp=NULL;}				
-			if($itemContract['bDisputes']['bDisputeList']<>NULL){$ConctDispList=$itemContract['bDisputes']['bDisputeList'];}else{$ConctDispList=NULL;}				
-			if($itemContract['bDisputes']['bFalseDisputes']<>NULL){$ConctDispFalse=$itemContract['bDisputes']['bFalseDisputes'];}else{$ConctDispFalse=NULL;}
-			if($itemContract['bEconomicSector']<>NULL){$ConctEconomicSector=$itemContract['bEconomicSector'];}else{$ConctEconomicSector=NULL;}			
+			if(isset($itemContract['bCreditClassification'])){
+				if($itemContract['bCreditClassification']<>NULL){$ConctCreditClassifict=$itemContract['bCreditClassification'];}else{$ConctCreditClassifict=NULL;}	
+			}else{
+				$ConctCreditClassifict=NULL;
+			}
+			if(isset($itemContract['bCreditUsageInLast30Days'])){			
+				if($itemContract['bCreditUsageInLast30Days']<>NULL){$ConctCreditUsageLast30days=$itemContract['bCreditUsageInLast30Days'];}else{$ConctCreditUsageLast30days=NULL;}				
+			}else{
+				$ConctCreditUsageLast30days=NULL;
+			}
+			if(isset($itemContract['bCreditor'])){
+				if($itemContract['bCreditor']<>NULL){$ConctCreditor=$itemContract['bCreditor'];}else{$ConctCreditor=NULL;}				
+			}else{
+				$ConctCreditor=NULL;
+			}
+			if(isset($itemContract['bCreditorType'])){
+				if($itemContract['bCreditorType']<>NULL){$ConctCreditorType=$itemContract['bCreditorType'];}else{$ConctCreditorType=NULL;}			
+			}else{
+				$ConctCreditorType=NULL;
+			}
+			if(isset($itemContract['bDefaultDate'])){
+				if($itemContract['bDefaultDate']<>NULL){$ConctDefaultDate=$itemContract['bDefaultDate'];}else{$ConctDefaultDate=NULL;}			
+			}else{
+				$ConctDefaultDate=NULL;
+			}
+			if(isset($itemContract['bDefaultReason'])){
+				if($itemContract['bDefaultReason']<>NULL){$ConctDefaultReason=$itemContract['bDefaultReason'];}else{$ConctDefaultReason=NULL;}		
+			}else{
+				$ConctDefaultReason=NULL;
+			}
+			//if($itemContract['bDefaultReasonDescription']<>NULL){$ConctDefaultReasonDesc=$itemContract['bDefaultReasonDescription'];}else{$ConctDefaultReasonDesc=NULL;}	
+			if(isset($itemContract['bDefaultDescription'])){
+				if($itemContract['bDefaultDescription']<>NULL){$ConctDefaultReasonDesc=$itemContract['bDefaultDescription'];}else{$ConctDefaultReasonDesc=NULL;}
+			}else{
+				$ConctDefaultReasonDesc=NULL;
+			}
+			if(isset($itemContract['bDelinquencyDate'])){
+				if($itemContract['bDelinquencyDate']<>NULL){$ConctDeleqDate=$itemContract['bDelinquencyDate'];}else{$ConctDeleqDate=NULL;}				
+			}else{
+				$ConctDeleqDate=NULL;
+			}
+			//if($itemContract['bDescription']<>NULL){$ConctDescription=$itemContract['bDescription'];}else{$ConctDescription=NULL;}
+			if(isset($itemContract['bDisbursementDate'])){
+				if($itemContract['bDisbursementDate']<>NULL){$ConctDisBursDate=$itemContract['bDisbursementDate'];}else{$ConctDisBursDate=NULL;}			
+			}else{
+				$ConctDisBursDate=NULL;
+			}
+			if(isset($itemContract['bDisputes']['bClosedDisputes'])){
+				if($itemContract['bDisputes']['bClosedDisputes']<>NULL){$ConctDispCloseDisp=$itemContract['bDisputes']['bClosedDisputes'];}else{$ConctDispCloseDisp=NULL;}				
+			}else{
+				$ConctDispCloseDisp=NULL;
+			}
+			if(isset($itemContract['bDisputes']['bDisputeList'])){
+				if($itemContract['bDisputes']['bDisputeList']<>NULL){$ConctDispList=$itemContract['bDisputes']['bDisputeList'];}else{$ConctDispList=NULL;}				
+			}else{
+				$ConctDispList=NULL;
+			}
+			if(isset($itemContract['bDisputes']['bFalseDisputes'])){
+				if($itemContract['bDisputes']['bFalseDisputes']<>NULL){$ConctDispFalse=$itemContract['bDisputes']['bFalseDisputes'];}else{$ConctDispFalse=NULL;}
+			}else{
+				$ConctDispFalse=NULL;
+			}
+			if(isset($itemContract['bEconomicSector'])){
+				if($itemContract['bEconomicSector']<>NULL){$ConctEconomicSector=$itemContract['bEconomicSector'];}else{$ConctEconomicSector=NULL;}			
+			}else{
+				$ConctEconomicSector=NULL;
+			}
 			//if($itemContract['bGovernmentProgram']<>NULL){$ConctGovernProg=$itemContract['bGovernmentProgram'];}else{$ConctGovernProg=NULL;}			
 			//if(isset($itemContract['bGuarantyDeposit']['cCurrency'])){
 				//if($itemContract['bGuarantyDeposit']['cCurrency']<>NULL){$ConctGuarantDepoCur=$itemContract['bGuarantyDeposit']['cCurrency'];}else{$ConctGuarantDepoCur=NULL;}
@@ -603,8 +679,16 @@ if(isset($array['GetCustomReportResponse']['GetCustomReportResult']['aContracts'
 				//$ConctGuarantDepoCur=NULL;
 				//$ConctGuarantDepoVal=NULL;
 			//}
-			if($itemContract['bInitialAgreementDate']<>NULL){$ConctInitialAgrmntDate=$itemContract['bInitialAgreementDate'];}else{$ConctInitialAgrmntDate=NULL;}				
-			if($itemContract['bInitialAgreementNumber']<>NULL){$ConctInitialAgrmntNumb=$itemContract['bInitialAgreementNumber'];}else{$ConctInitialAgrmntNumb=NULL;}					
+			if(isset($itemContract['bInitialAgreementDate'])){
+				if($itemContract['bInitialAgreementDate']<>NULL){$ConctInitialAgrmntDate=$itemContract['bInitialAgreementDate'];}else{$ConctInitialAgrmntDate=NULL;}				
+			}else{
+				$ConctInitialAgrmntDate=NULL;
+			}
+			if(isset($itemContract['bInitialAgreementNumber'])){
+				if($itemContract['bInitialAgreementNumber']<>NULL){$ConctInitialAgrmntNumb=$itemContract['bInitialAgreementNumber'];}else{$ConctInitialAgrmntNumb=NULL;}					
+			}else{
+				$ConctInitialAgrmntNumb=NULL;
+			}
 			//if($itemContract['bInitialInterestRate']<>NULL){$ConctInterestRate=$itemContract['bInitialInterestRate'];}else{$ConctInterestRate=NULL;}				
 			//if($itemContract['bInitialInterestRateType']<>NULL){$ConctInterestRateType=$itemContract['bInitialInterestRateType'];}else{$ConctInterestRateType=NULL;}							
 			//if($itemContract['bInitialRestructuringDate']<>NULL){$ConctInitRestcDate=$itemContract['bInitialRestructuringDate'];}else{$ConctInitRestcDate=NULL;}				
@@ -622,14 +706,46 @@ if(isset($array['GetCustomReportResponse']['GetCustomReportResult']['aContracts'
 				$ConctIntArreasCur=NULL;
 				$ConctIntArreasVal=NULL;
 			}
-			if($itemContract['bInterestArrearsFrequency']<>NULL){$ConctIntArrearsFreq=$itemContract['bInterestArrearsFrequency'];}else{$ConctIntArrearsFreq=NULL;}			
-			if($itemContract['bLastAgreementDate']<>NULL){$ConctLastAgrmntDate=$itemContract['bLastAgreementDate'];}else{$ConctLastAgrmntDate=NULL;}			
-			if($itemContract['bLastAgreementNumber']<>NULL){$ConctLastAgrmntNumb=$itemContract['bLastAgreementNumber'];}else{$ConctLastAgrmntNumb=NULL;}			
-			if($itemContract['bLastDelinquency90PlusDays']<>NULL){$ConctLastDeleq90days=$itemContract['bLastDelinquency90PlusDays'];}else{$ConctLastDeleq90days=NULL;}			
-			if($itemContract['bLastUpdate']<>NULL){$ConctLastUpdate=$itemContract['bLastUpdate'];}else{$ConctLastUpdate=NULL;}			
-			if($itemContract['bMaturityDate']<>NULL){$ConctMaturyDate=$itemContract['bMaturityDate'];}else{$ConctMaturyDate=NULL;}			
-			if($itemContract['bNameOfInsured']<>NULL){$ConctNameInsured=$itemContract['bNameOfInsured'];}else{$ConctNameInsured=NULL;}			
-			if($itemContract['bNegativeStatusOfContract']<>NULL){$ConctNegativeStatContact=$itemContract['bNegativeStatusOfContract'];}else{$ConctNegativeStatContact=NULL;}			
+			if(isset($itemContract['bInterestArrearsFrequency'])){
+				if($itemContract['bInterestArrearsFrequency']<>NULL){$ConctIntArrearsFreq=$itemContract['bInterestArrearsFrequency'];}else{$ConctIntArrearsFreq=NULL;}	
+			}else{
+				$ConctIntArrearsFreq=NULL;
+			}
+			if(isset($itemContract['bLastAgreementDate'])){
+				if($itemContract['bLastAgreementDate']<>NULL){$ConctLastAgrmntDate=$itemContract['bLastAgreementDate'];}else{$ConctLastAgrmntDate=NULL;}			
+			}else{
+				$ConctLastAgrmntDate=NULL;
+			}
+			if(isset($itemContract['bLastAgreementNumber'])){
+				if($itemContract['bLastAgreementNumber']<>NULL){$ConctLastAgrmntNumb=$itemContract['bLastAgreementNumber'];}else{$ConctLastAgrmntNumb=NULL;}			
+			}else{
+				$ConctLastAgrmntNumb=NULL;
+			}
+			if(isset($itemContract['bLastDelinquency90PlusDays'])){
+				if($itemContract['bLastDelinquency90PlusDays']<>NULL){$ConctLastDeleq90days=$itemContract['bLastDelinquency90PlusDays'];}else{$ConctLastDeleq90days=NULL;}			
+			}else{
+				$ConctLastDeleq90days=NULL;
+			}
+			if(isset($itemContract['bLastUpdate'])){
+				if($itemContract['bLastUpdate']<>NULL){$ConctLastUpdate=$itemContract['bLastUpdate'];}else{$ConctLastUpdate=NULL;}			
+			}else{
+				$ConctLastUpdate=NULL;
+			}
+			if(isset($itemContract['bMaturityDate'])){
+				if($itemContract['bMaturityDate']<>NULL){$ConctMaturyDate=$itemContract['bMaturityDate'];}else{$ConctMaturyDate=NULL;}			
+			}else{
+				$ConctMaturyDate=NULL;
+			}
+			if(isset($itemContract['bNameOfInsured'])){
+				if($itemContract['bNameOfInsured']<>NULL){$ConctNameInsured=$itemContract['bNameOfInsured'];}else{$ConctNameInsured=NULL;}			
+			}else{
+				$ConctNameInsured=NULL;
+			}
+			if(isset($itemContract['bNegativeStatusOfContract'])){
+				if($itemContract['bNegativeStatusOfContract']<>NULL){$ConctNegativeStatContact=$itemContract['bNegativeStatusOfContract'];}else{$ConctNegativeStatContact=NULL;}			
+			}else{
+				$ConctNegativeStatContact=NULL;
+			}
 			//if($itemContract['bOrientationOfUse']<>NULL){$ConctOrietationUse=$itemContract['bOrientationOfUse'];}else{$ConctOrietationUse=NULL;}			
 			if(isset($itemContract['bOutstandingAmount']['cCurrency'])){
 				if($itemContract['bOutstandingAmount']['cCurrency']<>NULL){$ConctOutStandingAmountCur=$itemContract['bOutstandingAmount']['cCurrency'];}else{$ConctOutStandingAmountCur=NULL;}
@@ -645,7 +761,11 @@ if(isset($array['GetCustomReportResponse']['GetCustomReportResult']['aContracts'
 				$ConctPastDueAmountCur=NULL;
 				$ConctPastDueAmountVal=NULL;
 			}
-			if($itemContract['bPastDueDays']<>NULL){$ConctPastDueDays=$itemContract['bPastDueDays'];}else{$ConctPastDueDays=NULL;}			
+			if(isset($itemContract['bPastDueDays'])){
+				if($itemContract['bPastDueDays']<>NULL){$ConctPastDueDays=$itemContract['bPastDueDays'];}else{$ConctPastDueDays=NULL;}			
+			}else{
+				$ConctPastDueDays=NULL;
+			}
 			if(isset($itemContract['bPastDueInterest']['cCurrency'])){
 				if($itemContract['bPastDueInterest']['cCurrency']<>NULL){$ConctPastDueIntCur=$itemContract['bPastDueInterest']['cCurrency'];}else{$ConctPastDueIntCur=NULL;}
 				if($itemContract['bPastDueInterest']['cValue']<>NULL){$ConctPastDueIntVal=$itemContract['bPastDueInterest']['cValue'];}else{$ConctPastDueIntVal=NULL;}		
@@ -660,14 +780,22 @@ if(isset($array['GetCustomReportResponse']['GetCustomReportResult']['aContracts'
 				$ConctPenaltyCur=NULL;
 				$ConctPenaltyVal=NULL;
 			}
-			if($itemContract['bPhaseOfContract']<>NULL){$ConctPhaseConctract=$itemContract['bPhaseOfContract'];}else{$ConctPhaseConctract=NULL;}			
-			if($itemContract['bPrincipalArrearsFrequency']<>NULL){$ConctPrincipArreasFreq=$itemContract['bPrincipalArrearsFrequency'];}else{$ConctPrincipArreasFreq=NULL;}						
+			if(isset($itemContract['bPhaseOfContract'])){
+				if($itemContract['bPhaseOfContract']<>NULL){$ConctPhaseConctract=$itemContract['bPhaseOfContract'];}else{$ConctPhaseConctract=NULL;}			
+			}else{
+				$ConctPhaseConctract=NULL;
+			}
+			if(isset($itemContract['bPrincipalArrearsFrequency'])){
+				if($itemContract['bPrincipalArrearsFrequency']<>NULL){$ConctPrincipArreasFreq=$itemContract['bPrincipalArrearsFrequency'];}else{$ConctPrincipArreasFreq=NULL;}						
+			}else{
+				$ConctPrincipArreasFreq=NULL;
+			}
 			if(isset($itemContract['bPrincipalArrears']['cCurrency'])){
 				if($itemContract['bPrincipalArrears']['cCurrency']<>NULL){$ConctPrincipArreasCur=$itemContract['bPrincipalArrears']['cCurrency'];}else{$ConctPrincipArreasCur=NULL;}
 				if($itemContract['bPrincipalArrears']['cValue']<>NULL){$ConctPrincipArreasVal=$itemContract['bPrincipalArrears']['cValue'];}else{$ConctPrincipArreasVal=NULL;}			
 			}else{
 				$ConctPrincipArreasCur=NULL;
-				$ConctPrincipArreasCur=NULL;
+				$ConctPrincipArreasVal=NULL;
 			}
 			if(isset($itemContract['bPrincipalBalance']['cCurrency'])){
 				if($itemContract['bPrincipalBalance']['cCurrency']<>NULL){$ConctPrincipBalCur=$itemContract['bPrincipalBalance']['cCurrency'];}else{$ConctPrincipBalCur=NULL;}
@@ -685,14 +813,38 @@ if(isset($array['GetCustomReportResponse']['GetCustomReportResult']['aContracts'
 				//$ConctProjValVal=NULL;
 			//}
 			//if($itemContract['bProlongationCounter']<>NULL){$ConctProloCounter=$itemContract['bProlongationCounter'];}else{$ConctProloCounter=NULL;}			
-			if($itemContract['bPurposeOfFinancing']<>NULL){$ConctPurposeFinance=$itemContract['bPurposeOfFinancing'];}else{$ConctPurposeFinance=NULL;}			
-			if($itemContract['bRealEndDate']<>NULL){$ConctRealandDate=$itemContract['bRealEndDate'];}else{$ConctRealandDate=NULL;}			
+			if(isset($itemContract['bPurposeOfFinancing'])){
+				if($itemContract['bPurposeOfFinancing']<>NULL){$ConctPurposeFinance=$itemContract['bPurposeOfFinancing'];}else{$ConctPurposeFinance=NULL;}			
+			}else{
+				$ConctPurposeFinance=NULL;
+			}
+			if(isset($itemContract['bRealEndDate'])){
+				if($itemContract['bRealEndDate']<>NULL){$ConctRealandDate=$itemContract['bRealEndDate'];}else{$ConctRealandDate=NULL;}			
+			}else{
+				$ConctRealandDate=NULL;
+			}
 			//if($itemContract['bRestructuredCount']<>NULL){$ConctRestrucCount=$itemContract['bRestructuredCount'];}else{$ConctRestrucCount=NULL;}			
-			if($itemContract['bRestructuringDate']<>NULL){$ConctRestrucDate=$itemContract['bRestructuringDate'];}else{$ConctRestrucDate=NULL;}			
+			if(isset($itemContract['bRestructuringDate'])){
+				if($itemContract['bRestructuringDate']<>NULL){$ConctRestrucDate=$itemContract['bRestructuringDate'];}else{$ConctRestrucDate=NULL;}
+			}else{
+				$ConctRestrucDate=NULL;
+			}			
 			//if($itemContract['bRestructuringReason']<>NULL){$ConctRestrucReason=$itemContract['bRestructuringReason'];}else{$ConctRestrucReason=NULL;}			
-			if($itemContract['bRoleOfClient']<>NULL){$ConctRoleOfClient=$itemContract['bRoleOfClient'];}else{$ConctRoleOfClient=NULL;}			
-			if($itemContract['bStartDate']<>NULL){$ConctStartDate=$itemContract['bStartDate'];}else{$ConctStartDate=NULL;}			
-			if($itemContract['bSyndicatedLoan']<>NULL){$ConctSydicatLoan=$itemContract['bSyndicatedLoan'];}else{$ConctSydicatLoan=NULL;}			
+			if(isset($itemContract['bRoleOfClient'])){
+				if($itemContract['bRoleOfClient']<>NULL){$ConctRoleOfClient=$itemContract['bRoleOfClient'];}else{$ConctRoleOfClient=NULL;}			
+			}else{
+				$ConctRoleOfClient=NULL;
+			}
+			if(isset($itemContract['bStartDate'])){
+				if($itemContract['bStartDate']<>NULL){$ConctStartDate=$itemContract['bStartDate'];}else{$ConctStartDate=NULL;}	
+			}else{
+				$ConctStartDate=NULL;
+			}			
+			if(isset($itemContract['bSyndicatedLoan'])){
+				if($itemContract['bSyndicatedLoan']<>NULL){$ConctSydicatLoan=$itemContract['bSyndicatedLoan'];}else{$ConctSydicatLoan=NULL;}	
+			}else{
+				$ConctSydicatLoan=NULL;
+			}			
 			if(isset($itemContract['bTotalAmount']['cCurrency'])){
 				if($itemContract['bTotalAmount']['cCurrency']<>NULL){$ConctTotAmountCur=$itemContract['bTotalAmount']['cCurrency'];}else{$ConctTotAmountCur=NULL;}
 				if($itemContract['bTotalAmount']['cValue']<>NULL){$ConctTotAmountVal=$itemContract['bTotalAmount']['cValue'];}else{$ConctTotAmountVal=NULL;}			
@@ -721,7 +873,11 @@ if(isset($array['GetCustomReportResponse']['GetCustomReportResult']['aContracts'
 				$ConctWorstPastDueAmountCur=NULL;
 				$ConctWorstPastDueAmountVal=NULL;
 			}
-			if($itemContract['bWorstPastDueDays']<>NULL){$ConctWorstPastDueDays=$itemContract['bWorstPastDueDays'];}else{$ConctWorstPastDueDays=NULL;}
+			if(isset($itemContract['bWorstPastDueDays'])){
+				if($itemContract['bWorstPastDueDays']<>NULL){$ConctWorstPastDueDays=$itemContract['bWorstPastDueDays'];}else{$ConctWorstPastDueDays=NULL;}
+			}else{
+				$ConctWorstPastDueDays=NULL;
+			}
 			
 			$callContract = "{call sp_insert_M_contract_COMPANY(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}";
 			$paramsContract = array(

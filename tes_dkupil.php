@@ -21,10 +21,10 @@ else
 
 $param_arr = '
 {
- "nik":"12920239023	",
- "user_id":"devsuzukif",
- "password":"XNcPZp41",
- "IP_USER":"10.162.130.2"
+ "nik":"1207021011930009",
+ "user_id":"singlesuzukifinance",
+ "password":"s3Jsm8K9",
+ "IP_USER":"NOVRIKAWATI"
 }';
 
 $curlDkUpil = curl_init();
@@ -34,12 +34,12 @@ $curlDkUpil = curl_init();
 	  CURLOPT_RETURNTRANSFER => true,
 	  CURLOPT_ENCODING => "",
 	  CURLOPT_MAXREDIRS => 10,
-	  CURLOPT_TIMEOUT => 30,
+	  CURLOPT_TIMEOUT => 60,
 	  CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
 	  CURLOPT_CUSTOMREQUEST => "POST",
 	  CURLOPT_POSTFIELDS => "$param_arr",
 	  CURLOPT_HTTPHEADER => array(
-		"Authorization: Basic " . base64_encode("devsuzukif:XNcPZp41"),
+		"Authorization: Basic " . base64_encode("singlesuzukifinance:s3Jsm8K9"),
 	    "Content-Type: application/json",
 	    "Postman-Token: ae0ace2e-aa92-4d66-8d14-d67edb42fa84",
 	    "cache-control: no-cache"
@@ -68,9 +68,26 @@ $curlDkUpil = curl_init();
 		  //print_r($contentdata);	//, "<br />";
 			echo "<br /><br /><br />";
 			//echo $contentdata['NIK']."<br />";
-			echo number_format($contentdata['NIK'], 0, '', '');
-			echo "<br />".$contentdata['NAMA_LGKP']."<br />";
-
+			echo "NIK : ".number_format($contentdata['NIK'], 0, '', '');
+			echo "<br />Nama Lengkap : ".$contentdata['NAMA_LGKP'];
+			echo "<br />Jenis Kelamin : ".$contentdata['JENIS_KLMIN'];
+			echo "<br />Tempat Lahir : ".$contentdata['TMPT_LHR'];
+			echo "<br />Tanggal Lahir : ".$contentdata['TGL_LHR'];
+			echo "<br />Status Kawin : ".$contentdata['STATUS_KAWIN'];
+			echo "<br />Nama Ibu Kandung : ".$contentdata['NAMA_LGKP_IBU'];
+			echo "<br />Jenis Pekerjaan : ".$contentdata['JENIS_PKRJN'];
+			echo "<br />Alamat : ".$contentdata['ALAMAT'];
+			echo "<br />RT : ".$contentdata['NO_RT'];
+			echo "<br />RW : ".$contentdata['NO_RW'];
+			echo "<br />Kode Provinsi : ".$contentdata['NO_PROP'];
+			echo "<br />Nama Provinsi : ".$contentdata['PROP_NAME'];
+			echo "<br />Kode Kabupaten : ".$contentdata['NO_KAB'];
+			echo "<br />Nama Kabupaten : ".$contentdata['KAB_NAME'];
+			echo "<br />Kode Kecamatan : ".$contentdata['NO_KEC'];
+			echo "<br />Nama Kecamatan : ".$contentdata['KEC_NAME'];
+			echo "<br />Kode Kalurahan : ".$contentdata['NO_KEL'];
+			echo "<br />Nama Kelurahan : ".$contentdata['KEL_NAME'];
+			
 			echo "<br />";
 			//echo "---";
 		}

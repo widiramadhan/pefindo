@@ -34,7 +34,15 @@ while($dataSummary = sqlsrv_fetch_array($execSummary)){
 	}else if($duedays > 180){
 		$lebih180++;
 	}
-}	
+}
+$callSummary2 = "{call SP_GET_TAB_SUMMARY_COMPANY(?)}";
+$optionsSummary2 =  array( "Scrollable" => "buffered" );
+$paramsSummary2 = array(array($id, SQLSRV_PARAM_IN));
+$execSummary2 = sqlsrv_query($conn, $callSummary2, $paramsSummary2, $optionsSummary2) or die( print_r( sqlsrv_errors(), true));
+$ds	= sqlsrv_fetch_array($execSummary2);
+$npwp=$ds['NPWP'];
+$company_name=$ds['COMPANY_NAME'];
+
 /* select table cip */
 $callCIP = "{call SP_GET_TAB_DASHBOARD_TBL_CIP_COMPANY(?)}";
 $paramsCIP = array(array($id, SQLSRV_PARAM_IN));
@@ -70,7 +78,7 @@ while($dataCONT2 = sqlsrv_fetch_array($execCONT2)){
 					<table class="table table-bordered" style="width:100%;">
 						<thead>
 							<th>No</th>
-							<th>NIK</th>
+							<th>NPWP</th>
 							<th>Customer Name</th>
 							<th>Pefindo Score</th>
 							<th>Total Fasilitas</th>
@@ -88,8 +96,8 @@ while($dataCONT2 = sqlsrv_fetch_array($execCONT2)){
 						<tbody>
 							<tr>
 								<td align="center">1</td>
-								<td align="center"><?php echo $ktp;?></td>
-								<td align="center"><?php echo $nama;?></td>
+								<td align="center"><?php echo $data['NPWP'];?></td>
+								<td align="center"><?php echo $data['COMPANY'];?></td>
 								<td align="center"><?php echo $dataCIP['SCORE'];?>
 								<td align="center"><?php echo $numRowsSummary;?></td>
 								<td align="right">IDR <?php echo number_format($totalPlafond2,0,',','.');?></td>

@@ -98,12 +98,31 @@ if(isset($array['GetCustomReportResponse']['GetCustomReportResult']['aCollateral
 }
 
 /*Collateral Summary*/
-if($array['GetCustomReportResponse']['GetCustomReportResult']['aCollaterals']['bSummary']['bNumberOfCashCollaterals']<>NULL){$ColSumNumbCash=$array['GetCustomReportResponse']['GetCustomReportResult']['aCollaterals']['bSummary']['bNumberOfCashCollaterals'];}else{$$ColSumNumbCash=NULL;}
-if($array['GetCustomReportResponse']['GetCustomReportResult']['aCollaterals']['bSummary']['bNumberOfNonCashCollaterals']<>NULL){$ColSumNumbNonCash=$array['GetCustomReportResponse']['GetCustomReportResult']['aCollaterals']['bSummary']['bNumberOfNonCashCollaterals'];}else{$ColSumNumbNonCash=NULL;}
-if($array['GetCustomReportResponse']['GetCustomReportResult']['aCollaterals']['bSummary']['bTotalValueOfCashCollaterals']['cCurrency']<>NULL){$ColSumTotalValCashCurency=$array['GetCustomReportResponse']['GetCustomReportResult']['aCollaterals']['bSummary']['bTotalValueOfCashCollaterals']['cCurrency'];}else{$ColSumTotalValCashCurency=NULL;}
-if($array['GetCustomReportResponse']['GetCustomReportResult']['aCollaterals']['bSummary']['bTotalValueOfCashCollaterals']['cValue']<>NULL){$ColSumTotalValCashVal=$array['GetCustomReportResponse']['GetCustomReportResult']['aCollaterals']['bSummary']['bTotalValueOfCashCollaterals']['cValue'];}else{$ColSumTotalValCashVal=NULL;}
-if($array['GetCustomReportResponse']['GetCustomReportResult']['aCollaterals']['bSummary']['bTotalValueOfNonCashCollaterals']['cCurrency']<>NULL){$ColSumTotalValnonCashCurency=$array['GetCustomReportResponse']['GetCustomReportResult']['aCollaterals']['bSummary']['bTotalValueOfNonCashCollaterals']['cCurrency'];}else{$ColSumTotalValnonCashCurency=NULL;}
-if($array['GetCustomReportResponse']['GetCustomReportResult']['aCollaterals']['bSummary']['bTotalValueOfNonCashCollaterals']['cValue']<>NULL){$ColSumTotalValnonCashVal=$array['GetCustomReportResponse']['GetCustomReportResult']['aCollaterals']['bSummary']['bTotalValueOfNonCashCollaterals']['cValue'];}else{$ColSumTotalValnonCashVal=NULL;}
+if(isset($array['GetCustomReportResponse']['GetCustomReportResult']['aCollaterals']['bSummary']['bNumberOfCashCollaterals'])){
+	if($array['GetCustomReportResponse']['GetCustomReportResult']['aCollaterals']['bSummary']['bNumberOfCashCollaterals']<>NULL){$ColSumNumbCash=$array['GetCustomReportResponse']['GetCustomReportResult']['aCollaterals']['bSummary']['bNumberOfCashCollaterals'];}else{$$ColSumNumbCash=NULL;}
+}else{
+	$ColSumNumbCash=NULL;
+}
+if(isset($array['GetCustomReportResponse']['GetCustomReportResult']['aCollaterals']['bSummary']['bNumberOfNonCashCollaterals'])){
+	if($array['GetCustomReportResponse']['GetCustomReportResult']['aCollaterals']['bSummary']['bNumberOfNonCashCollaterals']<>NULL){$ColSumNumbNonCash=$array['GetCustomReportResponse']['GetCustomReportResult']['aCollaterals']['bSummary']['bNumberOfNonCashCollaterals'];}else{$ColSumNumbNonCash=NULL;}
+}else{
+	$ColSumNumbNonCash=NULL;
+}
+if(isset($array['GetCustomReportResponse']['GetCustomReportResult']['aCollaterals']['bSummary']['bTotalValueOfCashCollaterals']['cCurrency'])){
+	if($array['GetCustomReportResponse']['GetCustomReportResult']['aCollaterals']['bSummary']['bTotalValueOfCashCollaterals']['cCurrency']<>NULL){$ColSumTotalValCashCurency=$array['GetCustomReportResponse']['GetCustomReportResult']['aCollaterals']['bSummary']['bTotalValueOfCashCollaterals']['cCurrency'];}else{$ColSumTotalValCashCurency=NULL;}
+	if($array['GetCustomReportResponse']['GetCustomReportResult']['aCollaterals']['bSummary']['bTotalValueOfCashCollaterals']['cValue']<>NULL){$ColSumTotalValCashVal=$array['GetCustomReportResponse']['GetCustomReportResult']['aCollaterals']['bSummary']['bTotalValueOfCashCollaterals']['cValue'];}else{$ColSumTotalValCashVal=NULL;}
+}else{
+	$ColSumTotalValCashCurency=NULL;
+	$ColSumTotalValCashVal=NULL;
+}
+if(isset($array['GetCustomReportResponse']['GetCustomReportResult']['aCollaterals']['bSummary']['bTotalValueOfNonCashCollaterals']['cCurrency'])){
+	if($array['GetCustomReportResponse']['GetCustomReportResult']['aCollaterals']['bSummary']['bTotalValueOfNonCashCollaterals']['cCurrency']<>NULL){$ColSumTotalValnonCashCurency=$array['GetCustomReportResponse']['GetCustomReportResult']['aCollaterals']['bSummary']['bTotalValueOfNonCashCollaterals']['cCurrency'];}else{$ColSumTotalValnonCashCurency=NULL;}
+	if($array['GetCustomReportResponse']['GetCustomReportResult']['aCollaterals']['bSummary']['bTotalValueOfNonCashCollaterals']['cValue']<>NULL){$ColSumTotalValnonCashVal=$array['GetCustomReportResponse']['GetCustomReportResult']['aCollaterals']['bSummary']['bTotalValueOfNonCashCollaterals']['cValue'];}else{$ColSumTotalValnonCashVal=NULL;}
+}else{
+	$ColSumTotalValnonCashCurency=NULL;
+	$ColSumTotalValnonCashVal=NULL;
+}
+
 
 $callCollateralSUM = "{call SP_INSERT_COLLATERAL_SUMMARY_COMPANY(?,?,?,?,?,?,?,?)}";
 $paramsCollateralSUM = array(

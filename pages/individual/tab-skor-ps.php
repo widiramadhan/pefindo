@@ -22,7 +22,7 @@
 								}else if($dataCIP['GRADE'] == "C3" || $dataCIP['GRADE'] == "C2" || $dataCIP['GRADE'] == "C1"){
 									echo'<div class="box-yellow" style="width:30px;height:25px;font-size:12px;padding:5px;">';
 								}else if($dataCIP['GRADE'] == "B3" || $dataCIP['GRADE'] == "B2" || $dataCIP['GRADE'] == "B1"){
-									echo'<div class="box-green" style="background-color:#01b701;width:30px;height:25px;font-size:12px;padding:5px;">';
+									echo'<div class="box-green" style="background-color:#035c7a;width:30px;height:25px;font-size:12px;padding:5px;">';
 								}else{
 									echo'<div class="box-green" style="width:30px;height:25px;font-size:12px;padding:5px;">';
 								}
@@ -36,7 +36,7 @@
 						<td><?php echo $dataCIP['PROBABILITY_OF_DEFAULT'];?>
 							<?php
 								if($dataCIP['TREND'] == "Down"){
-									echo'<i class="fa fa-arrow-down text-danger"></i>';
+									echo'<i class="fa fa-arrow-down text-custom"></i>';
 								}else if($dataCIP['TREND'] == "Up"){
 									echo'<i class="fa fa-arrow-up text-success"></i>';
 								}else{
@@ -69,7 +69,7 @@
 			<img src="assets/img/PefindoScore.png" style="width:50%;">
 		</center>
 		<br>
-		<p class="name text-danger">Keterangan terkait resiko</p>	
+		<p class="name text-custom">Keterangan terkait resiko</p>	
 		<div class="table-responsive">
 			<table class="table table-bordered">
 				<thead>
@@ -120,7 +120,11 @@
 								if($dataCIP2['DATE']==NULL){
 									echo "<th></th>";
 								}else{
-									echo "<th>".$dataCIP2['DATE']->format('m/Y')."</th>";
+									if($dataCIP2['DATE']<>NULL){
+										echo "<th>".$dataCIP2['DATE']->format('m/Y')."</th>";
+									}else{
+										echo"<th></th>";
+									}
 								}
 							}
 						?>
@@ -164,7 +168,7 @@
 								}else if($dataCIP2['GRADE'] == "C3" || $dataCIP2['GRADE'] == "C2" || $dataCIP2['GRADE'] == "C1"){
 									echo'<div class="box-yellow" style="width:30px;height:25px;font-size:12px;padding:5px;">';
 								}else if($dataCIP2['GRADE'] == "B3" || $dataCIP2['GRADE'] == "B2" || $dataCIP2['GRADE'] == "B1"){
-									echo'<div class="box-green" style="background-color:#01b701;width:30px;height:25px;font-size:12px;padding:5px;">';
+									echo'<div class="box-green" style="background-color:#035c7a;width:30px;height:25px;font-size:12px;padding:5px;">';
 								}else{
 									echo'<div class="box-green" style="width:30px;height:25px;font-size:12px;padding:5px;">';
 								}

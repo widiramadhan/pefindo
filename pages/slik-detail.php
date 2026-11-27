@@ -1,174 +1,15 @@
 <?php
 require_once("config/configuration.php");
-$noProsepekPemohonSLIK=$_GET['id'];
+$noProsepekPemohonSLIK=$_GET['no'];
+$cust_type=$_GET['custtype'];
+$id=$_GET['id'];
 
-//penjamin atau pasangan
-$callPenjamin = "{call PEFINDO_GETDATA_PASANGAN(?)}";
-$paramsPenjamin = array(array($noProsepekPemohonSLIK, SQLSRV_PARAM_IN));
-$optionsPenjamin =  array( "Scrollable" => "buffered" );
-$execPenjamin = sqlsrv_query( $conn, $callPenjamin, $paramsPenjamin, $optionsPenjamin) or die( print_r( sqlsrv_errors(), true));
-$dataPenjamin = sqlsrv_fetch_array($execPenjamin);
-$numrosPenjamin = sqlsrv_num_rows($execPenjamin);
-if($numrosPenjamin<>0){
-	$ktp_pasangan = $dataPenjamin['Pasangan_Noktp'];
-	$nama_pasangan = $dataPenjamin['Pasangan_Nama'];
-	$tgl_lahir_pasangan = $dataPenjamin['Pasangan_TglLahir'];
-	$ktp_penjamin = $dataPenjamin['Penjamin_Noktp'];
-	$nama_penjamin = $dataPenjamin['Penjamin_Nama'];
-	$tgl_lahir_penjamin = $dataPenjamin['Penjamin_TglLahir'];
-}else{
-	$ktp_pasangan = "";
-	$nama_pasangan = "";
-	$tgl_lahir_pasangan = "";
-	$ktp_penjamin = "";
-	$nama_penjamin = "";
-	$tgl_lahir_penjamin = "";
-}
-
-if($ktp_pasangan <> "" && $ktp_penjamin == ""){
-	$ktp2=$ktp_pasangan;
-	$nama2=$nama_pasangan;
-	$tglLahir2=$tgl_lahir_pasangan;
-}else if($ktp_penjamin <> "" || $ktp_pasangan == ""){
-	$ktp2=$ktp_penjamin;
-	$nama2=$nama_penjamin;
-	$tglLahir2=$tgl_lahir_penjamin;
-}else{
-	$ktp2="";
-	$nama2="";
-	$tglLahir2="";
-}
-
-//--# Cek Dukcapil
-$param_dukcapil_arrayPenjamin= array('nik' => $ktp2, 'user_id' => "devsuzukif", 'password' => "XNcPZp41", 'IP_USER' => "10.162.130.2");
-$param_dukcapilPenjamin = json_encode($param_dukcapil_arrayPenjamin);
-$Warning_DataPenjamin = "";
-
-$call_blsPenjamin = "{call SP_CHECK_BLACKLIST_PENJAMIN(?,?,?)}";
-$params_blsPenjamin = array(array($ktp2, SQLSRV_PARAM_IN),array($nama2, SQLSRV_PARAM_IN),array($tglLahir2, SQLSRV_PARAM_IN));
-$optionsPenjamin =  array( "Scrollable" => "buffered" );
-$exec_blsPenjamin = sqlsrv_query( $conn, $call_blsPenjamin, $params_blsPenjamin, $optionsPenjamin) or die( print_r( sqlsrv_errors(), true)); 
-$data_blsPenjamin = sqlsrv_fetch_array($exec_blsPenjamin);
-$checkBlacklistPenjamin=sqlsrv_num_rows($exec_blsPenjamin);
-
-if($checkBlacklistPenjamin > 0){
-	$Warning_DataPenjamin = $Warning_DataPenjamin." - Customer ini terdaftar di Customer Blacklist Internal.!<br>";
-}
-//----# Cek Dukcapil
-$curlDkUpilPenjamin = curl_init();
-curl_setopt_array($curlDkUpilPenjamin, array(
-  CURLOPT_URL => "http://172.16.160.128:8000/dukcapil/get_json/SUZUKI_FINANCE/CALL_NIK",
-  CURLOPT_RETURNTRANSFER => true,
-  CURLOPT_ENCODING => "",
-  CURLOPT_MAXREDIRS => 10,
-  CURLOPT_TIMEOUT => 30,
-  CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-  CURLOPT_CUSTOMREQUEST => "POST",
-  CURLOPT_POSTFIELDS => "$param_dukcapilPenjamin",
-  CURLOPT_HTTPHEADER => array(
-	"Authorization: Basic " . base64_encode("devsuzukif:XNcPZp41"),
-	"Content-Type: application/json",
-	"Postman-Token: ae0ace2e-aa92-4d66-8d14-d67edb42fa84",
-	"cache-control: no-cache"
-  ),
-));
-
-$responseDkUpilPenjamin = curl_exec($curlDkUpilPenjamin);
-$errDkUpilPenjamin = curl_error($curlDkUpilPenjamin);			
-curl_close($curlDkUpilPenjamin);
-$resultDukcapilPenjamin = json_decode($responseDkUpilPenjamin, true);
-if(empty($resultDukcapilPenjamin)){
-	$Warning_DataPenjamin = $Warning_DataPenjamin." - KTP TIDAK VALID (Pada saat pengecekan No KTP di Dukcapil.!)<br>";
-}
-
-if (isset($resultDukcapilPenjamin['content'][0]['RESPON'])) {
-	$StatusLogDkUpilnotfoundPenjamin = strtoupper($resultDukcapilPenjamin['content'][0]['RESPON']);
-	$Warning_DataPenjamin = $Warning_DataPenjamin." - ".$StatusLogDkUpilnotfoundPenjamin."  (Pada saat pengecekan No KTP di Dukcapil.!)<br>";
-	
-	$DkcplNIKPenjamin = "";
-	$DkcplNAMA_LGKPPenjamin = "";
-	$DkcplJENIS_KLMINPenjamin ="";
-	$DkcplTMPT_LHRPenjamin = "";
-	$DkcplTGL_LHRPenjamin = "";
-	$DkcplSTATUS_KAWINPenjamin = "";
-	$DkcplNAMA_LGKP_IBUPenjamin = "";
-	$DkcplJENIS_PKRJNPenjamin = "";
-	$DkcplALAMATPenjamin = "";
-	$DkcplNO_RTPenjamin = "";
-	$DkcplNO_RWPenjamin = "";
-	$DkcplNO_PROPPenjamin = "";
-	$DkcplPROP_NAMEPenjamin = "";
-	$DkcplNO_KABPenjamin = "";
-	$DkcplKAB_NAMEPenjamin = "";
-	$DkcplKEC_NAMEPenjamin = "";
-	$DkcplNO_KELPenjamin = "";
-	$DkcplNO_KECPenjamin = "";
-	$DkcplKEL_NAMEPenjamin = "";
-}else{
-	foreach($resultDukcapilPenjamin['content'] as $contentdata){
-		$DkcplNIKPenjamin = number_format($contentdata['NIK'], 0, '', '');
-		$DkcplNAMA_LGKPPenjamin = $contentdata['NAMA_LGKP'];
-		$DkcplJENIS_KLMINPenjamin = $contentdata['JENIS_KLMIN'];
-		$DkcplTMPT_LHRPenjamin = $contentdata['TMPT_LHR'];
-		$DkcplTGL_LHRPenjamin = $contentdata['TGL_LHR'];
-		$DkcplSTATUS_KAWINPenjamin = $contentdata['STATUS_KAWIN'];
-		$DkcplNAMA_LGKP_IBUPenjamin = $contentdata['NAMA_LGKP_IBU'];
-		$DkcplJENIS_PKRJNPenjamin = $contentdata['JENIS_PKRJN'];
-		$DkcplALAMATPenjamin = $contentdata['ALAMAT'];
-		$DkcplNO_RTPenjamin = $contentdata['NO_RT'];
-		$DkcplNO_RWPenjamin = $contentdata['NO_RW'];
-		$DkcplNO_PROPPenjamin = $contentdata['NO_PROP'];
-		$DkcplPROP_NAMEPenjamin = $contentdata['PROP_NAME'];
-		$DkcplNO_KABPenjamin = $contentdata['NO_KAB'];
-		$DkcplKAB_NAMEPenjamin = $contentdata['KAB_NAME'];
-		$DkcplKEC_NAMEPenjamin = $contentdata['KEC_NAME'];
-		$DkcplNO_KELPenjamin = $contentdata['NO_KEL'];
-		$DkcplNO_KECPenjamin = $contentdata['NO_KEC'];
-		$DkcplKEL_NAMEPenjamin = $contentdata['KEL_NAME'];
-		
-		if($DkcplNAMA_LGKPPenjamin != $nama2){
-			$Warning_DataPenjamin = $Warning_DataPenjamin." - Nama Lengkap Tidak Sama dengan data di Dukcapil.!<br>";
-		}
-		if($DkcplTGL_LHRPenjamin != $tglLahir2->format("Y-m-d")){
-			$Warning_DataPenjamin = $Warning_DataPenjamin." - Tanggal Lahir Tidak Sama dengan data di Dukcapil.!<br>";
-		}
-		
-		$Is_Similar = 0;
-		if($Warning_DataPenjamin != ""){
-			$Is_Similar = 1;
-		}
-	}
-}
-
-$curl = curl_init();
-curl_setopt_array($curl, array(
-  CURLOPT_URL => "https://bo.pefindobirokredit.com/WsReport/v5.31/Service.svc",
-  CURLOPT_RETURNTRANSFER => true,
-  CURLOPT_ENCODING => "",
-  CURLOPT_MAXREDIRS => 10,
-  CURLOPT_TIMEOUT => 30,
-  CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-  CURLOPT_CUSTOMREQUEST => "POST",
-  CURLOPT_POSTFIELDS => "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\"\r\nxmlns:cb5=\"http://creditinfo.com/CB5\"\r\nxmlns:smar=\"http://creditinfo.com/CB5/v5.31/SmartSearch\">\r\n <soapenv:Header/>\r\n <soapenv:Body>\r\n <cb5:SmartSearchIndividual>\r\n <cb5:query>\r\n <smar:InquiryReason>ProvidingFacilities</smar:InquiryReason>\r\n <smar:InquiryReasonText/>\r\n <smar:Parameters>\r\n <smar:DateOfBirth>".$tglLahir2->format("Y-m-d")."</smar:DateOfBirth>\r\n <smar:FullName>".$nama2."</smar:FullName>\r\n <smar:IdNumbers>\r\n <smar:IdNumberPairIndividual>\r\n <smar:IdNumber>".$ktp2."</smar:IdNumber>\r\n <smar:IdNumberType>KTP</smar:IdNumberType>\r\n </smar:IdNumberPairIndividual>\r\n </smar:IdNumbers>\r\n </smar:Parameters>\r\n </cb5:query>\r\n </cb5:SmartSearchIndividual>\r\n </soapenv:Body>\r\n</soapenv:Envelope>\r\n",
-  CURLOPT_HTTPHEADER => array(
-	"Authorization: Basic " . base64_encode("$username:$password"),
-	"Content-Type: text/xml",
-	"Postman-Token: ae0ace2e-aa92-4d66-8d14-d67edb42fa84",
-	"SOAPAction: http://creditinfo.com/CB5/IReportPublicServiceBase/SmartSearchIndividual",
-	"cache-control: no-cache"
-  ),
-));
-$response = curl_exec($curl);
-$err = curl_error($curl);
-curl_close($curl);
-if ($err) {
-	echo"<script>window.location='index.php?USERNAME=".$user."&page=error'</script>";
-} else {
-	$response = preg_replace("/(<\/?)(\w+):([^>]*>)/", "$1$2$3", $response);
-	$xml = new SimpleXMLElement($response);
-	$body = $xml->xpath('//sBody')[0];
-	$array = json_decode(json_encode((array)$body), TRUE); 
-}
+$callSP = "{call SP_GET_SLIK_INDIVIDUAL_REPORT(?,?)}";
+$options = array( "Scrollable" => "buffered" );
+$params = array(array($noProsepekPemohonSLIK, SQLSRV_PARAM_IN),array($cust_type, SQLSRV_PARAM_IN));
+$exec = sqlsrv_query( $conn, $callSP, $params, $options) or die( print_r( sqlsrv_errors(), true));
+$numrows = sqlsrv_num_rows($exec);
+$data = sqlsrv_fetch_array($exec);
 ?>
 <style>
 a{
@@ -304,7 +145,7 @@ ul > li > .active > a:focus {
     width: 100%;
     height: 100%;
     z-index: 99999999999999999999999999999;
-    background: url('assets/img/loading.gif') 50% 50% no-repeat rgb(255,255,255);
+    background: url('assets/img/basicloader.gif') 50% 50% no-repeat rgb(255,255,255);
     opacity: 1;
 }
 tr.header{
@@ -314,8 +155,34 @@ tr.header{
 tr.child {
     display: none;
 }
+.th-custom{
+	text-align:center;
+	background-color:#035c7a;
+}
+.td-center{
+	text-align:center;
+}
+.pagination > li > a, .pagination > li > span{
+	background-color:#FFF;
+	color:#035c7a;
+}
+.pagination > li.active > a, .pagination > li.active > span{
+	background-color:#035c7a;
+	color:#FFF;
+}
+.pagination > li.active > a:hover, .pagination > li.active > span:hover{
+	background-color:#035c7a;
+	color:#FFF;
+}
+.pagination > li.focus > a, .pagination > li.focus > span:hover{
+	background-color:#035c7a;
+	color:#FFF;
+}
+.pagination > li.active > a.page-link, .pagination > li.active > span.page-link{
+	background-color:#035c7a;
+	color:#FFF;
+}
 </style>
-<script src="assets/js/jquery.3.2.1.min.js" type="text/javascript"></script>
 <script>
 $(document).ready(function(){
   $("#collapseOne").on("hide.bs.collapse", function(){
@@ -332,21 +199,12 @@ $(document).ready(function(){
   });
 });
 </script>
-<?php
-$callSP = "{call SP_GET_SLIK_INDIVIDUAL_REPORT(?)}";
-$options = array( "Scrollable" => "buffered" );
-$params = array(array($noProsepekPemohonSLIK, SQLSRV_PARAM_IN));
-$exec = sqlsrv_query( $conn, $callSP, $params, $options) or die( print_r( sqlsrv_errors(), true));
-$numrows = sqlsrv_num_rows($exec);
-$data = sqlsrv_fetch_array($exec);
-?>
-<!--<div class="loader" id="loader"></div>-->
 <div class="row">
 	<div class="col-md-12">
 		<div class="card">
 			<div class="header">
 				<div class="pull-left">
-					<h4 class="title">Scoring Report</h4>
+					<h4 class="title">SCORING REPORT <?php echo $data['TIPE_CUST'];?></h4>
 					<p class="category">Host to Host SFI - Pefindo</p>
 				</div>
 				<div style="clear:both;"></div>
@@ -360,11 +218,6 @@ $data = sqlsrv_fetch_array($exec);
 							<div class="row">
 								<div class="col-md-11">
 									<p class="name pull-left">Summary</p>
-									<p class="pull-right">
-										<a href="#" data-target="#dataDukcapilPenjaminSLIK" data-toggle="modal" class="btn btn-primary btn-sm" style="cursor:pointer;border:1px solid #035c7a;color:#035c7a;">
-											CHECK SCORING PENJAMIN
-										</a>
-									</p>
 								</div>
 							</div>
 						</div>
@@ -460,7 +313,75 @@ $data = sqlsrv_fetch_array($exec);
 										</table>
 									</div>	
 								</div>		
-							</div>		
+							</div>	
+							<div class="row">
+								<div class="col-md-11">
+									<div class="table-responsive">
+							<table class="table table-bordered table-striped" id="history" style="font-size:12px;">
+								<thead>
+									<tr>
+										<th class="th-custom" style="color:#FFF;font-weight:bold;">NO</th>
+										<th class="th-custom" style="color:#FFF;font-weight:bold;">JENIS FASILITAS</th>
+										<th class="th-custom" style="color:#FFF;font-weight:bold;">DAYS OD TERAKHIR</th>
+										<th class="th-custom" style="color:#FFF;font-weight:bold;">SLIK SCORE</th>
+										<th class="th-custom" style="color:#FFF;font-weight:bold;">TOTAL PLAFOND</th>
+										<th class="th-custom" style="color:#FFF;font-weight:bold;">TOTAL BAKI DEBET</th>
+										<th class="th-custom" style="color:#FFF;font-weight:bold;">TANGGAL AKAD AWAL</th>
+										<th class="th-custom" style="color:#FFF;font-weight:bold;">TANGGAL AKAD AKHIR</th>
+										<th class="th-custom" style="color:#FFF;font-weight:bold;">CREATE DATE</th>
+									</tr>
+								</thead>
+								<tbody>
+									<?php
+									$call = "{call SP_GET_FASILITAS_SLIK(?)}";
+									$param = array(array($id, SQLSRV_PARAM_IN));
+									$exec = sqlsrv_query( $conn, $call, $param) or die( print_r( sqlsrv_errors(), true));
+									$no=0;
+									while($data4 = sqlsrv_fetch_array($exec)){
+										$no++;
+									?>
+									<tr>
+										<td class="td-center"><?php echo $no;?></td>
+										<td><?php echo $data4['JENIS_FASILITAS'];?></td>
+										<td class="td-center"><?php echo $data4['DAYS_OD_TERAKHIR'];?></td>
+										<td class="td-center"><?php echo $data4['SLIK_SCORE'];?></td>
+										<td style="text-align:right;">Rp. <?php echo number_format($data4['TOTAL_PLAFOND']);?></td>
+										<td style="text-align:right;">Rp. <?php echo number_format($data4['TOTAL_BAKI_DEBET']);?></td>
+										<td class="td-center"><?php if($data4['TANGGAL_AKAD_AWAL']<>NULL){echo $data4['TANGGAL_AKAD_AWAL']->format('Y-m-d');}?></td>
+										<td class="td-center"><?php if($data4['TANGGAL_AKAD_AKHIR']<>NULL){echo $data4['TANGGAL_AKAD_AKHIR']->format('Y-m-d');}?></td>
+										<td class="td-center"><?php echo $data4['CREATE_DATE']->format('Y-m-d H:i:s');?></td>
+									</tr>
+									<?php } ?>
+								</tbody>
+							</table>
+										</div>	
+								</div>		
+							</div>	
+							<div class="row">
+								<div class="col-md-11">
+									<?php
+										$callPDF = "{call SP_GET_PDF_SLIK(?)}";
+										$paramPDF = array(array($data['PEFINDO_MAPPING_ID'], SQLSRV_PARAM_IN));
+										$execPDF = sqlsrv_query($conn, $callPDF, $paramPDF) or die( print_r( sqlsrv_errors(), true));
+										$dataPDF = sqlsrv_fetch_array($execPDF);
+
+										$file = "http://172.16.2.6/h2h_pefindo/assets/doc/".$dataPDF['PDF_SRC'];
+										
+										if($dataPDF['PDF_SRC'] <> ""){
+											if($file){
+												echo'<iframe src="http://172.16.2.6/h2h_pefindo/assets/doc/'.$dataPDF['PDF_SRC'].'" style="width:100%;height:700px;"></iframe>';
+												echo'a';
+											}else{
+												echo'<iframe src="http://172.16.2.6/h2h_pefindo/assets/doc/notfound.pdf" style="width:100%;height:700px;"></iframe>';
+												echo'b';
+											}
+										}else{
+											echo'<iframe src="http://172.16.2.6/h2h_pefindo/assets/doc/notfound.pdf" style="width:100%;height:700px;"></iframe>';
+												echo'c';
+										}
+									?>
+								</div>
+							</div>
 						</div>				
 					</div>
 				</div>
@@ -471,10 +392,11 @@ $data = sqlsrv_fetch_array($exec);
 					<div class="card">
 						<div class="header">
 							<div class="row">
-								<div class="col-md-11">
+								<div class="col-md-12">
 									<center>
-										<h3>DATA TIDAK DITEMUKAN DI SLIK</h3><br>
+										<h3>DATA <?php echo $data['TIPE_CUST'];?> <br>TIDAK DITEMUKAN DI PEFINDO DAN SLIK</h3><br>
 									</center>
+									<br><br>
 								</div>
 							</div>
 						</div>
@@ -486,6 +408,13 @@ $data = sqlsrv_fetch_array($exec);
 		</div>
 	</div>
 </div>
+<script type="text/javascript">
+	$(window).on("load", function(){
+		setTimeout(function(){
+			$("#loader").fadeOut("slow");
+		}, 2000);
+	});
+</script>
 <script>
 $('tr.header').click(function(){
     $(this).nextUntil('tr.header').css('display', function(i,v){

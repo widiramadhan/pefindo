@@ -1,1092 +1,907 @@
 <!doctype html>
 <html lang="en">
+
 <head>
 	<meta charset="utf-8" />
 	<link rel="icon" type="image/png" href="assets/img/favicon.ico">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 
-	<title>Host to Host SFI - Pefindo</title>
+	<title>H2H SFI - PEFINDO</title>
 
 	<meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' name='viewport' />
-    <meta name="viewport" content="width=device-width" />
+	<meta name="viewport" content="width=device-width" />
 
-    <link href="assets/css/bootstrap.min.css" rel="stylesheet" />
-    <link href="assets/css/animate.min.css" rel="stylesheet"/>
-    <link href="assets/css/light-bootstrap-dashboard.css?v=1.4.0" rel="stylesheet"/>
-    <link href="assets/css/demo.css" rel="stylesheet" />
-    <!--<link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
-	<!--<link rel="stylesheet" href="a/font-awesome/css/font-awesome.min.css">
-    <link href='http://fonts.googleapis.com/css?family=Roboto:400,700,300' rel='stylesheet' type='text/css'>-->
+	<link href="assets/css/bootstrap.min.css" rel="stylesheet" />
+	<link href="assets/css/animate.min.css" rel="stylesheet" />
+	<link href="assets/css/light-bootstrap-dashboard.css?v=1.4.0" rel="stylesheet" />
+	<link href="assets/css/demo.css" rel="stylesheet" />
 	<link href="assets/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet">
 	<link href='assets/css/fonts.css' rel='stylesheet' type='text/css'>
-    <link href="assets/css/pe-icon-7-stroke.css" rel="stylesheet" />
+	<link href="assets/css/pe-icon-7-stroke.css" rel="stylesheet" />
 	<link rel="stylesheet" href="assets/css/dataTables.bootstrap4.min.css" type="text/css">
-	<!--<link href="assets/plugins/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css" rel="stylesheet" type='text/css'>-->
 	<link rel="stylesheet" href="assets/css/jquery-ui.css">
+	<link rel="stylesheet" href="assets/plugins/fancybox/source/jquery.fancybox.css?v=2.1.7" type="text/css"
+		media="screen" />
+	<link rel="stylesheet" href="assets/css/lightbox.css" type="text/css" media="screen" />
+
+	<script src="assets/js/jquery.3.2.1.min.js" type="text/javascript"></script>
 </head>
+
 <?php
-	//require_once("config/configuration.php");
-	require_once("config/connection.php");
-	if(isset($_GET['USERNAME'])){
-		$user=$_GET['USERNAME'];
-	}else{
-		echo"<script>window.location='access-denied.php'</script>";
+require_once "config/connection.php";
+//error_reporting(0);
+if (isset($_GET['USERNAME'])) {
+	$user = $_GET['USERNAME'];
+} else {
+	echo "<script>window.location='access-denied.php'</script>";
+}
+
+if (isset($_POST['no_ktp'])) {
+	$no_ktp_dkcupil = $_POST['no_ktp'];
+} else {
+	$no_ktp_dkcupil = "";
+}
+
+if (isset($_POST['prospect_no'])) {
+	$prospect_dkcupil = $_POST['prospect_no'];
+} else {
+	$prospect_dkcupil = "";
+}
+
+# user branch Id
+$bid = array();
+
+$sp = "{call sp_COuserFindByBranchID (?)}";
+$param1 = array(array($_GET['USERNAME'], SQLSRV_PARAM_IN));
+$ex = sqlsrv_query($conn, $sp, $param1) or die(print_r(sqlsrv_errors(), true));
+while ($data = sqlsrv_fetch_array($ex)) {
+	$bid[] = $data['Branchid'];
+}
+
+# branch to piloting company
+$sp_pilot = "{call CPY_CHECK_PILOTING_COMPANY}";
+$param_pilot = array();
+$exec_pilot = sqlsrv_query($conn, $sp_pilot, $param_pilot) or die(print_r(sqlsrv_errors(), true));
+$is_piloting = false;
+
+# baca data sambil memeriksa apakah branch ini termasuk branch untuk piloting
+while ($data_pilot = sqlsrv_fetch_array($exec_pilot)) {
+	$branch_to_pilot[] = $data_pilot['OFFICE_CODE'];
+
+	if (in_array($data_pilot['OFFICE_CODE'], $bid)) {
+		$is_piloting = true;
+	}
+}
+
+/*
+$sp_rak = "{call SP_BRANCH_PILOTING_RAK}";
+$param_rak = array();
+$exec_rak = sqlsrv_query($conn, $sp_rak, $param_rak) or die(print_r(sqlsrv_errors(), true));
+$is_rak = false;
+
+while ($data_rak = sqlsrv_fetch_array($exec_rak)) {
+$branch_to_rak[] = $data_rak['OFFICE_CODE'];
+
+if (in_array($data_rak['OFFICE_CODE'], $bid)) {
+$is_rak = true;
+}
+}
+ */
+
+
+function hasAccessSP($conn, $user, $menuId)
+{
+	$tsql = "{CALL SP_HAS_USER_MENU_ACCESS(?, ?, ?)}";
+	$allowed = 0; // akan diisi oleh OUTPUT param
+
+	$params = [
+		[&$user,    SQLSRV_PARAM_IN],
+		[&$menuId,  SQLSRV_PARAM_IN],
+		// PHPTYPE/SQLTYPE eksplisit agar aman untuk BIT
+		array(&$allowed, SQLSRV_PARAM_OUT, SQLSRV_PHPTYPE_INT, SQLSRV_SQLTYPE_BIT)
+	];
+
+	// Lebih aman gunakan prepare + execute untuk OUTPUT param
+	$stmt = sqlsrv_prepare($conn, $tsql, $params);
+	if ($stmt === false) {
+		die(print_r(sqlsrv_errors(), true));
 	}
 
-	if(isset($_POST['no_ktp'])){
-		$no_ktp_dkcupil=$_POST['no_ktp'];
-	}else{
-		$no_ktp_dkcupil="";
+	if (!sqlsrv_execute($stmt)) {
+		die(print_r(sqlsrv_errors(), true));
 	}
 
-	if(isset($_POST['prospect_no'])){
-		$prospect_dkcupil=$_POST['prospect_no'];
-	}else{
-		$prospect_dkcupil="";
+	// Beberapa driver butuh next_result agar OUTPUT terisi
+	sqlsrv_next_result($stmt);
+
+	sqlsrv_free_stmt($stmt);
+
+
+
+	return (bool)$allowed;
+}
+
+function hasAccessCabang($conn, $user)
+{
+	$tsql = "{CALL SP_HAS_USER_MENU_ACCESS_CABANG(?, ?)}";
+	$allowed = 0; // will be filled by OUTPUT
+
+	$params = array(
+		array(&$user,    SQLSRV_PARAM_IN),
+		// OUTPUT param for BIT:
+		array(&$allowed, SQLSRV_PARAM_OUT, SQLSRV_PHPTYPE_INT, SQLSRV_SQLTYPE_BIT)
+	);
+
+	$stmt = sqlsrv_prepare($conn, $tsql, $params);
+	if ($stmt === false) {
+		die(print_r(sqlsrv_errors(), true));
 	}
-	
-	
-	$ktp2="";
-	$nama2="";
-	$tglLahir2=DateTime::createFromFormat('Y-m-d', '1970-01-01');
-	$type_cust="";
+	if (!sqlsrv_execute($stmt)) {
+		die(print_r(sqlsrv_errors(), true));
+	}
+
+	// Make sure OUTPUT param is populated
+	sqlsrv_next_result($stmt);
+	sqlsrv_free_stmt($stmt);
+
+	return (bool)$allowed;
+}
+
+
+
 ?>
+
 <body>
 
-<div class="wrapper">
-    <div class="sidebar" data-image="assets/img/sidebar-5.jpg">
-    	<div class="sidebar-wrapper" style="background-color: #035c7a">
-            <div class="logo">
-                <a href="index.php" class="simple-text">
-                    H2H SFI - PEFINDO
-                </a>
-            </div>
+	<div class="wrapper">
+		<div class="sidebar" data-image="assets/img/sidebar-5.jpg">
+			<div class="sidebar-wrapper" style="background-color: #035c7a">
+				<div class="logo">
+					<a href="index.php?USERNAME=<?php echo $user; ?>" class="simple-text">
+						H2H SFI Customer Checking
+					</a>
+				</div>
 
-            <ul class="nav">
-                <li>
-                    <a href="index.php?USERNAME=<?php echo $user;?>">
-                        <i class="pe-7s-home"></i>
-                        <p>Dashboard</p>
-                    </a>
-                </li>
-                <li>
-                    <a href="index.php?USERNAME=<?php echo $user;?>&page=individual">
-                        <i class="pe-7s-user"></i>
-                        <p>Individual</p>
-                    </a>
-                </li>
-                <li>
-                    <a href="index.php?USERNAME=<?php echo $user;?>&page=company">
+				<ul class="nav">
+					<?php
+
+					if (hasAccessSP($conn, $user, 1)): ?>
+						<li>
+							<a href="index.php?USERNAME=<?php echo $user; ?>">
+								<i class="pe-7s-home"></i>
+								<p>Dashboard</p>
+							</a>
+						</li>
+					<?php endif;
+					if (hasAccessSP($conn, $user, 2)): ?>
+						<li>
+							<a href="index.php?USERNAME=<?php echo $user; ?>&page=individual-ho-new">
+								<i class="pe-7s-user"></i>
+								<p>Individual</p>
+							</a>
+						</li>
+
+					<?php endif;
+					if (hasAccessSP($conn, $user, 3)): ?>
+						<li>
+							<a href="index.php?USERNAME=<?php echo $user; ?>&page=company-order-list">
+								<i class="pe-7s-culture"></i>
+								<p>Company</p>
+							</a>
+						</li>
+					<?php endif;
+					if (hasAccessSP($conn, $user, 4)):
+					?>
+						<?php if (hasAccessCabang($conn, $user)): ?>
+							<li>
+								<a href="index.php?USERNAME=<?php echo $user; ?>&page=pefindonodata">
+									<i class="pe-7s-note2"></i>
+									<p>Tasklist</p>
+								</a>
+							</li>
+						<?php else: ?>
+							<li>
+								<a href="index.php?USERNAME=<?php echo $user; ?>&page=pefindonodata-piloting">
+									<i class="pe-7s-note2"></i>
+									<p>Tasklist</p>
+								</a>
+							</li>
+					<?php endif;
+					endif; ?>
+					<?php if (hasAccessSP($conn, $user, 5)): ?>
+						<li>
+							<a href="index.php?USERNAME=<?php echo $user; ?>&page=history">
+								<i class="pe-7s-refresh-2"></i>
+								<p>History</p>
+							</a>
+						</li>
+					<?php endif; ?>
+					<?php if (hasAccessSP($conn, $user, 6)): ?>
+						<li>
+							<a href="index.php?USERNAME=<?php echo $user; ?>&page=pengkinian-data-dukcapil">
+								<i class="pe-7s-credit"></i>
+								<p>Pengkinian Data</p>
+							</a>
+						</li>
+					<?php endif; ?>
+					<?php if (hasAccessSP($conn, $user, 7)): ?>
+						<li>
+							<a href="index.php?USERNAME=<?php echo $user; ?>&page=cek-ulang-dukcapil">
+								<i class="pe-7s-pen"></i>
+								<p>Cek Ulang Dukcapil</p>
+							</a>
+						</li>
+					<?php endif; ?>
+					<?php if (hasAccessSP($conn, $user, 8)): ?>
+						<li>
+							<a href="index.php?USERNAME=<?php echo $user; ?>&page=tasklist-status-nikah">
+								<i class="pe-7s-mail"></i>
+								<p>Upload Dokumen</p>
+							</a>
+						</li>
+					<?php endif; ?>
+					<?php if (hasAccessSP($conn, $user, 9)): ?>
+						<li>
+							<a href="index.php?USERNAME=<?php echo $user; ?>&page=tasklist-status-verifikasi">
+								<i class="pe-7s-check"></i>
+								<p>Upload Verifikasi Status</p>
+							</a>
+						</li>
+					<?php endif; ?>
+					<?php if (hasAccessSP($conn, $user, 10)): ?>
+						<li class="nav-item">
+							<a href="#log" class="nav-link" data-toggle="collapse">
+								<i class="pe-7s-news-paper"></i>
+								<p>Log <b class="caret"></b></p>
+							</a>
+							<div class="collapse " id="log">
+								<ul class="nav">
+									<li class="nav-item " style="margin-left:30px;">
+										<a class="nav-link" href="index.php?page=log-pefindo&USERNAME=<?php echo $user; ?>">
+											<span class="sidebar-normal">PEFINDO</span>
+										</a>
+									</li>
+									<li class="nav-item " style="margin-left:30px;">
+										<a class="nav-link" href="index.php?page=log-scoring&USERNAME=<?php echo $user; ?>">
+											<span class="sidebar-normal">SCORING PEFINDO</span>
+										</a>
+									</li>
+									<li class="nav-item " style="margin-left:30px;">
+										<a class="nav-link" href="index.php?page=log-slik&USERNAME=<?php echo $user; ?>">
+											<span class="sidebar-normal">SLIK</span>
+										</a>
+									</li>
+									<li class="nav-item " style="margin-left:30px;">
+										<a class="nav-link"
+											href="index.php?page=log-dukcapil&USERNAME=<?php echo $user; ?>">
+											<span class="sidebar-normal">DUKCAPIL</span>
+										</a>
+									</li>
+								</ul>
+							</div>
+						</li>
+					<?php endif; ?>
+					<?php if (hasAccessSP($conn, $user, 11)): ?>
+						<li class="nav-item">
+							<a href="#admin" class="nav-link" data-toggle="collapse">
+								<i class="pe-7s-settings"></i>
+								<p>Administrator <b class="caret"></b></p>
+							</a>
+							<div class="collapse " id="admin">
+								<ul class="nav">
+									<li class="nav-item " style="margin-left:30px;">
+										<a class="nav-link"
+											href="index.php?page=unlock-dukcapil&USERNAME=<?php echo $user; ?>">
+											<span class="sidebar-normal">UNLOCK DUKCAPIL</span>
+										</a>
+									</li>
+									<li class="nav-item " style="margin-left:30px;">
+										<a class="nav-link"
+											href="index.php?page=individual-manual-new&USERNAME=<?php echo $user; ?>">
+											<span class="sidebar-normal">PEFINDO INDIVIDUAL</span>
+										</a>
+									</li>
+									<li class="nav-item " style="margin-left:30px;">
+											<a class="nav-link" href="index.php?page=individual-manual-clik&USERNAME=<?php echo $user; ?>">
+												<span class="sidebar-normal">CLIK INDIVIDUAL</span>
+											</a>
+										</li>
+									<li class="nav-item " style="margin-left:30px;">
+										<a class="nav-link"
+											href="index.php?page=company-manual-new&USERNAME=<?php echo $user; ?>">
+											<span class="sidebar-normal">PEFINDO COMPANY</span>
+										</a>
+									</li>
+
+									<li class="nav-item " style="margin-left:30px;">
+										<a class="nav-link"
+											href="index.php?page=dukcapil-manual-new1&USERNAME=<?php echo $user; ?>">
+											<span class="sidebar-normal">Customer Identity Check - Dukcapil</span>
+										</a>
+									</li>
+									<li class="nav-item " style="margin-left:30px;">
+										<a class="nav-link"
+											href="index.php?page=setting_slik&USERNAME=<?php echo $user; ?>">
+											<span class="sidebar-normal">SETTING SWITCH SLIK</span>
+										</a>
+									</li>
+								</ul>
+							</div>
+
+						</li>
+					<?php endif; ?>
+					<?php if (hasAccessSP($conn, $user, 12)): ?>
+						<li class="nav-item">
+							<a href="#apv" class="nav-link" data-toggle="collapse">
+								<i class="pe-7s-upload"></i>
+								<p>APPROVAL VERIFIKASI DOC <b class="caret"></b></p>
+							</a>
+							<div class="collapse " id="apv">
+								<ul class="nav">
+									<li class="nav-item " style="margin-left:30px;">
+										<a class="nav-link"
+											href="index.php?page=tasklist-loa-verifikasi&USERNAME=<?php echo $user; ?>">
+											<span class="sidebar-normal">APPROVAL LIST</span>
+										</a>
+									</li>
+									<li class="nav-item " style="margin-left:30px;">
+										<a class="nav-link"
+											href="index.php?page=tasklist-loa-verifikasi-inquiry&USERNAME=<?php echo $user; ?>">
+											<span class="sidebar-normal">APPROVAL INQUIRY</span>
+										</a>
+									</li>
+
+
+								</ul>
+							</div>
+						</li>
+					<?php endif; ?>
+					<?php if (hasAccessSP($conn, $user, 13)): ?>
+						<li class="nav-item">
+							<a href="#apvtdp" class="nav-link" data-toggle="collapse">
+								<i class="pe-7s-paperclip"></i>
+								<p>Pengajuan Historical Kredit Eksternal <b class="caret"></b></p>
+							</a>
+							<div class="collapse " id="apvtdp">
+								<ul class="nav">
+
+									<li class="nav-item " style="margin-left:30px;">
+										<a class="nav-link"
+											href="index.php?page=tasklist-deviasi-ca-piloting&USERNAME=<?php echo $user; ?>">
+											<span class="sidebar-normal">Pengajuan Historical Kredit Eksternal</span>
+										</a>
+									</li>
+
+
+									<li class="nav-item " style="margin-left:30px;">
+										<a class="nav-link"
+											href="index.php?page=tasklist-loa-tdp&USERNAME=<?php echo $user; ?>">
+											<span class="sidebar-normal">Approval Pengajuan Historical Kredit
+												Eksternal</span>
+										</a>
+									</li>
+									<li class="nav-item " style="margin-left:30px;">
+										<a class="nav-link"
+											href="index.php?page=tasklist-loa-tdp-inquiry&USERNAME=<?php echo $user; ?>">
+											<span class="sidebar-normal">Approval Pengajuan Historical Kredit Eksternal
+												Inquiry</span>
+										</a>
+									</li>
+
+
+								</ul>
+							</div>
+						</li>
+					<?php endif; ?>
+					<?php if (hasAccessSP($conn, $user, 14)): ?>
+						<li>
+							<a href="index.php?USERNAME=<?php echo $user; ?>&page=tasklist_hasil_survey">
+								<i class="pe-7s-ribbon"></i>
+								<p>List Hasil Survey Mos</p>
+							</a>
+						</li>
+					<?php endif; ?>
+					<?php if (hasAccessSP($conn, $user, 15)): ?>
+						<li class="nav-item">
+							<a href="#rak" class="nav-link" data-toggle="collapse">
+								<i class="pe-7s-plane"></i>
+								<p>RAK<b class="caret"></b></p>
+							</a>
+							<div class="collapse " id="rak">
+								<ul class="nav">
+									<li class="nav-item " style="margin-left:30px;">
+										<a class="nav-link"
+											href="index.php?page=tasklist-rak&USERNAME=<?php echo $user; ?>">
+											<span class="sidebar-normal">Pengajuan RAK</span>
+										</a>
+									</li>
+									<li class="nav-item " style="margin-left:30px;">
+										<a class="nav-link"
+											href="index.php?page=tasklist-loa-rak&USERNAME=<?php echo $user; ?>">
+											<span class="sidebar-normal">LOA APPROVAL RAK</span>
+										</a>
+									</li>
+									<li class="nav-item " style="margin-left:30px;">
+										<a class="nav-link"
+											href="index.php?page=tasklist-loa-rak-inquiry&USERNAME=<?php echo $user; ?>">
+											<span class="sidebar-normal">APPROVAL INQUIRY RAK</span>
+										</a>
+									</li>
+									<li class="nav-item " style="margin-left:30px;">
+										<a class="nav-link"
+											href="index.php?page=tasklist-loa-rak-inquiry-stg&USERNAME=<?php echo $user; ?>">
+											<span class="sidebar-normal">APPROVAL INQUIRY RAK < 2023</span>
+										</a>
+									</li>
+								</ul>
+							</div>
+						</li>
+					<?php endif; ?>
+					<?php if (hasAccessSP($conn, $user, 16)): ?>
+						<li>
+							<a href="index.php?USERNAME=<?php echo $user; ?>&page=tasklist_print_po">
+								<i class="pe-7s-ribbon"></i>
+								<p>Print PO</p>
+							</a>
+						</li>
+					<?php endif; ?>
+					<?php if (hasAccessSP($conn, $user, 17)): ?>
+						<li class="nav-item">
+							<a href="#req" class="nav-link" data-toggle="collapse">
+								<i class="pe-7s-id"></i>
+								<p>VBS <b class="caret"></b></p>
+							</a>
+							<div class="collapse " id="req">
+								<ul class="nav">
+									<li class="nav-item " style="margin-left:30px;">
+										<a class="nav-link" href="index.php?page=request-mh&USERNAME=<?php echo $user; ?>">
+											<span class="sidebar-normal">REQUEST</span>
+										</a>
+									</li>
+									<li class="nav-item " style="margin-left:30px;">
+										<a class="nav-link"
+											href="index.php?page=pengecekan-mh&USERNAME=<?php echo $user; ?>">
+											<span class="sidebar-normal">TASKLIST</span>
+										</a>
+									</li>
+									<li class="nav-item " style="margin-left:30px;">
+										<a class="nav-link"
+											href="index.php?page=hasil-pengecekan&USERNAME=<?php echo $user; ?>">
+											<span class="sidebar-normal">RESPONSE</span>
+										</a>
+									</li>
+									<li class="nav-item " style="margin-left:30px;">
+										<a class="nav-link"
+											href="index.php?page=tasklist-vbs-inquiry&USERNAME=<?php echo $user; ?>">
+											<span class="sidebar-normal">INQUIRY</span>
+										</a>
+									</li>
+
+								</ul>
+							</div>
+						</li>
+					<?php endif; ?>
+					<?php if (hasAccessSP($conn, $user, 18)): ?>
+					<li>	
+							<a href="#ver1" class="nav-link" data-toggle="collapse">
+								<i class="pe-7s-wallet"></i>
+								<p>PENGECEKAN SLIK HO<b class="caret"></b></p>
+							</a>
+							<div class="collapse " id="ver1">
+								<ul class="nav">
+									<li class="nav-item " style="margin-left:30px;">
+										<a class="nav-link"
+											href="index.php?USERNAME=<?php echo $user; ?>&page=tasklist-pengecekan-slik">
+											<span class="sidebar-normal">TASKLIST HO</span>
+										</a>
+									</li>
+									<li class="nav-item " style="margin-left:30px;">
+										<a class="nav-link"
+											href="index.php?page=input-calon-karyawan&USERNAME=<?php echo $user; ?>">
+											<span class="sidebar-normal">INPUT CALON KARYAWAN </span>
+										</a>
+									</li>
+									<li class="nav-item " style="margin-left:30px;">
+										<a class="nav-link"
+											href="index.php?page=input-vendor&USERNAME=<?php echo $user; ?>">
+											<span class="sidebar-normal">INPUT VENDOR </span>
+										</a>
+									</li>
+									<li class="nav-item " style="margin-left:30px;">
+										<a class="nav-link"
+											href="index.php?page=input-debitur-existing&USERNAME=<?php echo $user; ?>">
+											<span class="sidebar-normal">INPUT NASABAH LAMA </span>
+										</a>
+									</li>
+								</ul>
+							</div>
+						</li>
+					<?php endif; ?>
+					<?php if (hasAccessCabang($conn, $user)): ?>
+						<li class="nav-item">
+							<a href="#ver1" class="nav-link" data-toggle="collapse">
+								<i class="pe-7s-wallet"></i>
+								<p>PENGECEKAN SLIK HO<b class="caret"></b></p>
+							</a>
+							<div class="collapse " id="ver1">
+								<ul class="nav">
+									<li class="nav-item " style="margin-left:30px;">
+										<a class="nav-link"
+											href="index.php?USERNAME=<?php echo $user; ?>&page=tasklist-pengecekan-slik-cabang">
+											<span class="sidebar-normal">TASKLIST HO</span>
+										</a>
+									</li>
+
+								</ul>
+							</div>
+						</li>
+					<?php endif; ?>
+					<?php if (hasAccessSP($conn, $user, 26)): ?>
+					<li>
+                        <a href="index.php?USERNAME=<?php echo $user; ?>&page=task_pelaporan_slik">
+                            <i class="pe-7s-ribbon"></i>
+                            <p>TASK PELAPORAN SLIK</p>
+                        </a>
+                    </li>
+                  	<li class="nav-item">
+						<a href="index.php?USERNAME=<?php echo $user; ?>&page=task_pelaporan_slik_harian_periode">
+                            <i class="pe-7s-date"></i>
+                            <p>TASK PELAPORAN SLIK HARIAN</p>
+                        </a>
+					</li>
+						
+              
+				
+				
+                    <?php endif; ?>
+					<?php if (hasAccessSP($conn, $user, 1)): ?>
+					<li>
+						<a href="index.php?page=data-pelaporan-slik&USERNAME=<?php echo $user; ?>" class="nav-link">
+							<i class="pe-7s-display2"></i>
+							<p>Data Pelaporan SLIK<b class="caret"></b></p>
+						</a>
+					</li>
+					<?php endif; ?>
+					<?php if (hasAccessSP($conn, $user, 19)): ?>
+						<li class="nav-item">
+							<a href="#slk-1" class="nav-link" data-toggle="collapse">
+								<i class="pe-7s-drawer"></i>
+								<p>Pengecekan Slik Vendor <b class="caret"></b></p>
+							</a>
+							<div class="collapse " id="slk-1">
+								<ul class="nav">
+									<li class="nav-item " style="margin-left:30px;">
+										<a class="nav-link" href="index.php?page=input-vendor-cabang-individual&USERNAME=<?php echo $user; ?>">
+											<span class="sidebar-normal">INPUT VENDOR INDIVIDUAL</span>
+										</a>
+									</li>
+									<li class="nav-item " style="margin-left:30px;">
+										<a class="nav-link" href="index.php?page=input-vendor-cabang-company&USERNAME=<?php echo $user; ?>">
+											<span class="sidebar-normal">INPUT VENDOR COMPANY</span>
+										</a>
+									</li>
+
+									<li class="nav-item " style="margin-left:30px;">
+										<a class="nav-link" href="index.php?page=tasklist-check-vendor&USERNAME=<?php echo $user; ?>">
+											<span class="sidebar-normal">TASKLIST APPROVAL VENDOR</span>
+										</a>
+									</li>
+									<li class="nav-item " style="margin-left:30px;">
+										<a class="nav-link" href="index.php?page=tasklist-check-inquiry-vendor&USERNAME=<?php echo $user; ?>">
+											<span class="sidebar-normal">TASKLIST INQUIRY VENDOR</span>
+										</a>
+									</li>
+								</ul>
+							</div>
+						</li>
+					<?php endif; ?>
+					<?php if (hasAccessSP($conn, $user, 20)): ?>
+						<li class="nav-item">
+							<a href="#slk-2" class="nav-link" data-toggle="collapse">
+								<i class="pe-7s-browser"></i>
+								<p>Pengecekan Slik <br>HRD<b class="caret"></b></p>
+							</a>
+							<div class="collapse " id="slk-2">
+								<ul class="nav">
+									<li class="nav-item " style="margin-left:30px;">
+										<a class="nav-link" href="index.php?page=input-slik-dealer&USERNAME=<?php echo $user; ?>">
+											<span class="sidebar-normal">INPUT DATA KARYAWAN</span>
+										</a>
+									</li>
+
+
+									<li class="nav-item " style="margin-left:30px;">
+										<a class="nav-link" href="index.php?page=tasklist-check-slik-dealer&USERNAME=<?php echo $user; ?>">
+											<span class="sidebar-normal">TASKLIST APPROVAL</span>
+										</a>
+									</li>
+									<li class="nav-item " style="margin-left:30px;">
+										<a class="nav-link" href="index.php?page=tasklist-check-inquiry-slik-dealer&USERNAME=<?php echo $user; ?>">
+											<span class="sidebar-normal">TASKLIST INQUIRY</span>
+										</a>
+									</li>
+								</ul>
+							</div>
+						</li>
+					<?php endif; ?>
+					<?php if (hasAccessSP($conn, $user, 21)): ?>
+						<li class="nav-item">
+							<a href="#verSlik" class="nav-link" data-toggle="collapse">
+								<i class="pe-7s-exapnd2"></i>
+								<p>CEK SLIK ALL<b class="caret"></b></p>
+							</a>
+							<div class="collapse " id="verSlik">
+								<ul class="nav">
+									<li class="nav-item " style="margin-left:30px;">
+										<a class="nav-link" href="index.php?USERNAME=<?php echo $user; ?>&page=tasklist-slik-automation">
+											<span class="sidebar-normal">TASKLIST SLIK </span>
+										</a>
+									</li>
+									<li class="nav-item " style="margin-left:30px;">
+										<a class="nav-link" href="index.php?USERNAME=<?php echo $user; ?>&page=tasklist-slik-automation-deb-exists">
+											<span class="sidebar-normal">TASKLIST DEBITUR EXISTING</span>
+										</a>
+									</li>
+									<!-- Ahmad Arkana Dhanisworo 20250903 --> 
+									<li class="nav-item " style="margin-left:30px;">
+										<a class="nav-link" href="index.php?USERNAME=<?php echo $user; ?>&page=supervisor-req-slik">
+											<span class="sidebar-normal">SUPERVISOR REQ SLIK</span>
+										</a>
+									</li>
+									<!-- END --> 
+								</ul>
+							</div>
+						</li>
+					<?php endif; ?>
+
+					<li>
+						<a href="index.php?page=monitoring-debitur-menu&USERNAME=<?php echo $user; ?>" class="nav-link">
+							<i class="pe-7s-display2"></i>
+							<p>Monitoring Debitur<b class="caret"></b></p>
+						</a>
+					</li>
+					<li>
+						<a href="index.php?page=dakor-menu&USERNAME=<?php echo $user; ?>" class="nav-link">
+							<i class="pe-7s-display2"></i>
+							<p>Dakor Menu<b class="caret"></b></p>
+						</a>
+					</li>
+					<?php if (hasAccessSP($conn, $user, 22)): ?>
+						<li class="nav-item">
+							<a href="#ver" class="nav-link" data-toggle="collapse">
+								<i class="pe-7s-check"></i>
+								<p>VERIFIKASI FINAL<b class="caret"></b></p>
+							</a>
+							<div class="collapse " id="ver">
+								<ul class="nav">
+									<li class="nav-item " style="margin-left:30px;">
+										<a class="nav-link"
+											href="index.php?USERNAME=<?php echo $user; ?>&page=verifikasi_final">
+											<span class="sidebar-normal">VERIFIKASI</span>
+										</a>
+									</li>
+									<li class="nav-item " style="margin-left:30px;">
+										<a class="nav-link" href="index.php?page=aproval&USERNAME=<?php echo $user; ?>">
+											<span class="sidebar-normal">APROVAL </span>
+										</a>
+									</li>
+									<li class="nav-item " style="margin-left:30px;">
+										<a class="nav-link"
+											href="index.php?page=aproval-inquiry&USERNAME=<?php echo $user; ?>">
+											<span class="sidebar-normal">APROVAL INQUIRY </span>
+										</a>
+									</li>
+								</ul>
+							</div>
+						</li>
+					<?php endif; ?>
+					<?php if (hasAccessSP($conn, $user, 23)): ?>
+						<li>
+							<a href="index.php?page=report_dashboard&USERNAME=<?php echo $user; ?>">
+								<i class="pe-7s-display2"></i>
+								<p>Report</p>
+							</a>
+						</li>
+					<?php endif; ?>
+					<?php if (hasAccessSP($conn, $user, 24)): ?>
+						<li>
+							<a href="index.php?USERNAME=<?php echo $user; ?>&page=cetak_surat_pernyataan">
+								<i class="pe-7s-print"></i>
+								<p>Cetak Surat Pernyataan</p>
+							</a>
+						</li>
+					<?php endif; ?>
+					<?php if (hasAccessSP($conn, $user, 11)): ?>
+						<li>
+							<a href="index.php?USERNAME=<?php echo $user; ?>&page=tasklist-setting-ca">
+								<i class="pe-7s-bandaid"></i>
+								<p>Setting CA Non Aktif</p>
+							</a>
+						</li>
+					<?php endif; ?>
+					<?php if (hasAccessSP($conn, $user, 25)): ?>
+						<li class="nav-item">
+							<a href="#anom" class="nav-link" data-toggle="collapse">
+								<i class="pe-7s-comment"></i>
+								<p>Dukcapil Anomali<b class="caret"></b></p>
+							</a>
+							<div class="collapse " id="anom">
+								<ul class="nav">
+									<li class="nav-item " style="margin-left:30px;">
+										<a class="nav-link" href="index.php?page=tasklist-data-anomali&USERNAME=<?php echo $user; ?>">
+											<span class="sidebar-normal">TASKLIST CHECK DUKCAPIL</span>
+										</a>
+									</li>
+									<li class="nav-item " style="margin-left:30px;">
+										<a class="nav-link"
+											href="index.php?page=tasklist-dukcapil-anomali&USERNAME=<?php echo $user; ?>">
+											<span class="sidebar-normal">APPROVAL CHECK DUKCAPIL</span>
+										</a>
+									</li>
+									<li class="nav-item " style="margin-left:30px;">
+										<a class="nav-link"
+											href="index.php?page=tasklist-dukcapil-anomali-inquiry&USERNAME=<?php echo $user; ?>">
+											<span class="sidebar-normal">INQUIRY CHECK DUKCAPIL</span>
+										</a>
+									</li>
+
+								</ul>
+							</div>
+						</li>
+					<?php endif; ?>
+					
+					
+					<?php 	if (hasAccessSP($conn, $user, 1)): ?>
+						<li>
+						<a href="index.php?page=tasklist-cust-non-check&USERNAME=<?php echo $user; ?>">
+							<i class="pe-7s-note"></i>
+							<p>List SLIK</p>
+						</a>	
+					</li>
+					<?php endif; ?>
+					
+					<?php 	if (hasAccessSP($conn, $user, 1)): ?>
+					<!-- tasklist dukcapil - dhanis -->
+				<li class="nav-item">
+                    <a href="#taskLDuk" class="nav-link" data-toggle="collapse">
                         <i class="pe-7s-culture"></i>
-                        <p>Company</p>
+                        <p>TASKLIST DUKCAPIL <b class="caret"></b></p>
                     </a>
+					<div class="collapse " id="taskLDuk">
+						<ul class="nav">
+							<?php
+								$callGetRole = "{call SP_GET_ROLE_BY_USERNAME(?)}";
+								$paramGetRole = array(array($user, SQLSRV_PARAM_IN));
+								$execGetRole = sqlsrv_query( $conn, $callGetRole, $paramGetRole) or die( print_r( sqlsrv_errors(), true));
+								$dataGetRole = sqlsrv_fetch_array($execGetRole);
+								if(($dataGetRole['LEVEL'] > 5) || ($dataGetRole['LEVEL'] == 0 && $dataGetRole['ROLE_CODE'] != 'SFIBH')){
+							?>
+								<li class="nav-item " style="margin-left:30px;">
+									<a class="nav-link" href="index.php?page=input-cek-dukcapil&USERNAME=<?php echo $user;?>">
+										<span class="sidebar-normal">INPUT CEK DUKCAPIL</span>
+									</a>
+								</li>
+							<?php
+								}
+							?>
+							<li class="nav-item " style="margin-left:30px;">
+								<a class="nav-link" href="index.php?page=tasklist-cek-dukcapil&USERNAME=<?php echo $user;?>">
+									<span class="sidebar-normal">TASK APPROVAL DUKCAPIL</span>
+								</a>
+							</li>
+							<li class="nav-item " style="margin-left:30px;">
+								<a class="nav-link" href="index.php?page=history-cek-dukcapil&USERNAME=<?php echo $user;?>">
+									<span class="sidebar-normal">HISTORY CEK DUKCAPIL</span>
+								</a>
+							</li>
+							<li class="nav-item " style="margin-left:30px;">
+								<a  href="view-pdf-panduan-dukcapil.php">
+									<span class="sidebar-normal">MODUL PENGECEKAN DUKCAPIL</span>
+								</a>
+							</li>
+						</ul>
+					</div>
                 </li>
-                <li>
-                    <a href="index.php?USERNAME=<?php echo $user;?>&page=pefindonodata">
-                        <i class="pe-7s-note2"></i>
-                        <p>Tasklist SLIK</p>
-                    </a>
-                </li>
-				<li>
-                    <a href="index.php?USERNAME=<?php echo $user;?>&page=history">
-                        <i class="pe-7s-refresh-2"></i>
-                        <p>History</p>
-                    </a>
-                </li>
-            </ul>
-    	</div>
-    </div>
+				<!-- end -->
+					
+					
+					<?php endif; ?>
+				</ul>
 
-    <div class="main-panel">
-        <nav class="navbar navbar-default navbar-fixed">
-            <div class="container-fluid">
-                <div class="navbar-header">
-                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navigation-example-2">
-                        <span class="sr-only">Toggle navigation</span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </button>
-                </div>
-                <div class="collapse navbar-collapse">
-                    <ul class="nav navbar-nav navbar-right">
-                        <li class="dropdown">
-                              <a href="">
-                                    <p>
-										<i class="fa fa-user"></i> <?php echo $user;?>
+			</div>
+		</div>
+
+		<div class="main-panel">
+			<nav class="navbar navbar-default navbar-fixed">
+				<div class="container-fluid">
+					<div class="navbar-header">
+						<button type="button" class="navbar-toggle" data-toggle="collapse"
+							data-target="#navigation-example-2">
+							<span class="sr-only">Toggle navigation</span>
+							<span class="icon-bar"></span>
+							<span class="icon-bar"></span>
+							<span class="icon-bar"></span>
+						</button>
+					</div>
+					<div class="collapse navbar-collapse">
+						<ul class="nav navbar-nav navbar-right">
+							<li class="dropdown">
+								<a href="">
+									<p>
+										<i class="fa fa-user"></i>
+										<?php echo $user; ?>
 									</p>
-                              </a>
-                        </li>
-						<li class="separator hidden-lg"></li>
-                    </ul>
-                </div>
-            </div>
-        </nav>
+								</a>
+							</li>
+							<li class="separator hidden-lg"></li>
+						</ul>
+					</div>
+				</div>
+			</nav>
+
+			<?php
+			$callDate = "{call SP_GET_DATE_SLIK}";
+			$execDate = sqlsrv_query($conn, $callDate) or die(print_r(sqlsrv_errors(), true));
+			$dataDate = sqlsrv_fetch_array($execDate);
+			?>
+
+			<div class="col-md-12">
+				<i style="float:right">
+					<?php if ($dataDate['CREATE_DATE'] != null) {
+						echo $dataDate['CREATE_DATE']->format("l, d F Y, h:i:s");
+					} ?>
+				</i>
+
+				<div style="clear:both;"></div>
+			</div>
+
+			<div class="content" style="background-color:#EEE;">
+				<div class="container-fluid" style="background-color:#EEE;">
+					<?php require_once "content.php"; ?>
+				</div>
+			</div>
 
 
-        <div class="content">
-            <div class="container-fluid">
-				<?php require_once("content.php");?>
-            </div>
-        </div>
+			<footer class="footer">
+				<div class="container-fluid">
+					<p class="copyright pull-right">
+						&copy; 2018 Suzuki Finance Indonesia. All Right Reserved
+					</p>
+				</div>
+			</footer>
 
-
-        <footer class="footer">
-            <div class="container-fluid">
-                <p class="copyright pull-right">
-                    &copy; 2018 Suzuki Finance Indonesia. All Right Reserved
-                </p>
-            </div>
-        </footer>
-
-    </div>
-</div>
+		</div>
+	</div>
 </body>
-<!-- MODAL PROSPECT INDIVIDUAL -->
-<div id="prospect" class="modal fade" role="dialog">
-	<div class="modal-dialog modal-lg">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal">&times;</button>
-				<h4 class="modal-title">Data Prospect</h4>
-			</div>
-			<div class="modal-body">
-				<div class="row">
-					<div class="col-md-12">
-						<div class="table-responsive">
-							<table id="example" class="table table-bordered" style="width:100%">
-								<thead>
-									<tr>
-										<th>No</th>
-										<th>Prospect Number</th>
-										<th>KTP Number</th>
-										<th>Fullname</th>
-										<th>Date of Birth</th>
-										<th>Action</th>
-									</tr>
-								</thead>
-								<tbody>
-								<?php
-									$callGetProspect = "{call SP_GET_PROSPEK_NUMBER}";
-									$execGetProspect = sqlsrv_query($conn, $callGetProspect) or die( print_r( sqlsrv_errors(), true));
-									$no=0;
-									while($rowGetProspect = sqlsrv_fetch_array($execGetProspect)){
-										$no++;
-								?>
-									<tr>
-										<td><?php echo $no;?></td>
-										<td><?php echo $rowGetProspect['PROSPECT_NO'];?></td>
-										<td><?php echo $rowGetProspect['ID_NO'];?></td>
-										<td><?php echo $rowGetProspect['CUST_NAME'];?></td>
-										<td><?php echo date('Y-m-d', strtotime($rowGetProspect['BIRTH_DT']));?></td>
-										<td>
-											<form action="" method="post">
-												<input type="hidden" name="prospect_no" value="<?php echo $rowGetProspect['PROSPECT_NO'];?>">
-												<input type="hidden" name="id_no" value="<?php echo $rowGetProspect['ID_NO'];?>">
-												<input type="hidden" name="cust_name" value="<?php echo $rowGetProspect['CUST_NAME'];?>">
-												<input type="hidden" name="birth_dt" value="<?php echo date('Y-m-d', strtotime($rowGetProspect['BIRTH_DT']));?>">
-												<button type="submit" name="select" class="btn btn-success">Select</button>
-											</form>
-										</td>
-									</tr>
-								<?php } ?>
-								</tbody>
-							</table>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-</div>
 
-<!-- MODAL PROSPECT COMPANY -->
-<div id="prospectCompany" class="modal fade" role="dialog">
-	<div class="modal-dialog modal-lg">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal">&times;</button>
-				<h4 class="modal-title">Data Prospect</h4>
-			</div>
-			<div class="modal-body">
-				<div class="row">
-					<div class="col-md-12">
-						<div class="table-responsive">
-							<table id="exampleCompany" class="table table-bordered" style="width:100%">
-								<thead>
-									<tr>
-										<th>No</th>
-										<th>Prospect Number</th>
-										<th>NPWP</th>
-										<th>Company Name</th>
-										<th>Action</th>
-									</tr>
-								</thead>
-								<tbody>
-								<?php
-									$callGetProspect = "{call SP_GET_PROSPEK_NUMBER_COMPANY}";
-									$execGetProspect = sqlsrv_query($conn, $callGetProspect) or die( print_r( sqlsrv_errors(), true));
-									$no=0;
-									while($rowGetProspect = sqlsrv_fetch_array($execGetProspect)){
-										$no++;
-								?>
-									<tr>
-										<td><?php echo $no;?></td>
-										<td><?php echo $rowGetProspect['PROSPECT_NO'];?></td>
-										<td><?php echo $rowGetProspect['NPWP'];?></td>
-										<td><?php echo $rowGetProspect['CUST_NAME'];?></td>
-										<td>
-											<form action="" method="post">
-												<input type="hidden" name="prospect_no" value="<?php echo $rowGetProspect['PROSPECT_NO'];?>">
-												<input type="hidden" name="id_no" value="<?php echo $rowGetProspect['NPWP'];?>">
-												<input type="hidden" name="comp_name" value="<?php echo $rowGetProspect['CUST_NAME'];?>">
-												<button type="submit" name="select" class="btn btn-success">Select</button>
-											</form>
-										</td>
-									</tr>
-								<?php } ?>
-								</tbody>
-							</table>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-</div>
 
-<!-- MODAL DUKCAPIL -->
-<div id="dataDukcapil" class="modal fade" role="dialog">
-	<div class="modal-dialog modal-lg" style="width: 90%">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal">&times;</button>
-				<h4 class="modal-title">Compare Data Prospek</h4>
-			</div>
-			<div class="modal-body">
-				<div class="row">
-					<div class="col-md-12">
-						<span style="font-weight:bold;font-size:14px">Data Dukcapil :</span>
-						<div class="table-responsive">
-							<table id="exampleCompany" class="table table-bordered" style="width:100%">
-								<thead>
-									<tr>
-										<th>No</th>
-										<th>NIK</th>
-										<th>Nama</th>
-										<th>Tanggal Lahir</th>
-										<th>Tempat Lahir</th>
-										<th>Jenis Kelamin</th>
-										<th>Nama_Ibu Kandung</th>
-										<th>ALAMAT</th>
-									</tr>
-								</thead>
-								<tbody>
-									<?php
-										$callGetDukcapil = "{call SP_DUKCAPIL_GETDATA_RESULT (?,?)}";
-										$paramsDukcapil = array(array($prospect_dkcupil, SQLSRV_PARAM_IN),array($no_ktp_dkcupil, SQLSRV_PARAM_IN));
-										$execGetDukcapil = sqlsrv_query($conn, $callGetDukcapil, $paramsDukcapil) or die( print_r( sqlsrv_errors(), true));
-										$no=0;
-										while($rowGetDukcapil = sqlsrv_fetch_array($execGetDukcapil)){
-											$no++;
-									?>
-									<tr>
-										<td><?php echo $no;?></td>
-										<td><?php echo $rowGetDukcapil['NIK'];?></td>
-										<td><?php echo $rowGetDukcapil['NAMA'];?></td>
-										<td><?php echo $rowGetDukcapil['BIRTH_DT']->format('Y-m-d');?></td>
-										<td><?php echo $rowGetDukcapil['TEMPAT_LAHIR'];?></td>
-										<td><?php echo $rowGetDukcapil['JENIS_KELAMIN'];?></td>
-										<td><?php echo $rowGetDukcapil['MOTHER_MAIDEN_NAME'];?></td>
-										<td><?php echo $rowGetDukcapil['ALAMAT'];?></td>
-									</tr>
-									<?php } ?>
-								</tbody>
-							</table>
-						</div>
-					</div>
-				</div>
-				<div class="row">
-					<div class="col-md-12">
-						<span style="font-weight:bold;font-size:14px">Data Prospek :</span>
-						<div class="table-responsive">
-							<table id="exampleCompany" class="table table-bordered" style="width:100%">
-								<thead>
-									<tr>
-										<th>No</th>
-										<th>NIK</th>
-										<th>Nama</th>
-										<th>Tanggal Lahir</th>
-										<th>Nama Ibu Kandung</th>
-									</tr>
-								</thead>
-								<tbody>
-									<?php
-										$callPros = "{call SP_GET_PROSPEK_COMPARE (?)}";
-										$paramsPros = array(array($prospect_dkcupil, SQLSRV_PARAM_IN));
-										$execPros = sqlsrv_query($conn, $callPros, $paramsPros) or die( print_r( sqlsrv_errors(), true));
-										$no=0;
-										while($rowPros = sqlsrv_fetch_array($execPros)){
-											$no++;
-									?>
-									<tr>
-										<td><?php echo $no;?></td>
-										<td><?php echo $rowPros['ID_NO'];?></td>
-										<td><?php echo $rowPros['CUST_NAME'];?></td>
-										<td><?php echo $rowPros['BIRTH_DT']->format('Y-m-d');?></td>
-										<td><?php echo $rowPros['MOTHER_NM'];?></td>
-									</tr>
-									<?php } ?>
-								</tbody>
-							</table>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-</div>
 
-<!-- MODAL DUKCAPIL PENJAMIN PEFINDO -->
-<div id="dataDukcapilPenjamin" class="modal fade" role="dialog">
-	<div class="modal-dialog modal-lg" style="width:80%;">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal">&times;</button>
-				<h4 class="modal-title">Data <?php echo $type_cust;?></h4>
-			</div>
-			<div class="modal-body">
-				<?php
-					$callCheckExists = "{call CHECK_EXISTS_SCORING_PENJAMIN(?)}";
-					$paramCheckExists = array(array($noProsepekPemohon, SQLSRV_PARAM_IN));
-					$execCheckExists = sqlsrv_query( $conn, $callCheckExists, $paramCheckExists) or die( print_r( sqlsrv_errors(), true));
-					$dataCheckExist = sqlsrv_fetch_array($execCheckExists);
-					
-					if($dataCheckExist['STATUS'] == 3){
-				?>
-				<div class="row">
-					<div class="col-md-12">
-						<b><label style="font-size: 14px">Data from CONFINS :</label></b>
-						<div class="table-responsive">
-							<table id="exampleCompany" class="table table-bordered" style="width:100%">
-								<thead>
-									<tr>
-										<th style="text-align:center;">NIK</th>
-										<th style="text-align:center;">Nama</th>
-										<th style="text-align:center;">Tanggal Lahir</th>
-									</tr>
-								</thead>
-								<tbody>
-									<tr>
-										<td style="text-align:center;"><?php echo $ktp2;?></td>
-										<td style="text-align:center;"><?php echo $nama2;?></td>
-										<td style="text-align:center;"><?php if($tglLahir2<>""){echo $tglLahir2->format("Y-m-d");}else{echo"";}?></td>
-									</tr>
-								</tbody>
-							</table>
-						</div>
-					</div>
-				</div>
-				<div class="row">
-					<div class="col-md-12">
-						<b><label style="font-size: 14px">Data from Dukcapil :</label></b>
-						<div class="table-responsive">
-							<table id="exampleCompany" class="table table-bordered" style="width:100%">
-								<thead>
-									<tr>
-										<th style="text-align:center;">NIK</th>
-										<th style="text-align:center;">Nama</th>
-										<th style="text-align:center;">Tanggal Lahir</th>
-									</tr>
-								</thead>
-								<tbody>
-									<tr>
-										<td style="text-align:center;"><?php echo $DkcplNIKPenjamin;?></td>
-										<td style="text-align:center;"><?php echo $DkcplNAMA_LGKPPenjamin;?></td>
-										<td style="text-align:center;"><?php if($DkcplTGL_LHRPenjamin <> ""){echo date("Y-m-d", strtotime($DkcplTGL_LHRPenjamin));}else{ echo"";}?></td>
-									</tr>
-								</tbody>
-							</table>
-						</div>
-					</div>
-				</div>
-				<b><label style="color:red; font-size: 14px"><?php echo $Warning_DataPenjamin;?></label></b>
-				<hr>
-				<div class="row">
-					<div class="col-md-12">
-						<b><label style="font-size: 14px">Data from Pefindo :</label></b>
-						<?php
-						if($array['SmartSearchIndividualResponse']['SmartSearchIndividualResult']['aStatus'] == 'SubjectFound'){
-						?>
-						<div class="table-responsive">
-							<table id="exampleCompany" class="table table-bordered" style="width:100%">
-								<thead>
-									<tr>
-										<th style="text-align:center;">No</th>
-										<th style="text-align:center;">KTP Number</th>
-										<th style="text-align:center;">Fullname</th>
-										<th style="text-align:center;">Date of Birth</th>
-										<th style="text-align:center;">Address</th>
-										<th style="width:50px;text-align:center;">Action</th>
-									</tr>
-								</thead>
-								<tbody>
-								<?php
-									if($array['SmartSearchIndividualResponse']['SmartSearchIndividualResult']['aPefindoId'] <> NULL){
-								?>
-									<tr>
-										<td style="text-align:center;">1</td>
-										<td style="text-align:center;"><?php echo $array['SmartSearchIndividualResponse']['SmartSearchIndividualResult']['aIndividualRecords']['aSearchIndividualRecord']['aKTP'];?></td>
-										<td style="text-align:center;"><?php echo $array['SmartSearchIndividualResponse']['SmartSearchIndividualResult']['aIndividualRecords']['aSearchIndividualRecord']['aFullName'];?></td>
-										<td style="text-align:center;"><?php echo date('d-m-Y', strtotime($array['SmartSearchIndividualResponse']['SmartSearchIndividualResult']['aIndividualRecords']['aSearchIndividualRecord']['aDateOfBirth']));?></td>
-										<td style="text-align:center;"><?php echo $array['SmartSearchIndividualResponse']['SmartSearchIndividualResult']['aIndividualRecords']['aSearchIndividualRecord']['aAddress'];?></td>
-										<td style="text-align:center;">
-											<a href="check-penjamin.php?USERNAME=<?php echo $user;?>&request=individual&no=<?php echo $noProsepekPemohon;?>&id=<?php echo $array['SmartSearchIndividualResponse']['SmartSearchIndividualResult']['aIndividualRecords']['aSearchIndividualRecord']['aPefindoId'];?>&cust=<?php echo $type_cust;?>" class="btn btn-success"><i class="fa fa-search"></i> Check Scoring</a>
-										</td>
-									</tr>
-								<?php
-									}else{
-										$no=0;
-										foreach($array['SmartSearchIndividualResponse']['SmartSearchIndividualResult']['aIndividualRecords']['aSearchIndividualRecord'] as $item) {
-											$no++;
-								?>
-									<tr>
-										<td style="text-align:center;"><?php echo $no;?></td>
-										<td style="text-align:center;"><?php echo $item['aKTP'];?></td>
-										<td style="text-align:center;"><?php echo $item['aFullName'];?></td>
-										<td style="text-align:center;"><?php echo date('d-m-Y', strtotime($item['aDateOfBirth']));?></td>
-										<td style="text-align:center;"><?php echo $item['aAddress'];?></td>
-										<td style="text-align:center;">
-											<a href="check-penjamin.php?USERNAME=<?php echo $user;?>&request=individual&no=<?php echo $noProsepekPemohon;?>&id=<?php echo $item['aPefindoId'];?>&cust=<?php echo $type_cust;?>" class="btn btn-success"><i class="fa fa-search"></i> Check Scoring</a>								
-										</td>
-									</tr>
-								<?php		
-										}
-									}
-								?>
-								</tbody>
-							</table>
-						</div>
-						<?php
-						}else{
-							echo"<br><b><label style='color:red'>- Data Penjamin tidak ditemukan di record Pefindo, silahkan cek lewat SLIK</b><br>";
-							echo"<center>
-									<form action='check-slik.php' method='post'>
-										<input name='prospect_no' type='hidden' value='".$noProsepekPemohon."'>
-										<input name='no_ktp' type='hidden' value='".$ktp2."'>
-										<input name='nama' type='hidden' value='".$nama2."'>
-										<input name='birth_dt' type='hidden' value='".$tglLahir2->format("Y-m-d")."'>
-										<input name='cust_type' type='hidden' value='P'>
-										<input name='id_type' type='hidden' value='KTP'>
-										<input name='username' type='hidden' value='".$user."'>
-										<input name='tipe_cust' type='hidden' value='PENJAMIN'>
-										<button type='submit' class='btn btn-danger'>CEK SCORING BY SLIK</div>
-									</form>
-								</center>";
-						}
-						?>
-					</div>
-				</div>
-				<?php
-					}else{
-						$callSPCheckExistPenjamin = "{call SP_GET_MASTER_INDIVIDUAL(?)}";
-						$paramsCheckExistPenjamin = array(array($dataCheckExist['PEFINDO_ID'], SQLSRV_PARAM_IN));
-						$execCheckExistPenjamin = sqlsrv_query( $conn, $callSPCheckExistPenjamin, $paramsCheckExistPenjamin) or die( print_r( sqlsrv_errors(), true));
-						$dataCheckExistPenjamin = sqlsrv_fetch_array($execCheckExistPenjamin);
-						
-						
-						$lancar_CheckExistPenjamin=0;
-						$days_1_30_CheckExistPenjamin=0;
-						$days_31_60_CheckExistPenjamin=0;
-						$days_61_90_CheckExistPenjamin=0;
-						$days_91_120_CheckExistPenjamin=0;
-						$days_121_150_CheckExistPenjamin=0;
-						$days_151_180_CheckExistPenjamin=0;
-						$lebih180_CheckExistPenjamin=0;
-
-						$callSummary_CheckExistPenjamin = "{call SP_GET_TAB_SUMMARY(?)}";
-						$optionsSummary_CheckExistPenjamin =  array( "Scrollable" => "buffered" );
-						$paramsSummary_CheckExistPenjamin = array(array($dataCheckExist['PEFINDO_ID'], SQLSRV_PARAM_IN));
-						$execSummary_CheckExistPenjamin = sqlsrv_query($conn, $callSummary_CheckExistPenjamin, $paramsSummary_CheckExistPenjamin, $optionsSummary_CheckExistPenjamin) or die( print_r( sqlsrv_errors(), true));
-						$numRowsSummary_CheckExistPenjamin = sqlsrv_num_rows($execSummary_CheckExistPenjamin);
-						while($dataSummary_CheckExistPenjamin = sqlsrv_fetch_array($execSummary_CheckExistPenjamin)){
-							$ktp_CheckExistPenjamin=$dataSummary_CheckExistPenjamin['KTP'];
-							$nama_CheckExistPenjamin=$dataSummary_CheckExistPenjamin['FULL_NAME'];
-							$duedays_CheckExistPenjamin=$dataSummary_CheckExistPenjamin['PASTDUE_DAYS'];
-							if($duedays_CheckExistPenjamin == 0){
-								$lancar_CheckExistPenjamin++;
-							}else if($duedays_CheckExistPenjamin >= 1 && $duedays_CheckExistPenjamin <= 30){
-								$days_1_30_CheckExistPenjamin++;
-							}else if($duedays_CheckExistPenjamin >= 31 && $duedays_CheckExistPenjamin <= 60){
-								$days_31_60_CheckExistPenjamin++;
-							}else if($duedays_CheckExistPenjamin >= 61 && $duedays_CheckExistPenjamin <= 90){
-								$days_61_90_CheckExistPenjamin++;
-							}else if($duedays_CheckExistPenjamin >= 91 && $duedays_CheckExistPenjamin <= 120){
-								$days_91_120_CheckExistPenjamin++;
-							}else if($duedays_CheckExistPenjamin >= 121 && $duedays_CheckExistPenjamin <= 150){
-								$days_121_150_CheckExistPenjamin++;
-							}else if($duedays_CheckExistPenjamin >= 151 && $duedays_CheckExistPenjamin <= 180){
-								$days_151_180_CheckExistPenjamin++;
-							}else if($duedays_CheckExistPenjamin > 180){
-								$lebih180_CheckExistPenjamin++;
-							}else{
-								
-							}
-						}	
-						/* select table cip */
-						$callCIP_CheckExistPenjamin = "{call SP_GET_TAB_DASHBOARD_TBL_CIP(?)}";
-						$paramsCIP_CheckExistPenjamin = array(array($dataCheckExist['PEFINDO_ID'], SQLSRV_PARAM_IN));
-						$execCIP_CheckExistPenjamin = sqlsrv_query( $conn, $callCIP_CheckExistPenjamin, $paramsCIP_CheckExistPenjamin) or die( print_r( sqlsrv_errors(), true));
-						$dataCIP_CheckExistPenjamin = sqlsrv_fetch_array($execCIP_CheckExistPenjamin);
-
-						$totalPlafond2_CheckExistPenjamin = 0;
-						$totalBakiDebet2_CheckExistPenjamin = 0;
-						$totalJatuhTempo2_CheckExistPenjamin = 0;
-						$totalUsiaTunggakan2_CheckExistPenjamin = 0;
-						
-						$callCONT2_CheckExistPenjamin = "{call SP_GET_TAB_CONTRACT_MAINDEBTOR(?)}";
-						$optionsCONT2_CheckExistPenjamin =  array( "Scrollable" => "buffered" );
-						$paramsCONT2_CheckExistPenjamin = array(array($dataCheckExist['PEFINDO_ID'], SQLSRV_PARAM_IN));
-						$execCONT2_CheckExistPenjamin = sqlsrv_query( $conn, $callCONT2_CheckExistPenjamin, $paramsCONT2_CheckExistPenjamin,$optionsCONT2_CheckExistPenjamin) or die( print_r( sqlsrv_errors(), true));
-												
-						while($dataCONT2_CheckExistPenjamin = sqlsrv_fetch_array($execCONT2_CheckExistPenjamin)){
-							$totalPlafond2_CheckExistPenjamin =+ $totalPlafond2_CheckExistPenjamin + $dataCONT2_CheckExistPenjamin['TOTAL_AMOUNT_VALUE'];
-							$totalBakiDebet2_CheckExistPenjamin =+ $totalBakiDebet2_CheckExistPenjamin + $dataCONT2_CheckExistPenjamin['OUTSTANDING_AMOUNT_VALUE'];
-							$totalJatuhTempo2_CheckExistPenjamin =+ $totalJatuhTempo2_CheckExistPenjamin + $dataCONT2_CheckExistPenjamin['PASTDUE_AMOUNT_VALUE'];
-							$totalUsiaTunggakan2_CheckExistPenjamin =+ $totalUsiaTunggakan2_CheckExistPenjamin + $dataCONT2_CheckExistPenjamin['PASTDUE_DAYS'];
-						}
-				?>
-				<div class="row">
-					<div class="col-md-12">
-						<div class="card">
-							<div class="content" style="padding:0px;">
-								<div class="table-responsive">
-									<table class="table" style="width:100%;">
-										<tr>
-											<td style="padding:10px;width:100px;"><img src="assets/img/default-user.png" style="width:100%;border-radius:50%;border:1px solid #CCC;"></td>
-											<td style="vertical-align:middle;font-size:18px;"><b><?php echo $nama_CheckExistPenjamin;?></b><div style="font-size:16px;color:#AAA;"><?php echo $ktp_CheckExistPenjamin;?></div></td>
-											<td style="vertical-align:middle;font-size:36px;width:200px;text-align:center;background-color:#035c7a;color:#FFF;"><div style="font-size:16px;">SCORE</div><b><?php echo $dataCIP_CheckExistPenjamin['SCORE'];?></b></td>
-										</tr>
-									</table>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-				<div class="row">
-					<div class="col-md-4">
-						<div class="card">
-							<div class="content">
-								<center>
-									<div style="color:#AAA;">TOTAL FASILITAS</div>
-									<div style="font-size:36px;font-weight:bold;"><?php echo $numRowsSummary_CheckExistPenjamin;?></div>
-								</center>
-							</div>
-						</div>
-					</div>
-					<div class="col-md-4">
-						<div class="card">
-							<div class="content">
-								<center>
-									<div style="color:#AAA;">TOTAL PLAFOND</div>
-									<div style="font-size:36px;font-weight:bold;"><span style="color:#AAA;font-size:18px;">Rp.</span> <?php echo number_format($totalPlafond2_CheckExistPenjamin,0,',','.');?></div>
-								</center>
-							</div>
-						</div>
-					</div>
-					<div class="col-md-4">
-						<div class="card">
-							<div class="content">
-								<center>
-									<div style="color:#AAA;">TOTAL BAKI DEBET</div>
-									<div style="font-size:36px;font-weight:bold;"><span style="color:#AAA;font-size:18px;">Rp.</span> <?php echo number_format($totalBakiDebet2_CheckExistPenjamin,0,',','.');?></div>
-								</center>
-							</div>
-						</div>
-					</div>
-				</div>
-				<div class="row">
-					<div class="col-md-12">
-						<div class="table-responsive">
-							<table class="table table-bordered" style="width:100%;border:none;">
-								<thead>
-									<th class="bg-td" style="width:12.5%;font-weight:bold;">Lancar</th>
-									<th class="bg-td" style="width:12.5%;font-weight:bold;">1 - 30</th>
-									<th class="bg-td" style="width:12.5%;font-weight:bold;">31 - 60</th>
-									<th class="bg-td" style="width:12.5%;font-weight:bold;">61 - 90</th>
-									<th class="bg-td" style="width:12.5%;font-weight:bold;">91 - 120</th>
-									<th class="bg-td" style="width:12.5%;font-weight:bold;">121 - 150</th>
-									<th class="bg-td" style="width:12.5%;font-weight:bold;">151 - 180</th>
-									<th class="bg-td" style="width:12.5%;font-weight:bold;">> 180</th>
-								</thead>
-								<tbody>
-									<tr>
-										<td align="center"><?php echo $lancar_CheckExistPenjamin;?></td>
-										<td align="center"><?php echo $days_1_30_CheckExistPenjamin;?></td>
-										<td align="center"><?php echo $days_31_60_CheckExistPenjamin;?></td>
-										<td align="center"><?php echo $days_61_90_CheckExistPenjamin;?></td>
-										<td align="center"><?php echo $days_91_120_CheckExistPenjamin;?></td>
-										<td align="center"><?php echo $days_121_150_CheckExistPenjamin;?></td>
-										<td align="center"><?php echo $days_151_180_CheckExistPenjamin;?></td>
-										<td align="center"><?php echo $lebih180_CheckExistPenjamin;?></td>
-									</tr>
-								</tbody>	
-							</table>
-							<p class="name">Daftar Fasilitas</p>
-							<table class="table table-bordered" style="width:100%;font-size:10px;">
-								<thead>
-									<tr>
-										<th class="bg-td">JENIS LEMBAGA</th>
-										<th class="bg-td">JENIS FASILITAS</th>
-										<th class="bg-td">TANGGAL PEMBUKAAN</th>
-										<th class="bg-td">STATUS</th>
-										<th class="bg-td">PLAFON</th>
-										<th class="bg-td">BAKI DEBET</th>
-										<th class="bg-td">JATUH TEMPO</th>
-										<th class="bg-td">USIA TUNGGAKAN</th>
-									</tr>
-								</thead>						
-								<tbody>
-								<?php
-									$totalPlafond_CheckExistPenjamin = 0;
-									$totalBakiDebet_CheckExistPenjamin = 0;
-									$totalJatuhTempo_CheckExistPenjamin = 0;
-									$totalUsiaTunggakan_CheckExistPenjamin = 0;
-									
-									$callCONT_CheckExistPenjamin = "{call SP_GET_TAB_CONTRACT_MAINDEBTOR(?)}";
-									$optionsCONT_CheckExistPenjamin =  array( "Scrollable" => "buffered" );
-									$paramsCONT_CheckExistPenjamin = array(array($dataCheckExist['PEFINDO_ID'], SQLSRV_PARAM_IN));
-									$execCONT_CheckExistPenjamin = sqlsrv_query( $conn, $callCONT_CheckExistPenjamin, $paramsCONT_CheckExistPenjamin,$optionsCONT_CheckExistPenjamin) or die( print_r( sqlsrv_errors(), true));
-									while($dataCONT_CheckExistPenjamin = sqlsrv_fetch_array($execCONT_CheckExistPenjamin)){
-										$totalPlafond_CheckExistPenjamin =+ $totalPlafond_CheckExistPenjamin + $dataCONT_CheckExistPenjamin['TOTAL_AMOUNT_VALUE'];
-										$totalBakiDebet_CheckExistPenjamin =+ $totalBakiDebet_CheckExistPenjamin + $dataCONT_CheckExistPenjamin['OUTSTANDING_AMOUNT_VALUE'];
-										$totalJatuhTempo_CheckExistPenjamin =+ $totalJatuhTempo_CheckExistPenjamin + $dataCONT_CheckExistPenjamin['PASTDUE_AMOUNT_VALUE'];
-										$totalUsiaTunggakan_CheckExistPenjamin =+ $totalUsiaTunggakan_CheckExistPenjamin + $dataCONT_CheckExistPenjamin['PASTDUE_DAYS'];
-								?>
-									<tr>
-										<td align="left"><?php echo $dataCONT_CheckExistPenjamin['CREDITOR_TYPE'];?></td>
-										<td align="left"><a href="#"><?php echo $dataCONT_CheckExistPenjamin['CONTRACT_TYPE'];?></a></td>
-										<td align="center"><?php echo $dataCONT_CheckExistPenjamin['START_DATE']->format('Y-m-d');?></td>
-										<td align="left"><?php echo $dataCONT_CheckExistPenjamin['CONTRACT_STATUS'];?>
-										<td align="right"><?php echo $dataCONT_CheckExistPenjamin['TOTAL_AMOUNT_CURRENCY']." ".number_format($dataCONT_CheckExistPenjamin['TOTAL_AMOUNT_VALUE'],0,',','.');?></td>
-										<td align="right"><?php echo $dataCONT_CheckExistPenjamin['OUTSTANDING_AMOUNT_CURRENCY']." ".number_format($dataCONT_CheckExistPenjamin['OUTSTANDING_AMOUNT_VALUE'],0,',','.');?></td>
-										<td align="right"><?php echo $dataCONT_CheckExistPenjamin['PASTDUE_AMOUNT_CURRENCY']." ".number_format($dataCONT_CheckExistPenjamin['PASTDUE_AMOUNT_VALUE'],0,',','.');?></td>
-										<td align="right"><?php echo $dataCONT_CheckExistPenjamin['PASTDUE_DAYS'];?> Days</td>
-									</tr>
-									<?php
-										}
-									?>
-									<tr>
-										<td align="left" colspan="4"><b>Jumlah</b></td>
-										<td align="right"><b>IDR <?php echo number_format($totalPlafond_CheckExistPenjamin,0,',','.');?></b></td>
-										<td align="right"><b>IDR <?php echo number_format($totalBakiDebet_CheckExistPenjamin,0,',','.');?></b></td>
-										<td align="right"><b>IDR <?php echo number_format($totalJatuhTempo_CheckExistPenjamin,0,',','.');?></b></td>
-										<td align="right"><b><?php echo $totalUsiaTunggakan_CheckExistPenjamin;?> Days</b></td>
-									</tr>
-								</tbody>
-							</table>
-						</div>	
-					</div>	
-				</div>
-				<div class="row">
-					<div class="col-md-12">
-						<a href="index.php?USERNAME=iman.santoso&page=scoring-individual&id=<?php echo $dataCheckExist['PEFINDO_ID'];?>&no=<?php echo $noProsepekPemohon;?>" class="btn btn-primary" style="cursor:pointer;border:1px solid #035c7a;background-color:#035c7a;color:#FFF;width:100%;">DETAIL SCORING PENJAMIN</a>
-					</div>
-				</div>
-				<br>
-				<?php } ?>
-			</div>
-		</div>
-	</div>
-</div>
-
-<!-- MODAL DUKCAPIL PENJAMIN SLIK -->
-<div id="dataDukcapilPenjaminSLIK" class="modal fade" role="dialog">
-	<div class="modal-dialog modal-lg" style="width:80%;">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal">&times;</button>
-				<h4 class="modal-title">Data Penjamin</h4>
-			</div>
-			<div class="modal-body">
-				<?php
-					$callCheckExists = "{call CHECK_EXISTS_SCORING_PENJAMIN(?)}";
-					$paramCheckExists = array(array($noProsepekPemohonSLIK, SQLSRV_PARAM_IN));
-					$execCheckExists = sqlsrv_query( $conn, $callCheckExists, $paramCheckExists) or die( print_r( sqlsrv_errors(), true));
-					$dataCheckExist = sqlsrv_fetch_array($execCheckExists);
-					
-					if($dataCheckExist['STATUS'] == 3){
-				?>
-				<div class="row">
-					<div class="col-md-12">
-						<b><label style="font-size: 14px">Data from CONFINS :</label></b>
-						<div class="table-responsive">
-							<table id="exampleCompany" class="table table-bordered" style="width:100%">
-								<thead>
-									<tr>
-										<th style="text-align:center;">NIK</th>
-										<th style="text-align:center;">Nama</th>
-										<th style="text-align:center;">Tanggal Lahir</th>
-									</tr>
-								</thead>
-								<tbody>
-									<tr>
-										<td style="text-align:center;"><?php echo $ktp2;?></td>
-										<td style="text-align:center;"><?php echo $nama2;?></td>
-										<td style="text-align:center;"><?php if($tglLahir2<>""){echo $tglLahir2->format("Y-m-d");}else{echo"";}?></td>
-									</tr>
-								</tbody>
-							</table>
-						</div>
-					</div>
-				</div>
-				<div class="row">
-					<div class="col-md-12">
-						<b><label style="font-size: 14px">Data from Dukcapil :</label></b>
-						<div class="table-responsive">
-							<table id="exampleCompany" class="table table-bordered" style="width:100%">
-								<thead>
-									<tr>
-										<th style="text-align:center;">NIK</th>
-										<th style="text-align:center;">Nama</th>
-										<th style="text-align:center;">Tanggal Lahir</th>
-									</tr>
-								</thead>
-								<tbody>
-									<tr>
-										<td style="text-align:center;"><?php echo $DkcplNIKPenjamin;?></td>
-										<td style="text-align:center;"><?php echo $DkcplNAMA_LGKPPenjamin;?></td>
-										<td style="text-align:center;"><?php if($DkcplTGL_LHRPenjamin <> ""){echo date("Y-m-d", strtotime($DkcplTGL_LHRPenjamin));}else{ echo"";}?></td>
-									</tr>
-								</tbody>
-							</table>
-						</div>
-					</div>
-				</div>
-				<b><label style="color:red; font-size: 14px"><?php echo $Warning_DataPenjamin;?></label></b>
-				<hr>
-				<div class="row">
-					<div class="col-md-12">
-						<b><label style="font-size: 14px">Data from Pefindo :</label></b>
-						<?php
-						if($array['SmartSearchIndividualResponse']['SmartSearchIndividualResult']['aStatus'] == 'SubjectFound'){
-						?>
-						<div class="table-responsive">
-							<table id="exampleCompany" class="table table-bordered" style="width:100%">
-								<thead>
-									<tr>
-										<th style="text-align:center;">No</th>
-										<th style="text-align:center;">KTP Number</th>
-										<th style="text-align:center;">Fullname</th>
-										<th style="text-align:center;">Date of Birth</th>
-										<th style="text-align:center;">Address</th>
-										<th style="width:50px;text-align:center;">Action</th>
-									</tr>
-								</thead>
-								<tbody>
-								<?php
-									if($array['SmartSearchIndividualResponse']['SmartSearchIndividualResult']['aPefindoId'] <> NULL){
-								?>
-									<tr>
-										<td style="text-align:center;">1</td>
-										<td style="text-align:center;"><?php echo $array['SmartSearchIndividualResponse']['SmartSearchIndividualResult']['aIndividualRecords']['aSearchIndividualRecord']['aKTP'];?></td>
-										<td style="text-align:center;"><?php echo $array['SmartSearchIndividualResponse']['SmartSearchIndividualResult']['aIndividualRecords']['aSearchIndividualRecord']['aFullName'];?></td>
-										<td style="text-align:center;"><?php echo date('d-m-Y', strtotime($array['SmartSearchIndividualResponse']['SmartSearchIndividualResult']['aIndividualRecords']['aSearchIndividualRecord']['aDateOfBirth']));?></td>
-										<td style="text-align:center;"><?php echo $array['SmartSearchIndividualResponse']['SmartSearchIndividualResult']['aIndividualRecords']['aSearchIndividualRecord']['aAddress'];?></td>
-										<td style="text-align:center;">
-											<a href="check-penjamin.php?USERNAME=<?php echo $user;?>&request=individual&no=<?php echo $noProsepekPemohonSLIK;?>&id=<?php echo $array['SmartSearchIndividualResponse']['SmartSearchIndividualResult']['aIndividualRecords']['aSearchIndividualRecord']['aPefindoId'];?>&cust=<?php echo $type_cust;?>" class="btn btn-success"><i class="fa fa-search"></i> Check Scoring</a>
-										</td>
-									</tr>
-								<?php
-									}else{
-										$no=0;
-										foreach($array['SmartSearchIndividualResponse']['SmartSearchIndividualResult']['aIndividualRecords']['aSearchIndividualRecord'] as $item) {
-											$no++;
-								?>
-									<tr>
-										<td style="text-align:center;"><?php echo $no;?></td>
-										<td style="text-align:center;"><?php echo $item['aKTP'];?></td>
-										<td style="text-align:center;"><?php echo $item['aFullName'];?></td>
-										<td style="text-align:center;"><?php echo date('d-m-Y', strtotime($item['aDateOfBirth']));?></td>
-										<td style="text-align:center;"><?php echo $item['aAddress'];?></td>
-										<td style="text-align:center;">
-											<a href="check-penjamin.php?USERNAME=<?php echo $user;?>&request=individual&no=<?php echo $noProsepekPemohonSLIK;?>&id=<?php echo $item['aPefindoId'];?>&cust=<?php echo $type_cust;?>" class="btn btn-success"><i class="fa fa-search"></i> Check Scoring</a>								
-										</td>
-									</tr>
-								<?php		
-										}
-									}
-								?>
-								</tbody>
-							</table>
-						</div>
-						<?php
-						}else{
-							echo"<br><b><label style='color:red'>- Data Penjamin tidak ditemukan di record Pefindo, silahkan cek lewat SLIK</b><br>";
-							echo"<center>
-									<form action='check-slik.php' method='post'>
-										<input name='prospect_no' type='hidden' value='".$noProsepekPemohonSLIK."'>
-										<input name='no_ktp' type='hidden' value='".$ktp2."'>
-										<input name='nama' type='hidden' value='".$nama2."'>
-										<input name='birth_dt' type='hidden' value='".$tglLahir2->format("Y-m-d")."'>
-										<input name='cust_type' type='hidden' value='P'>
-										<input name='id_type' type='hidden' value='KTP'>
-										<input name='username' type='hidden' value='".$user."'>
-										<input name='tipe_cust' type='hidden' value='PENJAMIN'>
-										<button type='submit' class='btn btn-danger'>CEK SCORING BY SLIK</div>
-									</form>
-								</center>";
-						}
-						?>
-					</div>
-				</div>
-				<?php
-					}else{
-						$callSPCheckExistPenjamin = "{call SP_GET_MASTER_INDIVIDUAL(?)}";
-						$paramsCheckExistPenjamin = array(array($dataCheckExist['PEFINDO_ID'], SQLSRV_PARAM_IN));
-						$execCheckExistPenjamin = sqlsrv_query( $conn, $callSPCheckExistPenjamin, $paramsCheckExistPenjamin) or die( print_r( sqlsrv_errors(), true));
-						$dataCheckExistPenjamin = sqlsrv_fetch_array($execCheckExistPenjamin);
-						
-						
-						$lancar_CheckExistPenjamin=0;
-						$days_1_30_CheckExistPenjamin=0;
-						$days_31_60_CheckExistPenjamin=0;
-						$days_61_90_CheckExistPenjamin=0;
-						$days_91_120_CheckExistPenjamin=0;
-						$days_121_150_CheckExistPenjamin=0;
-						$days_151_180_CheckExistPenjamin=0;
-						$lebih180_CheckExistPenjamin=0;
-
-						$callSummary_CheckExistPenjamin = "{call SP_GET_TAB_SUMMARY(?)}";
-						$optionsSummary_CheckExistPenjamin =  array( "Scrollable" => "buffered" );
-						$paramsSummary_CheckExistPenjamin = array(array($dataCheckExist['PEFINDO_ID'], SQLSRV_PARAM_IN));
-						$execSummary_CheckExistPenjamin = sqlsrv_query($conn, $callSummary_CheckExistPenjamin, $paramsSummary_CheckExistPenjamin, $optionsSummary_CheckExistPenjamin) or die( print_r( sqlsrv_errors(), true));
-						$numRowsSummary_CheckExistPenjamin = sqlsrv_num_rows($execSummary_CheckExistPenjamin);
-						while($dataSummary_CheckExistPenjamin = sqlsrv_fetch_array($execSummary_CheckExistPenjamin)){
-							$ktp_CheckExistPenjamin=$dataSummary_CheckExistPenjamin['KTP'];
-							$nama_CheckExistPenjamin=$dataSummary_CheckExistPenjamin['FULL_NAME'];
-							$duedays_CheckExistPenjamin=$dataSummary_CheckExistPenjamin['PASTDUE_DAYS'];
-							if($duedays_CheckExistPenjamin == 0){
-								$lancar_CheckExistPenjamin++;
-							}else if($duedays_CheckExistPenjamin >= 1 && $duedays_CheckExistPenjamin <= 30){
-								$days_1_30_CheckExistPenjamin++;
-							}else if($duedays_CheckExistPenjamin >= 31 && $duedays_CheckExistPenjamin <= 60){
-								$days_31_60_CheckExistPenjamin++;
-							}else if($duedays_CheckExistPenjamin >= 61 && $duedays_CheckExistPenjamin <= 90){
-								$days_61_90_CheckExistPenjamin++;
-							}else if($duedays_CheckExistPenjamin >= 91 && $duedays_CheckExistPenjamin <= 120){
-								$days_91_120_CheckExistPenjamin++;
-							}else if($duedays_CheckExistPenjamin >= 121 && $duedays_CheckExistPenjamin <= 150){
-								$days_121_150_CheckExistPenjamin++;
-							}else if($duedays_CheckExistPenjamin >= 151 && $duedays_CheckExistPenjamin <= 180){
-								$days_151_180_CheckExistPenjamin++;
-							}else if($duedays_CheckExistPenjamin > 180){
-								$lebih180_CheckExistPenjamin++;
-							}else{
-								
-							}
-						}	
-						/* select table cip */
-						$callCIP_CheckExistPenjamin = "{call SP_GET_TAB_DASHBOARD_TBL_CIP(?)}";
-						$paramsCIP_CheckExistPenjamin = array(array($dataCheckExist['PEFINDO_ID'], SQLSRV_PARAM_IN));
-						$execCIP_CheckExistPenjamin = sqlsrv_query( $conn, $callCIP_CheckExistPenjamin, $paramsCIP_CheckExistPenjamin) or die( print_r( sqlsrv_errors(), true));
-						$dataCIP_CheckExistPenjamin = sqlsrv_fetch_array($execCIP_CheckExistPenjamin);
-
-						$totalPlafond2_CheckExistPenjamin = 0;
-						$totalBakiDebet2_CheckExistPenjamin = 0;
-						$totalJatuhTempo2_CheckExistPenjamin = 0;
-						$totalUsiaTunggakan2_CheckExistPenjamin = 0;
-						
-						$callCONT2_CheckExistPenjamin = "{call SP_GET_TAB_CONTRACT_MAINDEBTOR(?)}";
-						$optionsCONT2_CheckExistPenjamin =  array( "Scrollable" => "buffered" );
-						$paramsCONT2_CheckExistPenjamin = array(array($dataCheckExist['PEFINDO_ID'], SQLSRV_PARAM_IN));
-						$execCONT2_CheckExistPenjamin = sqlsrv_query( $conn, $callCONT2_CheckExistPenjamin, $paramsCONT2_CheckExistPenjamin,$optionsCONT2_CheckExistPenjamin) or die( print_r( sqlsrv_errors(), true));
-												
-						while($dataCONT2_CheckExistPenjamin = sqlsrv_fetch_array($execCONT2_CheckExistPenjamin)){
-							$totalPlafond2_CheckExistPenjamin =+ $totalPlafond2_CheckExistPenjamin + $dataCONT2_CheckExistPenjamin['TOTAL_AMOUNT_VALUE'];
-							$totalBakiDebet2_CheckExistPenjamin =+ $totalBakiDebet2_CheckExistPenjamin + $dataCONT2_CheckExistPenjamin['OUTSTANDING_AMOUNT_VALUE'];
-							$totalJatuhTempo2_CheckExistPenjamin =+ $totalJatuhTempo2_CheckExistPenjamin + $dataCONT2_CheckExistPenjamin['PASTDUE_AMOUNT_VALUE'];
-							$totalUsiaTunggakan2_CheckExistPenjamin =+ $totalUsiaTunggakan2_CheckExistPenjamin + $dataCONT2_CheckExistPenjamin['PASTDUE_DAYS'];
-						}
-				?>
-				<div class="row">
-					<div class="col-md-12">
-						<div class="card">
-							<div class="content" style="padding:0px;">
-								<div class="table-responsive">
-									<table class="table" style="width:100%;">
-										<tr>
-											<td style="padding:10px;width:100px;"><img src="assets/img/default-user.png" style="width:100%;border-radius:50%;border:1px solid #CCC;"></td>
-											<td style="vertical-align:middle;font-size:18px;"><b><?php echo $nama_CheckExistPenjamin;?></b><div style="font-size:16px;color:#AAA;"><?php echo $ktp_CheckExistPenjamin;?></div></td>
-											<td style="vertical-align:middle;font-size:36px;width:200px;text-align:center;background-color:#035c7a;color:#FFF;"><div style="font-size:16px;">SCORE</div><b><?php echo $dataCIP_CheckExistPenjamin['SCORE'];?></b></td>
-										</tr>
-									</table>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-				<div class="row">
-					<div class="col-md-4">
-						<div class="card">
-							<div class="content">
-								<center>
-									<div style="color:#AAA;">TOTAL FASILITAS</div>
-									<div style="font-size:36px;font-weight:bold;"><?php echo $numRowsSummary_CheckExistPenjamin;?></div>
-								</center>
-							</div>
-						</div>
-					</div>
-					<div class="col-md-4">
-						<div class="card">
-							<div class="content">
-								<center>
-									<div style="color:#AAA;">TOTAL PLAFOND</div>
-									<div style="font-size:36px;font-weight:bold;"><span style="color:#AAA;font-size:18px;">Rp.</span> <?php echo number_format($totalPlafond2_CheckExistPenjamin,0,',','.');?></div>
-								</center>
-							</div>
-						</div>
-					</div>
-					<div class="col-md-4">
-						<div class="card">
-							<div class="content">
-								<center>
-									<div style="color:#AAA;">TOTAL BAKI DEBET</div>
-									<div style="font-size:36px;font-weight:bold;"><span style="color:#AAA;font-size:18px;">Rp.</span> <?php echo number_format($totalBakiDebet2_CheckExistPenjamin,0,',','.');?></div>
-								</center>
-							</div>
-						</div>
-					</div>
-				</div>
-				<div class="row">
-					<div class="col-md-12">
-						<div class="table-responsive">
-							<table class="table table-bordered" style="width:100%;border:none;">
-								<thead>
-									<th class="bg-td" style="width:12.5%;font-weight:bold;">Lancar</th>
-									<th class="bg-td" style="width:12.5%;font-weight:bold;">1 - 30</th>
-									<th class="bg-td" style="width:12.5%;font-weight:bold;">31 - 60</th>
-									<th class="bg-td" style="width:12.5%;font-weight:bold;">61 - 90</th>
-									<th class="bg-td" style="width:12.5%;font-weight:bold;">91 - 120</th>
-									<th class="bg-td" style="width:12.5%;font-weight:bold;">121 - 150</th>
-									<th class="bg-td" style="width:12.5%;font-weight:bold;">151 - 180</th>
-									<th class="bg-td" style="width:12.5%;font-weight:bold;">> 180</th>
-								</thead>
-								<tbody>
-									<tr>
-										<td align="center"><?php echo $lancar_CheckExistPenjamin;?></td>
-										<td align="center"><?php echo $days_1_30_CheckExistPenjamin;?></td>
-										<td align="center"><?php echo $days_31_60_CheckExistPenjamin;?></td>
-										<td align="center"><?php echo $days_61_90_CheckExistPenjamin;?></td>
-										<td align="center"><?php echo $days_91_120_CheckExistPenjamin;?></td>
-										<td align="center"><?php echo $days_121_150_CheckExistPenjamin;?></td>
-										<td align="center"><?php echo $days_151_180_CheckExistPenjamin;?></td>
-										<td align="center"><?php echo $lebih180_CheckExistPenjamin;?></td>
-									</tr>
-								</tbody>	
-							</table>
-							<p class="name">Daftar Fasilitas</p>
-							<table class="table table-bordered" style="width:100%;font-size:10px;">
-								<thead>
-									<tr>
-										<th class="bg-td">JENIS LEMBAGA</th>
-										<th class="bg-td">JENIS FASILITAS</th>
-										<th class="bg-td">TANGGAL PEMBUKAAN</th>
-										<th class="bg-td">STATUS</th>
-										<th class="bg-td">PLAFON</th>
-										<th class="bg-td">BAKI DEBET</th>
-										<th class="bg-td">JATUH TEMPO</th>
-										<th class="bg-td">USIA TUNGGAKAN</th>
-									</tr>
-								</thead>						
-								<tbody>
-								<?php
-									$totalPlafond_CheckExistPenjamin = 0;
-									$totalBakiDebet_CheckExistPenjamin = 0;
-									$totalJatuhTempo_CheckExistPenjamin = 0;
-									$totalUsiaTunggakan_CheckExistPenjamin = 0;
-									
-									$callCONT_CheckExistPenjamin = "{call SP_GET_TAB_CONTRACT_MAINDEBTOR(?)}";
-									$optionsCONT_CheckExistPenjamin =  array( "Scrollable" => "buffered" );
-									$paramsCONT_CheckExistPenjamin = array(array($dataCheckExist['PEFINDO_ID'], SQLSRV_PARAM_IN));
-									$execCONT_CheckExistPenjamin = sqlsrv_query( $conn, $callCONT_CheckExistPenjamin, $paramsCONT_CheckExistPenjamin,$optionsCONT_CheckExistPenjamin) or die( print_r( sqlsrv_errors(), true));
-									while($dataCONT_CheckExistPenjamin = sqlsrv_fetch_array($execCONT_CheckExistPenjamin)){
-										$totalPlafond_CheckExistPenjamin =+ $totalPlafond_CheckExistPenjamin + $dataCONT_CheckExistPenjamin['TOTAL_AMOUNT_VALUE'];
-										$totalBakiDebet_CheckExistPenjamin =+ $totalBakiDebet_CheckExistPenjamin + $dataCONT_CheckExistPenjamin['OUTSTANDING_AMOUNT_VALUE'];
-										$totalJatuhTempo_CheckExistPenjamin =+ $totalJatuhTempo_CheckExistPenjamin + $dataCONT_CheckExistPenjamin['PASTDUE_AMOUNT_VALUE'];
-										$totalUsiaTunggakan_CheckExistPenjamin =+ $totalUsiaTunggakan_CheckExistPenjamin + $dataCONT_CheckExistPenjamin['PASTDUE_DAYS'];
-								?>
-									<tr>
-										<td align="left"><?php echo $dataCONT_CheckExistPenjamin['CREDITOR_TYPE'];?></td>
-										<td align="left"><a href="#"><?php echo $dataCONT_CheckExistPenjamin['CONTRACT_TYPE'];?></a></td>
-										<td align="center"><?php echo $dataCONT_CheckExistPenjamin['START_DATE']->format('Y-m-d');?></td>
-										<td align="left"><?php echo $dataCONT_CheckExistPenjamin['CONTRACT_STATUS'];?>
-										<td align="right"><?php echo $dataCONT_CheckExistPenjamin['TOTAL_AMOUNT_CURRENCY']." ".number_format($dataCONT_CheckExistPenjamin['TOTAL_AMOUNT_VALUE'],0,',','.');?></td>
-										<td align="right"><?php echo $dataCONT_CheckExistPenjamin['OUTSTANDING_AMOUNT_CURRENCY']." ".number_format($dataCONT_CheckExistPenjamin['OUTSTANDING_AMOUNT_VALUE'],0,',','.');?></td>
-										<td align="right"><?php echo $dataCONT_CheckExistPenjamin['PASTDUE_AMOUNT_CURRENCY']." ".number_format($dataCONT_CheckExistPenjamin['PASTDUE_AMOUNT_VALUE'],0,',','.');?></td>
-										<td align="right"><?php echo $dataCONT_CheckExistPenjamin['PASTDUE_DAYS'];?> Days</td>
-									</tr>
-									<?php
-										}
-									?>
-									<tr>
-										<td align="left" colspan="4"><b>Jumlah</b></td>
-										<td align="right"><b>IDR <?php echo number_format($totalPlafond_CheckExistPenjamin,0,',','.');?></b></td>
-										<td align="right"><b>IDR <?php echo number_format($totalBakiDebet_CheckExistPenjamin,0,',','.');?></b></td>
-										<td align="right"><b>IDR <?php echo number_format($totalJatuhTempo_CheckExistPenjamin,0,',','.');?></b></td>
-										<td align="right"><b><?php echo $totalUsiaTunggakan_CheckExistPenjamin;?> Days</b></td>
-									</tr>
-								</tbody>
-							</table>
-						</div>	
-					</div>	
-				</div>
-				<div class="row">
-					<div class="col-md-12">
-						<a href="index.php?USERNAME=iman.santoso&page=scoring-individual&id=<?php echo $dataCheckExist['PEFINDO_ID'];?>&no=<?php echo $noProsepekPemohonSLIK;?>" class="btn btn-primary" style="cursor:pointer;border:1px solid #035c7a;background-color:#035c7a;color:#FFF;width:100%;">DETAIL SCORING PENJAMIN</a>
-					</div>
-				</div>
-				<br>
-				<?php } ?>
-			</div>
-		</div>
-	</div>
-</div>
-
-    <script src="assets/js/jquery.3.2.1.min.js" type="text/javascript"></script>
-	<!--<script src="https://code.jquery.com/jquery-1.12.4.js"></script>-->
-	<script src="assets/js/jquery-ui.js"></script>
-	<script src="assets/js/bootstrap.min.js" type="text/javascript"></script>
-	<script src="assets/js/chartist.min.js"></script>
-    <script src="assets/js/bootstrap-notify.js"></script>
-	<script src="assets/js/light-bootstrap-dashboard.js?v=1.4.0"></script>
-	<script src="assets/js/demo.js"></script>
-	<script src="assets/js/jquery.maskedinput.js"></script>
-	<script src="assets/js/jquery.dataTables.min.js"></script>
-	<script src="assets/js/dataTables.bootstrap4.min.js"></script>
-	<!--<script src="assets/plugins/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
-	<script src="https://code.highcharts.com/highcharts.js"></script>
-	<script src="https://code.highcharts.com/modules/series-label.js"></script>
-	<script src="https://code.highcharts.com/modules/exporting.js"></script>
-	<script src="https://code.highcharts.com/modules/export-data.js"></script>-->
-	
+<script src="assets/js/jquery-ui.js"></script>
+<script src="assets/js/bootstrap.min.js" type="text/javascript"></script>
+<script src="assets/js/chartist.min.js"></script>
+<script src="assets/js/bootstrap-notify.js"></script>
+<script src="assets/js/light-bootstrap-dashboard.js?v=1.4.0"></script>
+<script src="assets/js/demo.js"></script>
+<script src="assets/js/jquery.maskedinput.js"></script>
+<script src="assets/js/jquery.dataTables.min.js"></script>
+<script src="assets/js/dataTables.bootstrap4.min.js"></script>
+<script src="assets/plugins/fancybox/lib/jquery.mousewheel.pack.js"></script>
+<script src="assets/plugins/fancybox/source/jquery.fancybox.pack.js?v=2.1.7"></script>
 
 </html>
 <script>
-$(document).ready(function() {
-    $('#example').DataTable({
-		"lengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]]
+	$(document).ready(function() {
+		$('#example').DataTable({
+			"lengthMenu": [
+				[5, 10, 25, 50, -1],
+				[5, 10, 25, 50, "All"]
+			]
+		});
+		$('#exampleCompany').DataTable({
+			"lengthMenu": [
+				[5, 10, 25, 50, -1],
+				[5, 10, 25, 50, "All"]
+			]
+		});
 	});
-	$('#exampleCompany').DataTable({
-		"lengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]]
-	});
-	/*$('#datepicker').datepicker({
-		dateFormat: 'yy-mm-dd',
-		endDate: "today",
-		yearRange: '1950:2024',
-		changeMonth: true,
-		changeYear: true,
-		autoclose: true
-	});*/
-});
 </script>

@@ -122,7 +122,7 @@ $dataDisputesSum = sqlsrv_fetch_array($execDisputesSum);
 					</table>
 					<hr>
 					<p class="name">Data Historis</p>
-					<p class="name text-danger">Pengkinian data debitur</p>
+					<p class="name text-custom">Pengkinian data debitur</p>
 					<table class="table table-bordered table-stripped">
 						<thead>
 							<tr>
@@ -151,7 +151,7 @@ $dataDisputesSum = sqlsrv_fetch_array($execDisputesSum);
 							?>
 						</tbody>
 					</table>	
-					<p class="name text-danger">Pengkinian data identitas</p>	
+					<p class="name text-custom">Pengkinian data identitas</p>	
 					<table class="table table-bordered table-stripped">
 						<thead>
 							<tr>
@@ -180,7 +180,7 @@ $dataDisputesSum = sqlsrv_fetch_array($execDisputesSum);
 							?>
 						</tbody>
 					</table>	
-					<p class="name text-danger">Pengkinian Alamat</p>	
+					<p class="name text-custom">Pengkinian Alamat</p>	
 					<table class="table table-bordered table-stripped">
 						<thead>
 							<tr>
@@ -209,7 +209,7 @@ $dataDisputesSum = sqlsrv_fetch_array($execDisputesSum);
 							?>
 						</tbody>
 					</table>	
-					<p class="name text-danger">Pengkinian kontak yang bisa dihubungi</p>	
+					<p class="name text-custom">Pengkinian kontak yang bisa dihubungi</p>	
 					<table class="table table-bordered table-stripped">
 						<thead>
 							<tr>

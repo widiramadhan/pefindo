@@ -638,7 +638,7 @@ tr.child {
 										<td class="bg-td"><b>Plafond Awal</b></td>
 										<td align="right"><?php if($dataCONSUSECX['INITIAL_TOTAL_AMOUNT_CURRENCY']." ".number_format($dataCONSUSECX['INITIAL_TOTAL_AMOUNT_VALUE'],0,',','.')<>NULL){echo $dataCONSUSECX['INITIAL_TOTAL_AMOUNT_CURRENCY']." ".number_format($dataCONSUSECX['INITIAL_TOTAL_AMOUNT_VALUE'],0,',','.');}else{echo"-";}?></td>
 										<td class="bg-td"><b>Tanggal Akad Awal</b></td>
-										<td align="right"><?php if($dataCONSUSECX['INITIAL_AGREEMENT_DATE']->format('Y-m-d')<>NULL){echo $dataCONSUSECX['INITIAL_AGREEMENT_DATE']->format('Y-m-d');}else{echo"-";}?></td>
+										<td align="right"><?php if($dataCONSUSECX['INITIAL_AGREEMENT_DATE']<>NULL){echo $dataCONSUSECX['INITIAL_AGREEMENT_DATE']->format('Y-m-d');}else{echo"-";}?></td>
 									</tr>
 									<tr>
 										<td class="bg-td"><b>Plafon</b></td>
@@ -696,7 +696,7 @@ tr.child {
 										<td class="bg-td"><b>Bunga Jatuh Tempo</b></td>
 										<td align="right"><?php if($dataCONSUSECX['PASTDUE_INTEREST_CURRENCY']." ".number_format($dataCONSUSECX['PASTDUE_INTEREST_VALUE'],0,',','.')<>NULL){echo $dataCONSUSECX['PASTDUE_INTEREST_CURRENCY']." ".number_format($dataCONSUSECX['PASTDUE_INTEREST_VALUE'],0,',','.');}else{echo"-";}?></td>
 										<td class="bg-td"><b>Terjadinya tunggakan terakhir (lewat lebih dari 90 hari)</b></td>
-										<td align="right"><?php if($dataCONSUSECX['LAST_DELINQUENCY_90_PLUS_DAYS']<>NULL){echo $dataCONSUSECX['[LAST_DELINQUENCY_90_PLUS_DAYS]'];}else {echo "-";}?></td>
+										<td align="right"><?php if($dataCONSUSECX['LAST_DELINQUENCY_90_PLUS_DAYS']<>NULL){echo $dataCONSUSECX['LAST_DELINQUENCY_90_PLUS_DAYS']->format('Y-m-d');}else {echo "-";}?></td>
 									</tr>
 									<tr>
 										<td class="bg-td"><b>Jumlah keterlambatan terbesar</b></td>

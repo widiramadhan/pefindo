@@ -1,3 +1,14 @@
+<script src="assets/js/jquery.3.2.1.min.js" type="text/javascript"></script>
+<!-- jquery ui -->
+<link rel="stylesheet" href="assets/css/jquery-ui.css">
+<script src="assets/js/jquery-ui.js"></script>
+<!-- end jquery ui -->
+
+<!-- Datatable -->
+<link rel="stylesheet" href="assets/css/dataTables.bootstrap4.min.css" type="text/css">
+<script src="assets/js/jquery.dataTables.min.js"></script>
+<script src="assets/js/dataTables.bootstrap4.min.js"></script>
+<!-- End Datatable -->
 <style>
 th{
 	text-align:center;
@@ -13,7 +24,7 @@ td{
     width: 100%;
     height: 100%;
     z-index: 99999999999999999999999999999;
-    background: url('assets/img/loading.gif') 50% 50% no-repeat rgb(255,255,255);
+    background: url('assets/img/basicloader.gif') 50% 50% no-repeat rgb(255,255,255);
     opacity: 1;
 }
 </style>
@@ -48,7 +59,7 @@ curl_setopt_array($curl, array(
   CURLOPT_RETURNTRANSFER => true,
   CURLOPT_ENCODING => "",
   CURLOPT_MAXREDIRS => 10,
-  CURLOPT_TIMEOUT => 30,
+  CURLOPT_TIMEOUT => 60,
   CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
   CURLOPT_CUSTOMREQUEST => "POST",
   CURLOPT_POSTFIELDS => "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\"\r\nxmlns:cb5=\"http://creditinfo.com/CB5\"\r\nxmlns:smar=\"http://creditinfo.com/CB5/v5.31/SmartSearch\">\r\n <soapenv:Header/>\r\n <soapenv:Body>\r\n <cb5:SmartSearchCompany>\r\n <cb5:query>\r\n <smar:InquiryReason>ProvidingFacilities</smar:InquiryReason>\r\n <smar:InquiryReasonText/>\r\n <smar:Parameters>\r\n <smar:CompanyName>".$nama."</smar:CompanyName>\r\n <smar:IdNumbers>\r\n <smar:IdNumberPairCompany>\r\n <smar:IdNumber>".$npwp."</smar:IdNumber>\r\n <smar:IdNumberType>NPWP</smar:IdNumberType>\r\n </smar:IdNumberPairCompany>\r\n </smar:IdNumbers>\r\n </smar:Parameters>\r\n </cb5:query>\r\n </cb5:SmartSearchCompany>\r\n </soapenv:Body>\r\n</soapenv:Envelope>",

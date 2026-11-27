@@ -72,7 +72,7 @@ tr.header{
 									<td align="center"><?php echo $dataSRTCOMLIST['SECURITY_TYPE'];?></td>
 									<td align="center"><?php echo $dataSRTCOMLIST['CONTRACT_STATUS'];?></td>
 									<td align="center"><?php if($dataSRTCOMLIST['ISSUE_DATE']<>NULL){echo $dataSRTCOMLIST['ISSUE_DATE']->format('Y-m-d');}else{echo"";}?></td>
-									<td align="center"><?php echo $dataSRTCOMLIST['REAL_DATE'];?></td>
+									<td align="center"><?php if($dataSRTCOMLIST['REAL_DATE']<>NULL){echo $dataSRTCOMLIST['REAL_DATE']->format('Y-m-d');}else{echo"";}?></td>
 									<td align="center"><?php echo $dataSRTCOMLIST['MARKET_VALUE_CURRENCY']." ".number_format($dataSRTCOMLIST['MARKET_VALUE_VALUE'],0,',','.');?><i class="fa fa-caret-square-o-down"></i></td>
 								</tr>
 								<tr class="child">
@@ -142,7 +142,7 @@ tr.header{
 												<td class="bg-td"><b>Sovereign Rate</td></b>
 												<td align="right"><?php echo $dataSRTCOMLIST['SOVEREIGN_RATE'];?></td>
 												<td class="bg-td"><b>Condition Date</td></b>
-												<td align="right"><?php echo $dataSRTCOMLIST['CONDITION_DATE'];?></td>
+												<td align="right"><?php if($dataSRTCOMLIST['CONDITION_DATE']<>NULL){echo $dataSRTCOMLIST['CONDITION_DATE']->format('Y-m-d');}else{echo"";}?></td>
 											</tr>
 											<tr>
 												<td class="bg-td"><b>Maturity Date</td></b>

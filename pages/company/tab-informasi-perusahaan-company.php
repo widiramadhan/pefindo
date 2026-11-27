@@ -60,7 +60,7 @@ $dataDISPTcompany = sqlsrv_fetch_array($execDISPTcompany);
 								</tr>
 								<tr>
 									<td class="bg-td"><b>Tanggal Pendirian</b></td>
-									<td colspan="3"><?php echo $datacompany['ESTABILISHMENT_DATE']->format('Y-m-d');?></td>
+									<td colspan="3"><?php if($datacompany['ESTABILISHMENT_DATE']<>NULL){echo $datacompany['ESTABILISHMENT_DATE']->format('Y-m-d');}else{echo"";}?></td>
 									<td class="bg-td"><b>Tanggal Akad Terakhir</b></td>
 									<td colspan="3"><?php if($datacompany['LATEST_DATE_OF_DEED']<>NULL){echo $datacompany['LATEST_DATE_OF_DEED']->format('Y-m-d');}else{echo"";}?></td>
 								</tr>

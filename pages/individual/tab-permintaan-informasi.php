@@ -13,7 +13,7 @@ $dataPERMIN = sqlsrv_fetch_array($execPERMIN);
 		<div class="content">
 			<div class="row">
 				<div class="col-md-12">
-					<p class="name text-danger">Jumlah permintaan informasi di bulan lalu</p>
+					<p class="name text-custom">Jumlah permintaan informasi di bulan lalu</p>
 					<div class="table-responsive">
 						<table class="table table-bordered" style="width:100%;">
 							<thead>
@@ -37,7 +37,7 @@ $dataPERMIN = sqlsrv_fetch_array($execPERMIN);
 						</table>
 						<div class="table-responsive">
 								<table class="table table-bordered" style="width:100%;">
-								<p class="name text-danger">15 permintaan informasi terakhir</p>
+								<p class="name text-custom">15 permintaan informasi terakhir</p>
 									<thead>
 										<tr>
 											<th class="bg-td">TANGGAL PERMINTAAN INFORMASI</th>

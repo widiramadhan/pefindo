@@ -55,7 +55,7 @@ $dataCOLSUM = sqlsrv_fetch_array($execCOLSUM);
 								<td align="center"><?php echo $dataCOLIST['TYPE'];?></td>
 								<td align="center"><?php echo number_format($dataCOLIST['TAX_VALUE_VALUE'],0,',','.');?></td>
 								<td align="center"><?php echo round((float)$dataCOLIST['PROPORTION']).'%';?></td>
-								<td align="center"><?php echo $dataCOLIST['LAST_UPDATE']-> format('Y-m-d');?><i class="fa fa-caret-square-o-down"></i></td>
+								<td align="center"><?php if($dataCOLIST['LAST_UPDATE']<>NULL){echo $dataCOLIST['LAST_UPDATE']-> format('Y-m-d');}?><i class="fa fa-caret-square-o-down"></i></td>
 							</tr>
 							<tr class="child">
 								<td colspan="4">

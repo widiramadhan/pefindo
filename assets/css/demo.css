@@ -65,3 +65,20 @@
         position: initial;
     }
 }
+.btn-custom{
+	border-color:#035c7a;color:#035c7a;
+}
+
+.card-stats .card-title {
+  margin: 0; }
+.card-stats .card-header {
+  float: left;
+  text-align: center; }
+.card-stats .card-header i {
+  font-size: 36px;
+  line-height: 56px;
+  width: 56px;
+  height: 56px; }
+.card-stats .card-content {
+  text-align: right;
+  padding-top: 10px; }

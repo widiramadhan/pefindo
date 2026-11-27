@@ -32,7 +32,7 @@
 								<table class="table table-borderless">
 									<tr>
 										<td><b>Berlaku Sejak</td></b>
-										<td><?php echo $dataREPARLIST['VALID_FROM']->format('Y-m-d');?></td>
+										<td><?php if($dataREPARLIST['VALID_FROM']<>NULL){echo $dataREPARLIST['VALID_FROM']->format('Y-m-d');}?></td>
 										<td><b>Porsi Kepemilikan</td></b>
 										<td><?php echo round((float)$dataREPARLIST['OWNER_SHIP_SHARE']).'%';?></td>
 										

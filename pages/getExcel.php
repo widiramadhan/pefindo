@@ -2,90 +2,17 @@
 require_once("../config/connection.php");
 require_once "../assets/plugins/PHPExcel/Classes/PHPExcel.php"; 
 
-$pefindoId=$_GET['id'];
-$type=$_GET['type'];
+$id=$_GET['id'];
 
-if($type=="P"){
-	$callSummary = "{call SP_GET_TAB_SUMMARY(?)}";
-}else{
-	$callSummary = "{call SP_GET_TAB_SUMMARY_COMPANY(?)}";
-}
-$paramsSummary = array(array($pefindoId, SQLSRV_PARAM_IN));
-$optionsSummary =  array( "Scrollable" => "buffered" );
-$execSummary = sqlsrv_query($conn, $callSummary, $paramsSummary, $optionsSummary) or die( print_r( sqlsrv_errors(), true));
-$numRowsSummary = sqlsrv_num_rows($execSummary);
-
-$lancar=0;
-$days_1_30=0;
-$days_31_60=0;
-$days_61_90=0;
-$days_91_120=0;
-$days_121_150=0;
-$days_151_180=0;
-$lebih180=0;
-while($dataSummary = sqlsrv_fetch_array($execSummary)){
-	if($type=="P"){
-		$ktp=$dataSummary['KTP'];
-		$nama=$dataSummary['FULL_NAME'];
-	}else{
-		$ktp=$dataSummary['NPWP'];
-		$nama=$dataSummary['COMPANY_NAME'];
-	}
-	$duedays=$dataSummary['PASTDUE_DAYS'];
-	if($duedays == 0){
-		$lancar++;
-	}else if($duedays >= 1 && $duedays <= 30){
-		$days_1_30++;
-	}else if($duedays >= 31 && $duedays <= 60){
-		$days_31_60++;
-	}else if($duedays >= 61 && $duedays <= 90){
-		$days_61_90++;
-	}else if($duedays >= 91 && $duedays <= 120){
-		$days_91_120++;
-	}else if($duedays >= 121 && $duedays <= 150){
-		$days_121_150++;
-	}else if($duedays >= 151 && $duedays <= 180){
-		$days_151_180++;
-	}else if($duedays > 180){
-		$lebih180++;
-	}
-}	
-
-/* select table cip */
-if($type=="P"){
-	$callCIP = "{call SP_GET_TAB_DASHBOARD_TBL_CIP(?)}";
-}else{
-	$callCIP = "{call SP_GET_TAB_DASHBOARD_TBL_CIP_COMPANY(?)}";
-}
-$paramsCIP = array(array($pefindoId, SQLSRV_PARAM_IN));
-$execCIP = sqlsrv_query( $conn, $callCIP, $paramsCIP) or die( print_r( sqlsrv_errors(), true));
-$dataCIP = sqlsrv_fetch_array($execCIP);
-
-$totalPlafond2 = 0;
-$totalBakiDebet2 = 0;
-$totalJatuhTempo2 = 0;
-$totalUsiaTunggakan2 = 0;
-
-if($type=="P"){
-	$callCONT2 = "{call SP_GET_TAB_CONTRACT_MAINDEBTOR(?)}";
-}else{
-	$callCONT2 = "{call SP_GET_TAB_CONTRACT_MAINDEBTOR_COMPANY(?)}";
-}
-$optionsCONT2 =  array( "Scrollable" => "buffered" );
-$paramsCONT2 = array(array($pefindoId, SQLSRV_PARAM_IN));
-$execCONT2 = sqlsrv_query( $conn, $callCONT2, $paramsCONT2,$optionsCONT2) or die( print_r( sqlsrv_errors(), true));
-						
-while($dataCONT2 = sqlsrv_fetch_array($execCONT2)){
-	$totalPlafond2 =+ $totalPlafond2 + $dataCONT2['TOTAL_AMOUNT_VALUE'];
-	$totalBakiDebet2 =+ $totalBakiDebet2 + $dataCONT2['OUTSTANDING_AMOUNT_VALUE'];
-	$totalJatuhTempo2 =+ $totalJatuhTempo2 + $dataCONT2['PASTDUE_AMOUNT_VALUE'];
-	$totalUsiaTunggakan2 =+ $totalUsiaTunggakan2 + $dataCONT2['PASTDUE_DAYS'];
-}
+$callSP2 = "{call SP_GET_DATA_BY_PEFINDO_MAPPING_ID(?)}";
+$parameter2 = array(array($id, SQLSRV_PARAM_IN));
+$exec2 = sqlsrv_query( $conn, $callSP2, $parameter2) or die( print_r( sqlsrv_errors(), true));
+$data = sqlsrv_fetch_array($exec2);
 
 date_default_timezone_set("Asia/Jakarta");
 $date=date('Ymd');
 $time=date('His');
-$title="SummaryReportPefindo_".$pefindoId;
+$title="SummaryReportPefindo_".$id;
 /*start - BLOCK PROPERTIES FILE EXCEL*/
 	$file = new PHPExcel ();
 	$file->getProperties ()->setCreator ( "Suzuki Finance" );
@@ -110,7 +37,7 @@ $title="SummaryReportPefindo_".$pefindoId;
 		->setCellValue ( "B1", "NIK" )
 		->setCellValue ( "C1", "CUSTOMER NAME" )
 		->setCellValue ( "D1", "PEFINDO SCORE" )
-		->setCellValue ( "E1", "TOTAL FACILITAS" )
+		->setCellValue ( "E1", "TOTAL FASILITAS" )
 		->setCellValue ( "F1", "TOTAL PLAFOND" )
 		->setCellValue ( "G1", "TOTAL BAKI DEBET" )
 		->setCellValue ( "H1", "LANCAR" )
@@ -134,34 +61,33 @@ $title="SummaryReportPefindo_".$pefindoId;
 	ini_set('max_execution_time', 0);
 	//echo ini_get('max_execution_time');
 	
-	if($type=="P"){
-		$callSP = "{call SP_GET_SUMMARY_REPORT_PEFINDO(?)}"; 
+	if($data['CUST_TYPE']<>"COMPANY"){
+		$callSP = "{call SP_GET_EXCEL_SUMMARY_REPORT_PEFINDO(?)}";
 	}else{
-		$callSP = "{call SP_GET_SUMMARY_REPORT_PEFINDO(?)}"; 
+		$callSP = "{call SP_GET_EXCEL_SUMMARY_REPORT_PEFINDO_COMPANY(?)}";
 	}
-	$parameter = array(array($pefindoId, SQLSRV_PARAM_IN));
+	$parameter = array(array($id, SQLSRV_PARAM_IN));
 	$exec = sqlsrv_query( $conn2, $callSP, $parameter) or die( print_r( sqlsrv_errors(), true));
-
 	$nomor=1;
 	$no=0;
 	while($row=sqlsrv_fetch_array($exec)){
 		$nomor++;
 		$no++;
 		$sheet	->setCellValue ( "A".$nomor,  $no )
-			->setCellValue ( "B".$nomor,  $ktp )
-			->setCellValue ( "C".$nomor,  $nama )
-			->setCellValue ( "D".$nomor,  $dataCIP['SCORE'] )
-			->setCellValue ( "E".$nomor,  $numRowsSummary )
-			->setCellValue ( "F".$nomor,  $totalPlafond2 )
-			->setCellValue ( "G".$nomor,  $totalBakiDebet2 )
-			->setCellValue ( "H".$nomor,  $lancar )
-			->setCellValue ( "I".$nomor,  $days_1_30 )
-			->setCellValue ( "J".$nomor,  $days_31_60 )
-			->setCellValue ( "K".$nomor,  $days_61_90 )
-			->setCellValue ( "L".$nomor,  $days_91_120 )
-			->setCellValue ( "M".$nomor,  $days_121_150 )
-			->setCellValue ( "N".$nomor,  $days_151_180 )
-			->setCellValue ( "O".$nomor,  $lebih180 );
+			->setCellValue ( "B".$nomor,  $row['NIK'] )
+			->setCellValue ( "C".$nomor,  $row['CUSTOMER_NAME'] )
+			->setCellValue ( "D".$nomor,  $row['SCORE'] )
+			->setCellValue ( "E".$nomor,  $row['TOTAL_FASILITAS'] )
+			->setCellValue ( "F".$nomor,  $row['TOTAL_PLAFOND'] )
+			->setCellValue ( "G".$nomor,  $row['TOTAL_BAKI_DEBET'] )
+			->setCellValue ( "H".$nomor,  $row['LANCAR'] )
+			->setCellValue ( "I".$nomor,  $row['THAN_1_30'] )
+			->setCellValue ( "J".$nomor,  $row['THAN_31_60'] )
+			->setCellValue ( "K".$nomor,  $row['THAN_61_90'] )
+			->setCellValue ( "L".$nomor,  $row['THAN_91_120'] )
+			->setCellValue ( "M".$nomor,  $row['THAN_121_150'] )
+			->setCellValue ( "N".$nomor,  $row['THAN_151_180'] )
+			->setCellValue ( "O".$nomor,  $row['THAN_180'] );
 	}
 /* end - BLOCK MEMASUKAN DATABASE*/
 
@@ -192,5 +118,5 @@ $title="SummaryReportPefindo_".$pefindoId;
 	$writer = PHPExcel_IOFactory::createWriter ( $file, 'Excel5' );
 	$writer->save ( 'php://output' );
 	//ob_end_clean();
-/* start - BLOCK MEMBUAT LINK DOWNLOAD*/
+/* end - BLOCK MEMBUAT LINK DOWNLOAD*/
 ?>

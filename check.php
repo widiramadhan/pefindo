@@ -3,36 +3,31 @@ require_once("config/configuration.php");
 require_once("config/connection.php");
 date_default_timezone_set('Asia/Jakarta');
 
-$pefindoId=$_GET['id'];
-$ps_no=$_GET['no'];
-$request=$_GET['request'];
+
+$user=$_POST['user'];
+$request=$_POST['request'];
+$ps_no=$_POST['no_prospect'];
+$no_ktp=$_POST['no_ktp'];
+$pefindoId=$_POST['pefindo_id'];
+$siapanih=$_POST['type_customer'];
 $date=date("Y-m-d");
-$user=$_GET['USERNAME'];
+$period=date("Ymd");
 
 if($request == "individual"){
 	/* cek ke database apakah id ini sudah ada didalam database ? */
-	$call = "{call SP_CHECK_PEFINDO_ID(?,?)}";
-	$params = array(array($pefindoId, SQLSRV_PARAM_IN),array($ps_no, SQLSRV_PARAM_IN));
+	$call = "{call SP_CHECK_PEFINDO_ID(?,?,?,?)}";
+	$params = array(array($pefindoId, SQLSRV_PARAM_IN),array($ps_no, SQLSRV_PARAM_IN),array($no_ktp, SQLSRV_PARAM_IN),array($period, SQLSRV_PARAM_IN));
 	$options =  array( "Scrollable" => "buffered" );
 	$exec = sqlsrv_query( $conn, $call, $params, $options) or die( print_r( sqlsrv_errors(), true)); 
 	$data = sqlsrv_fetch_array($exec);
 	$check=sqlsrv_num_rows($exec);
 	
-	/* INSERT TO LOG */
-	$callSPInsertLog = "{call SP_INSERT_LOG_REQUEST(?,?,?)}";
-	$paramsInsertLog = array(array($pefindoId, SQLSRV_PARAM_IN),array($ps_no, SQLSRV_PARAM_IN),array($user, SQLSRV_PARAM_IN));
-	$execInsertLog = sqlsrv_query( $conn, $callSPInsertLog, $paramsInsertLog) or die( print_r( sqlsrv_errors(), true));
-	if($execInsertLog === false){
-		echo"<script>alert('Error insert log');</script>";
-	}
-	
 	/* jika sudah ada tampilkan dari database dan data tidak bisa di cek untuk ke 2 kalinya */
 	if($check > 0){ 
 		$cekdata = $data['CREATE_DATE']->format('d-m-Y');
-		$databranch = $data['OFFICE_NAME'];
-		echo"<script>alert('Data sudah pernah di cek pada tanggal $cekdata oleh cabang $databranch')</script>";
-		//echo"<script>window.location='index.php?username=".$user."&page=individual&id=".$pefindoId."'</script>";
-		echo"<script>window.location='index.php?USERNAME=".$user."&page=scoring-individual&id=".$pefindoId."&no=".$ps_no."'</script>";
+		//$databranch = $data['OFFICE_NAME'];
+		echo"<script>alert('Data sudah pernah di cek pada tanggal $cekdata')</script>";
+		echo"<script>window.location='index.php?USERNAME=".$user."&page=scoring-individual&id=".$data['PEFINDO_MAPPING_ID']."&prospect_no=".$ps_no."'</script>";
 	/* jika tidak ada, request ke Pefindo kemudian save ke database dan tampilkan dari database */
 	}else{
 		/* request ke pefindo menggunakan curl */
@@ -42,7 +37,7 @@ if($request == "individual"){
 			CURLOPT_RETURNTRANSFER => true,
 			CURLOPT_ENCODING => "",
 			CURLOPT_MAXREDIRS => 10,
-			CURLOPT_TIMEOUT => 30,
+			CURLOPT_TIMEOUT => 60,
 			CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
 			CURLOPT_CUSTOMREQUEST => "POST",
 			CURLOPT_POSTFIELDS => "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\"\r\nxmlns:cb5=\"http://creditinfo.com/CB5\"\r\nxmlns:cus=\"http://creditinfo.com/CB5/v5.31/CustomReport\"\r\nxmlns:arr=\"http://schemas.microsoft.com/2003/10/Serialization/Arrays\">\r\n <soapenv:Header/>\r\n <soapenv:Body>\r\n <cb5:GetCustomReport>\r\n <cb5:parameters>\r\n <cus:Consent>true</cus:Consent>\r\n <cus:IDNumber>".$pefindoId."</cus:IDNumber>\r\n <cus:IDNumberType>PefindoId</cus:IDNumberType>\r\n <cus:InquiryReason>ProvidingFacilities</cus:InquiryReason>\r\n <cus:InquiryReasonText/>\r\n <cus:ReportDate>".$date."</cus:ReportDate>\r\n <cus:Sections>\r\n <!--Zero or more repetitions:-->\r\n <arr:string>SubjectInfo</arr:string>\r\n <arr:string>PEFINDOScore</arr:string>\r\n </cus:Sections>\r\n <cus:SubjectType>Individual</cus:SubjectType>\r\n </cb5:parameters>\r\n </cb5:GetCustomReport>\r\n </soapenv:Body>\r\n</soapenv:Envelope>",
@@ -67,20 +62,19 @@ if($request == "individual"){
 			$body = $xml->xpath('//sBody')[0];
 			$array = json_decode(json_encode((array)$body), TRUE); 
 			//print_r($array);
+			//echo '<pre>' . print_r($array, true) . '</pre>';
+			//exit();
 		}
 		
 		/* INSERT TO PEFINDO_MAPPING */
-		$callSPInsert = "{call SP_INSERT_PEFINDO_ID(?,?,?,?)}";
-		$paramsInsert = array(array($pefindoId, SQLSRV_PARAM_IN),array($ps_no, SQLSRV_PARAM_IN),array($user, SQLSRV_PARAM_IN),array("PEMOHON", SQLSRV_PARAM_IN));
+		$callSPInsert = "{call SP_INSERT_PEFINDO_ID(?,?,?,?,?)}";
+		$paramsInsert = array(array($pefindoId, SQLSRV_PARAM_IN),array($ps_no, SQLSRV_PARAM_IN),array($no_ktp, SQLSRV_PARAM_IN),array($user, SQLSRV_PARAM_IN),array($siapanih, SQLSRV_PARAM_IN));
 		$execInsert = sqlsrv_query( $conn, $callSPInsert, $paramsInsert) or die( print_r( sqlsrv_errors(), true));
-		if($execInsert === false){
-			echo"<script>alert('Error insert log');</script>";
-		}
 		
 		/* GET MAPPING ID */
-		$callMappingId = "{call SP_GET_PEFINDO_MAPPING_ID(?)}";
-		$paramsMappingId = array(array($pefindoId, SQLSRV_PARAM_IN));
-		$execMappingId = sqlsrv_query( $conn, $callMappingId, $paramsMappingId) or die( print_r( sqlsrv_errors(), true)); 
+		$callMappingId = "{call SP_GET_PEFINDO_MAPPING_ID(?,?,?,?,?)}";
+		$paramsMappingId = array(array($pefindoId, SQLSRV_PARAM_IN),array($ps_no, SQLSRV_PARAM_IN),array($no_ktp, SQLSRV_PARAM_IN),array($user, SQLSRV_PARAM_IN),array($siapanih, SQLSRV_PARAM_IN));
+		$execMappingId = sqlsrv_query( $conn, $callMappingId, $paramsMappingId) or die(print_r(sqlsrv_errors(), true)); 
 		$dataMappingId = sqlsrv_fetch_array($execMappingId);
 		$mappingId = $dataMappingId['PEFINDO_MAPPING_ID'];
 		
@@ -105,22 +99,17 @@ if($request == "individual"){
 		/* SECURITY */ require_once("pages/individual/save-data/save-data-security.php");	
 		/* SUBJECT INFO HISTORY */ require_once("pages/individual/save-data/save-data-subject-info-history.php");	
 		
-		echo"<script>window.location='index.php?USERNAME=".$user."&page=scoring-individual&id=".$pefindoId."&no=".$ps_no."'</script>";
+		echo"<script>window.location='index.php?USERNAME=".$user."&page=scoring-individual&id=".$mappingId."&prospect_no=".$ps_no."'</script>";
 	}
 }else{
 	/* cek ke database apakah id ini sudah ada didalam database ? */
-	$call = "{call SP_CHECK_PEFINDO_ID(?,?)}";
-	$params = array(array($pefindoId, SQLSRV_PARAM_IN),array($ps_no, SQLSRV_PARAM_IN));
+	$call = "{call SP_CHECK_PEFINDO_ID(?,?,?,?)}";
+	$params = array(array($pefindoId, SQLSRV_PARAM_IN),array($ps_no, SQLSRV_PARAM_IN),array($no_ktp, SQLSRV_PARAM_IN),array($period, SQLSRV_PARAM_IN));
 	$options =  array( "Scrollable" => "buffered" );
 	$exec = sqlsrv_query( $conn, $call, $params, $options) or die( print_r( sqlsrv_errors(), true)); 
 	$data = sqlsrv_fetch_array($exec);
 	$check=sqlsrv_num_rows($exec);
-	
-	/* INSERT TO LOG */
-	$callSPInsertLog = "{call SP_INSERT_LOG_REQUEST(?,?,?)}";
-	$paramsInsertLog = array(array($pefindoId, SQLSRV_PARAM_IN),array($ps_no, SQLSRV_PARAM_IN),array($user, SQLSRV_PARAM_IN));
-	$execInsertLog = sqlsrv_query( $conn, $callSPInsertLog, $paramsInsertLog) or die( print_r( sqlsrv_errors(), true));
-	
+
 	/* jika sudah ada tampilkan dari database */
 	if($check > 0){
 		$cekdata = $data['CREATE_DATE']->format('d-m-Y');
@@ -135,7 +124,7 @@ if($request == "individual"){
 			CURLOPT_RETURNTRANSFER => true,
 			CURLOPT_ENCODING => "",
 			CURLOPT_MAXREDIRS => 10,
-			CURLOPT_TIMEOUT => 30,
+			CURLOPT_TIMEOUT => 60,
 			CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
 			CURLOPT_CUSTOMREQUEST => "POST",
 			CURLOPT_POSTFIELDS => "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\"\r\nxmlns:cb5=\"http://creditinfo.com/CB5\"\r\nxmlns:cus=\"http://creditinfo.com/CB5/v5.31/CustomReport\"\r\nxmlns:arr=\"http://schemas.microsoft.com/2003/10/Serialization/Arrays\">\r\n <soapenv:Header/>\r\n <soapenv:Body>\r\n <cb5:GetCustomReport>\r\n <cb5:parameters>\r\n <cus:Consent>true</cus:Consent>\r\n <cus:IDNumber>".$pefindoId."</cus:IDNumber>\r\n <cus:IDNumberType>PefindoId</cus:IDNumberType>\r\n <cus:InquiryReason>ProvidingFacilities</cus:InquiryReason>\r\n <cus:InquiryReasonText/>\r\n <cus:ReportDate>".$date."</cus:ReportDate>\r\n <cus:Sections>\r\n <arr:string>PEFINDOScore</arr:string>\r\n </cus:Sections>\r\n <cus:SubjectType>Company</cus:SubjectType>\r\n </cb5:parameters>\r\n </cb5:GetCustomReport>\r\n </soapenv:Body>\r\n</soapenv:Envelope>",
@@ -163,14 +152,14 @@ if($request == "individual"){
 		}
 		
 		/* INSERT TO PEFINDO_MAPPING */
-		$callSPInsert = "{call SP_INSERT_PEFINDO_ID(?,?)}";
-		$paramsInsert = array(array($pefindoId, SQLSRV_PARAM_IN),array($ps_no, SQLSRV_PARAM_IN));
+		$callSPInsert = "{call SP_INSERT_PEFINDO_ID(?,?,?,?,?)}";
+		$paramsInsert = array(array($pefindoId, SQLSRV_PARAM_IN),array($ps_no, SQLSRV_PARAM_IN),array($no_ktp, SQLSRV_PARAM_IN),array($user, SQLSRV_PARAM_IN),array('COMPANY', SQLSRV_PARAM_IN));
 		$execInsert = sqlsrv_query( $conn, $callSPInsert, $paramsInsert) or die( print_r( sqlsrv_errors(), true));
 		
 		/* GET MAPPING ID */
-		$callMappingId = "{call SP_GET_PEFINDO_MAPPING_ID(?)}";
-		$paramsMappingId = array(array($pefindoId, SQLSRV_PARAM_IN));
-		$execMappingId = sqlsrv_query( $conn, $callMappingId, $paramsMappingId) or die( print_r( sqlsrv_errors(), true)); 
+		$callMappingId = "{call SP_GET_PEFINDO_MAPPING_ID(?,?,?,?,?)}";
+		$paramsMappingId = array(array($pefindoId, SQLSRV_PARAM_IN),array($ps_no, SQLSRV_PARAM_IN),array($no_ktp, SQLSRV_PARAM_IN),array($user, SQLSRV_PARAM_IN),array('COMPANY', SQLSRV_PARAM_IN));
+		$execMappingId = sqlsrv_query( $conn, $callMappingId, $paramsMappingId) or die(print_r(sqlsrv_errors(), true)); 
 		$dataMappingId = sqlsrv_fetch_array($execMappingId);
 		$mappingId = $dataMappingId['PEFINDO_MAPPING_ID'];
 		

@@ -15,7 +15,7 @@ $dataDash = sqlsrv_fetch_array($execDash);
 	<div class="header"><p class="name">Dashboard</p></div>
 	<div class="content">
 		<div class="card">
-			<div class="header"><p class="name text-danger">PEFINDO Score (PS)</p></div>
+			<div class="header"><p class="name text-custom">PEFINDO Score (PS)</p></div>
 			<div class="content">
 				<div class="row">
 					<div class="col-md-4">
@@ -30,7 +30,7 @@ $dataDash = sqlsrv_fetch_array($execDash);
 									}else if($dataCIP['GRADE'] == "C3" || $dataCIP['GRADE'] == "C2" || $dataCIP['GRADE'] == "C1"){
 										echo'<div class="box-yellow">';
 									}else if($dataCIP['GRADE'] == "B3" || $dataCIP['GRADE'] == "B2" || $dataCIP['GRADE'] == "B1"){
-										echo'<div class="box-green" style="background-color:#01b701;">';
+										echo'<div class="box-green" style="background-color:#035c7a;">';
 									}else{
 										echo'<div class="box-green">';
 									}
@@ -65,7 +65,7 @@ $dataDash = sqlsrv_fetch_array($execDash);
 										<center>
 											<?php
 											if($dataCIP['TREND'] == "Down"){
-												echo'<i class="fa fa-arrow-down text-danger"></i>';
+												echo'<i class="fa fa-arrow-down text-custom"></i>';
 											}else if($dataCIP['TREND'] == "Up"){
 												echo'<i class="fa fa-arrow-up text-success"></i>';
 											}else{
@@ -95,7 +95,7 @@ $dataDash = sqlsrv_fetch_array($execDash);
 			</div>
 		</div>
 		<div class="card">
-			<div class="header"><p class="name text-danger">Permintaan Informasi</p></div>
+			<div class="header"><p class="name text-custom">Permintaan Informasi</p></div>
 			<div class="content">
 				<div class="row">
 					<div class="col-md-4">
@@ -127,7 +127,7 @@ $dataDash = sqlsrv_fetch_array($execDash);
 			</div>
 		</div>
 		<div class="card">
-			<div class="header"><p class="name text-danger">Fasilitas</p></div>
+			<div class="header"><p class="name text-custom">Fasilitas</p></div>
 			<div class="content">
 				<p class="name text-default">Profil Pembayaran</p>
 				<div class="row">
@@ -279,7 +279,7 @@ $dataDash = sqlsrv_fetch_array($execDash);
 						</thead>
 						<tbody>
 							<tr>
-								<td><b>Status Macet</b></td>
+								<td><b></b></td>
 								<?php
 									$callCalList2 = "{call SP_GET_TAB_DASHBOARD_TBL_CONTRACT_SUMARY_PAYMENT_CALENDER_LIST(?)}";
 									$paramsCalList2 = array(array($id, SQLSRV_PARAM_IN));
@@ -315,7 +315,7 @@ $dataDash = sqlsrv_fetch_array($execDash);
 							</div>
 							<div class="pull-right">
 								<a class="card-link2" data-toggle="collapse" href="#collapseOne2">
-									<i class="fa fa-chevron-down text-danger"></i>
+									<i class="fa fa-chevron-down text-custom"></i>
 								</a>
 							</div>
 							<div style="clear:both"></div>
@@ -360,7 +360,7 @@ $dataDash = sqlsrv_fetch_array($execDash);
 			</div>
 		</div>
 		<div class="card">
-			<div class="header"><p class="name text-danger">Jaminan</p></div>
+			<div class="header"><p class="name text-custom">Jaminan</p></div>
 			<div class="content">
 				<div class="row">
 					<div class="col-md-4">
@@ -395,7 +395,7 @@ $dataDash = sqlsrv_fetch_array($execDash);
 			</div>
 		</div>
 		<div class="card">
-			<div class="header"><p class="name text-danger">Jaminan</p></div>
+			<div class="header"><p class="name text-custom">Jaminan</p></div>
 			<div class="content">
 				<div class="row">
 					<div class="col-md-4">
@@ -415,7 +415,7 @@ $dataDash = sqlsrv_fetch_array($execDash);
 			</div>
 		</div>
 		<div class="card">
-			<div class="header"><p class="name text-danger">Tagihan Lainnya</p></div>
+			<div class="header"><p class="name text-custom">Tagihan Lainnya</p></div>
 			<div class="content">
 				<div class="row">
 					<div class="col-md-4">
@@ -435,7 +435,7 @@ $dataDash = sqlsrv_fetch_array($execDash);
 			</div>
 		</div>
 		<div class="card">
-			<div class="header"><p class="name text-danger">Penyertaan</p></div>
+			<div class="header"><p class="name text-custom">Penyertaan</p></div>
 			<div class="content">
 				<div class="row">
 					<div class="col-md-4">
@@ -455,7 +455,7 @@ $dataDash = sqlsrv_fetch_array($execDash);
 			</div>
 		</div>
 		<div class="card">
-			<div class="header"><p class="name text-danger">Informasi pihak yang terkait dengan debitur</p></div>
+			<div class="header"><p class="name text-custom">Informasi pihak yang terkait dengan debitur</p></div>
 			<div class="content">
 				<div class="row">
 					<div class="col-md-4">
@@ -487,7 +487,7 @@ $dataDash = sqlsrv_fetch_array($execDash);
 			</div>
 		</div>
 		<div class="card">
-			<div class="header"><p class="name text-danger">PEFINDO Alert Quest (PAQ)</p></div>
+			<div class="header"><p class="name text-custom">PEFINDO Alert Quest (PAQ)</p></div>
 			<div class="content">
 				<div class="row">
 					<div class="col-md-4">
@@ -519,7 +519,7 @@ $dataDash = sqlsrv_fetch_array($execDash);
 			</div>
 		</div>
 		<div class="card">
-			<div class="header"><p class="name text-danger">Pengaduan</p></div>
+			<div class="header"><p class="name text-custom">Pengaduan</p></div>
 			<div class="content">
 				<div class="row">
 					<div class="col-md-4">

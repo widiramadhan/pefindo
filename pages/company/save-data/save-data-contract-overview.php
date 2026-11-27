@@ -3,17 +3,32 @@
 if(isset($array['GetCustomReportResponse']['GetCustomReportResult']['aContractOverview']['bContractList']['bContract']['bContractStatus']))
 {
 	if($array['GetCustomReportResponse']['GetCustomReportResult']['aContractOverview']['bContractList']['bContract']['bContractStatus']<>NULL){$ContViewContStatus=$array['GetCustomReportResponse']['GetCustomReportResult']['aContractOverview']['bContractList']['bContract']['bContractStatus'];}else{$ContViewContStatus=NULL;}			
-	if($array['GetCustomReportResponse']['GetCustomReportResult']['aContractOverview']['bContractList']['bContract']['bOutstandingAmount']['cCurrency']<>NULL){$ContViewOutStandAmountCurency=$array['GetCustomReportResponse']['GetCustomReportResult']['aContractOverview']['bContractList']['bContract']['bOutstandingAmount']['cCurrency'];}else{$ContViewOutStandAmountCurency=NULL;}
-	if($array['GetCustomReportResponse']['GetCustomReportResult']['aContractOverview']['bContractList']['bContract']['bOutstandingAmount']['cValue']<>NULL){$ContViewOutStandAmountVal=$array['GetCustomReportResponse']['GetCustomReportResult']['aContractOverview']['bContractList']['bContract']['bOutstandingAmount']['cValue'];}else{$ContViewOutStandAmountVal=NULL;}
-	if($array['GetCustomReportResponse']['GetCustomReportResult']['aContractOverview']['bContractList']['bContract']['bPastDueAmount']['cCurrency']<>NULL){$ContViewPastDueAmountCurency=$array['GetCustomReportResponse']['GetCustomReportResult']['aContractOverview']['bContractList']['bContract']['bPastDueAmount']['cCurrency'];}else{$ContViewPastDueAmountCurency=NULL;}
-	if($array['GetCustomReportResponse']['GetCustomReportResult']['aContractOverview']['bContractList']['bContract']['bPastDueAmount']['cValue']<>NULL){$ContViewPastDueAmountVal=$array['GetCustomReportResponse']['GetCustomReportResult']['aContractOverview']['bContractList']['bContract']['bPastDueAmount']['cValue'];}else{$ContViewPastDueAmountVal=NULL;}
+	if(isset($array['GetCustomReportResponse']['GetCustomReportResult']['aContractOverview']['bContractList']['bContract']['bOutstandingAmount']['cCurrency'])){
+		if($array['GetCustomReportResponse']['GetCustomReportResult']['aContractOverview']['bContractList']['bContract']['bOutstandingAmount']['cCurrency']<>NULL){$ContViewOutStandAmountCurency=$array['GetCustomReportResponse']['GetCustomReportResult']['aContractOverview']['bContractList']['bContract']['bOutstandingAmount']['cCurrency'];}else{$ContViewOutStandAmountCurency=NULL;}
+		if($array['GetCustomReportResponse']['GetCustomReportResult']['aContractOverview']['bContractList']['bContract']['bOutstandingAmount']['cValue']<>NULL){$ContViewOutStandAmountVal=$array['GetCustomReportResponse']['GetCustomReportResult']['aContractOverview']['bContractList']['bContract']['bOutstandingAmount']['cValue'];}else{$ContViewOutStandAmountVal=NULL;}
+	}else{
+		$ContViewOutStandAmountCurency=NULL;
+		$ContViewOutStandAmountVal=NULL;
+	}
+	if(isset($array['GetCustomReportResponse']['GetCustomReportResult']['aContractOverview']['bContractList']['bContract']['bPastDueAmount']['cCurrency'])){
+		if($array['GetCustomReportResponse']['GetCustomReportResult']['aContractOverview']['bContractList']['bContract']['bPastDueAmount']['cCurrency']<>NULL){$ContViewPastDueAmountCurency=$array['GetCustomReportResponse']['GetCustomReportResult']['aContractOverview']['bContractList']['bContract']['bPastDueAmount']['cCurrency'];}else{$ContViewPastDueAmountCurency=NULL;}
+		if($array['GetCustomReportResponse']['GetCustomReportResult']['aContractOverview']['bContractList']['bContract']['bPastDueAmount']['cValue']<>NULL){$ContViewPastDueAmountVal=$array['GetCustomReportResponse']['GetCustomReportResult']['aContractOverview']['bContractList']['bContract']['bPastDueAmount']['cValue'];}else{$ContViewPastDueAmountVal=NULL;}
+	}else{
+		$ContViewPastDueAmountCurency=NULL;
+		$ContViewPastDueAmountVal=NULL;
+	}
 	if($array['GetCustomReportResponse']['GetCustomReportResult']['aContractOverview']['bContractList']['bContract']['bPastDueDays']<>NULL){$ContViewPastDueDays=$array['GetCustomReportResponse']['GetCustomReportResult']['aContractOverview']['bContractList']['bContract']['bPastDueDays'];}else{$ContViewPastDueDays=NULL;}
 	if($array['GetCustomReportResponse']['GetCustomReportResult']['aContractOverview']['bContractList']['bContract']['bPhaseOfContract']<>NULL){$ContViewPhaseOfCont=$array['GetCustomReportResponse']['GetCustomReportResult']['aContractOverview']['bContractList']['bContract']['bPhaseOfContract'];}else{$$ContViewPhaseOfCont=NULL;}
 	if($array['GetCustomReportResponse']['GetCustomReportResult']['aContractOverview']['bContractList']['bContract']['bRoleOfClient']<>NULL){$ContViewRoleClient=$array['GetCustomReportResponse']['GetCustomReportResult']['aContractOverview']['bContractList']['bContract']['bRoleOfClient'];}else{$ContViewRoleClient=NULL;}
 	if($array['GetCustomReportResponse']['GetCustomReportResult']['aContractOverview']['bContractList']['bContract']['bSector']<>NULL){$ContViewSector=$array['GetCustomReportResponse']['GetCustomReportResult']['aContractOverview']['bContractList']['bContract']['bSector'];}else{$ContViewSector=NULL;}
 	if($array['GetCustomReportResponse']['GetCustomReportResult']['aContractOverview']['bContractList']['bContract']['bStartDate']<>NULL){$ContViewStartDt=$array['GetCustomReportResponse']['GetCustomReportResult']['aContractOverview']['bContractList']['bContract']['bStartDate'];}else{$ContViewRoleClient=NULL;}
-	if($array['GetCustomReportResponse']['GetCustomReportResult']['aContractOverview']['bContractList']['bContract']['bTotalAmount']['cCurrency']<>NULL){$ContViewTotAmountCurency=$array['GetCustomReportResponse']['GetCustomReportResult']['aContractOverview']['bContractList']['bContract']['bTotalAmount']['cCurrency'];}else{$ContViewTotAmountCurency=NULL;}
-	if($array['GetCustomReportResponse']['GetCustomReportResult']['aContractOverview']['bContractList']['bContract']['bTotalAmount']['cValue']<>NULL){$ContViewTotAmountVal=$array['GetCustomReportResponse']['GetCustomReportResult']['aContractOverview']['bContractList']['bContract']['bTotalAmount']['cValue'];}else{$ContViewTotAmountVal=NULL;}
+	if(isset($array['GetCustomReportResponse']['GetCustomReportResult']['aContractOverview']['bContractList']['bContract']['bTotalAmount']['cCurrency'])){
+		if($array['GetCustomReportResponse']['GetCustomReportResult']['aContractOverview']['bContractList']['bContract']['bTotalAmount']['cCurrency']<>NULL){$ContViewTotAmountCurency=$array['GetCustomReportResponse']['GetCustomReportResult']['aContractOverview']['bContractList']['bContract']['bTotalAmount']['cCurrency'];}else{$ContViewTotAmountCurency=NULL;}
+		if($array['GetCustomReportResponse']['GetCustomReportResult']['aContractOverview']['bContractList']['bContract']['bTotalAmount']['cValue']<>NULL){$ContViewTotAmountVal=$array['GetCustomReportResponse']['GetCustomReportResult']['aContractOverview']['bContractList']['bContract']['bTotalAmount']['cValue'];}else{$ContViewTotAmountVal=NULL;}
+	}else{
+		$ContViewTotAmountCurency=NULL;
+		$ContViewTotAmountVal=NULL;
+	}
 	if($array['GetCustomReportResponse']['GetCustomReportResult']['aContractOverview']['bContractList']['bContract']['bTypeOfContract']<>NULL){$ContViewTypeCont=$array['GetCustomReportResponse']['GetCustomReportResult']['aContractOverview']['bContractList']['bContract']['bTypeOfContract'];}else{$ContViewTypeCont=NULL;}
 	
 	$callContOverview = "{call SP_INSERT_CONTRACT_OVERVIEW_COMPANY(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}";
@@ -39,17 +54,32 @@ if(isset($array['GetCustomReportResponse']['GetCustomReportResult']['aContractOv
 	if(isset($array['GetCustomReportResponse']['GetCustomReportResult']['aContractOverview']['bContractList']['bContract'])){
 		foreach($array['GetCustomReportResponse']['GetCustomReportResult']['aContractOverview']['bContractList']['bContract'] as $itemContView){
 			if($itemContView['bContractStatus']<>NULL){$ContViewContStatus=$itemContView['bContractStatus'];}else{$ContViewContStatus=NULL;}				
-			if($itemContView['bOutstandingAmount']['cCurrency']<>NULL){$ContViewOutStandAmountCurency=$itemContView['bOutstandingAmount']['cCurrency'];}else{$ContViewOutStandAmountCurency=NULL;}				
-			if($itemContView['bOutstandingAmount']['cValue']<>NULL){$ContViewOutStandAmountVal=$itemContView['bOutstandingAmount']['cValue'];}else{$ContViewOutStandAmountVal=NULL;}
-			if($itemContView['bPastDueAmount']['cCurrency']<>NULL){$ContViewPastDueAmountCurency=$itemContView['bPastDueAmount']['cCurrency'];}else{$ContViewPastDueAmountCurency=NULL;}				
-			if($itemContView['bPastDueAmount']['cValue']<>NULL){$ContViewPastDueAmountVal=$itemContView['bPastDueAmount']['cValue'];}else{$ContViewPastDueAmountVal=NULL;}				
+			if(isset($itemContView['bOutstandingAmount']['cCurrency'])){
+				if($itemContView['bOutstandingAmount']['cCurrency']<>NULL){$ContViewOutStandAmountCurency=$itemContView['bOutstandingAmount']['cCurrency'];}else{$ContViewOutStandAmountCurency=NULL;}				
+				if($itemContView['bOutstandingAmount']['cValue']<>NULL){$ContViewOutStandAmountVal=$itemContView['bOutstandingAmount']['cValue'];}else{$ContViewOutStandAmountVal=NULL;}
+			}else{
+				$ContViewOutStandAmountCurency=NULL;
+				$ContViewOutStandAmountVal=NULL;
+			}
+			if(isset($itemContView['bPastDueAmount']['cCurrency'])){
+				if($itemContView['bPastDueAmount']['cCurrency']<>NULL){$ContViewPastDueAmountCurency=$itemContView['bPastDueAmount']['cCurrency'];}else{$ContViewPastDueAmountCurency=NULL;}				
+				if($itemContView['bPastDueAmount']['cValue']<>NULL){$ContViewPastDueAmountVal=$itemContView['bPastDueAmount']['cValue'];}else{$ContViewPastDueAmountVal=NULL;}				
+			}else{
+				$ContViewPastDueAmountCurency=NULL;
+				$ContViewPastDueAmountVal=NULL;
+			}
 			if($itemContView['bPastDueDays']<>NULL){$ContViewPastDueDays=$itemContView['bPastDueDays'];}else{$ContViewPastDueDays=NULL;}			
 			if($itemContView['bPhaseOfContract']<>NULL){$ContViewPhaseOfCont=$itemContView['bPhaseOfContract'];}else{$$ContViewPhaseOfCont=NULL;}	
 			if($itemContView['bRoleOfClient']<>NULL){$ContViewRoleClient=$itemContView['bRoleOfClient'];}else{$ContViewRoleClient=NULL;}				
 			if($itemContView['bSector']<>NULL){$ContViewSector=$itemContView['bSector'];}else{$ContViewSector=NULL;}				
 			if($itemContView['bStartDate']<>NULL){$ContViewStartDt=$itemContView['bStartDate'];}else{$ContViewRoleClient=NULL;}				
-			if($itemContView['bTotalAmount']['cCurrency']<>NULL){$ContViewTotAmountCurency=$itemContView['bTotalAmount']['cCurrency'];}else{$ContViewTotAmountCurency=NULL;}				
-			if($itemContView['bTotalAmount']['cValue']<>NULL){$ContViewTotAmountVal=$itemContView['bTotalAmount']['cValue'];}else{$ContViewTotAmountVal=NULL;}
+			if(isset($itemContView['bTotalAmount']['cCurrency'])){
+				if($itemContView['bTotalAmount']['cCurrency']<>NULL){$ContViewTotAmountCurency=$itemContView['bTotalAmount']['cCurrency'];}else{$ContViewTotAmountCurency=NULL;}				
+				if($itemContView['bTotalAmount']['cValue']<>NULL){$ContViewTotAmountVal=$itemContView['bTotalAmount']['cValue'];}else{$ContViewTotAmountVal=NULL;}
+			}else{
+				$ContViewTotAmountCurency=NULL;
+				$ContViewTotAmountVal=NULL;
+			}
 			if($itemContView['bTypeOfContract']<>NULL){$ContViewTypeCont=$itemContView['bTypeOfContract'];}else{$ContViewTypeCont=NULL;}
 			
 			$callContOverview = "{call SP_INSERT_CONTRACT_OVERVIEW_COMPANY(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}";

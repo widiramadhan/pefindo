@@ -41,7 +41,7 @@ if($check > 0){
 		CURLOPT_RETURNTRANSFER => true,
 		CURLOPT_ENCODING => "",
 		CURLOPT_MAXREDIRS => 10,
-		CURLOPT_TIMEOUT => 30,
+		CURLOPT_TIMEOUT => 60,
 		CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
 		CURLOPT_CUSTOMREQUEST => "POST",
 		CURLOPT_POSTFIELDS => "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\"\r\nxmlns:cb5=\"http://creditinfo.com/CB5\"\r\nxmlns:cus=\"http://creditinfo.com/CB5/v5.31/CustomReport\"\r\nxmlns:arr=\"http://schemas.microsoft.com/2003/10/Serialization/Arrays\">\r\n <soapenv:Header/>\r\n <soapenv:Body>\r\n <cb5:GetCustomReport>\r\n <cb5:parameters>\r\n <cus:Consent>true</cus:Consent>\r\n <cus:IDNumber>".$pefindoId."</cus:IDNumber>\r\n <cus:IDNumberType>PefindoId</cus:IDNumberType>\r\n <cus:InquiryReason>ProvidingFacilities</cus:InquiryReason>\r\n <cus:InquiryReasonText/>\r\n <cus:ReportDate>".$date."</cus:ReportDate>\r\n <cus:Sections>\r\n <!--Zero or more repetitions:-->\r\n <arr:string>SubjectInfo</arr:string>\r\n <arr:string>PEFINDOScore</arr:string>\r\n </cus:Sections>\r\n <cus:SubjectType>Individual</cus:SubjectType>\r\n </cb5:parameters>\r\n </cb5:GetCustomReport>\r\n </soapenv:Body>\r\n</soapenv:Envelope>",

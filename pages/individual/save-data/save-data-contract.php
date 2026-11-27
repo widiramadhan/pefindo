@@ -433,70 +433,31 @@
 		}
 	}
 	$y=0;
+	$no=0;
 	/* Insert to payment calendar list where contract id */
-	if(isset($array['GetCustomReportResponse']['GetCustomReportResult']['aContracts']['bContractList']['bContract'][$y]['bPaymentCalendarList']['bCalendarItem']['bDate'])){
-		if($array['GetCustomReportResponse']['GetCustomReportResult']['aContracts']['bContractList']['bContract'][$y]['bPaymentCalendarList']['bCalendarItem']['bDate']<>NULL){$ContPayCalenderDate=$array['GetCustomReportResponse']['GetCustomReportResult']['aContracts']['bContractList']['bContract']['0']['bPaymentCalendarList']['bCalendarItem']['bDate'];}else{$ContPayCalenderDate=NULL;}
-		if($array['GetCustomReportResponse']['GetCustomReportResult']['aContracts']['bContractList']['bContract'][$y]['bPaymentCalendarList']['bCalendarItem']['bDelinquencyStatus']<>NULL){$ContPayCalenderDeliqStatus=$array['GetCustomReportResponse']['GetCustomReportResult']['aContracts']['bContractList']['bContract']['0']['bPaymentCalendarList']['bCalendarItem']['bDelinquencyStatus'];}else{$ContPayCalenderDeliqStatus=NULL;}
-		//if($array['GetCustomReportResponse']['GetCustomReportResult']['aContracts']['bContractList']['bContract'][$y]['bPaymentCalendarList']['bCalendarItem']['bInterestRate']<>NULL){$ContPayCalenderIntRate=$array['GetCustomReportResponse']['GetCustomReportResult']['aContracts']['bContractList']['bContract']['0']['bPaymentCalendarList']['bCalendarItem']['bInterestRate'];}else{$ContPayCalenderIntRate=NULL;}
-		if($array['GetCustomReportResponse']['GetCustomReportResult']['aContracts']['bContractList']['bContract'][$y]['bPaymentCalendarList']['bCalendarItem']['bNegativeStatusOfContract']<>NULL){$ContPayCalenderNegativeStat=$array['GetCustomReportResponse']['GetCustomReportResult']['aContracts']['bContractList']['bContract']['0']['bPaymentCalendarList']['bCalendarItem']['bNegativeStatusOfContract'];}else{$ContPayCalenderNegativeStat=NULL;}
-		if(isset($array['GetCustomReportResponse']['GetCustomReportResult']['aContracts']['bContractList']['bContract'][$y]['bPaymentCalendarList']['bCalendarItem']['bOutstandingAmount']['cCurrency'])){
-			if($array['GetCustomReportResponse']['GetCustomReportResult']['aContracts']['bContractList']['bContract'][$y]['bPaymentCalendarList']['bCalendarItem']['bOutstandingAmount']['cCurrency']<>NULL){$ContPayCalenderOutstandingCur=$array['GetCustomReportResponse']['GetCustomReportResult']['aContracts']['bContractList']['bContract']['0']['bPaymentCalendarList']['bCalendarItem']['bOutstandingAmount']['cCurrency'];}else{$ContPayCalenderOutstandingCur=NULL;}
-			if($array['GetCustomReportResponse']['GetCustomReportResult']['aContracts']['bContractList']['bContract'][$y]['bPaymentCalendarList']['bCalendarItem']['bOutstandingAmount']['cValue']<>NULL){$ContPayCalenderOutstandingVal=$array['GetCustomReportResponse']['GetCustomReportResult']['aContracts']['bContractList']['bContract']['0']['bPaymentCalendarList']['bCalendarItem']['bOutstandingAmount']['cValue'];}else{$ContPayCalenderOutstandingVal=NULL;}
-		}else{
-			$ContPayCalenderOutstandingCur=NULL;
-			$ContPayCalenderOutstandingVal=NULL;
-		}
-		if(isset($array['GetCustomReportResponse']['GetCustomReportResult']['aContracts']['bContractList']['bContract'][$y]['bPaymentCalendarList']['bCalendarItem']['bPastDueAmount']['cCurrency'])){
-			if($array['GetCustomReportResponse']['GetCustomReportResult']['aContracts']['bContractList']['bContract'][$y]['bPaymentCalendarList']['bCalendarItem']['bPastDueAmount']['cCurrency']<>NULL){$ContPayCalenderPastDueAmountCur=$array['GetCustomReportResponse']['GetCustomReportResult']['aContracts']['bContractList']['bContract']['0']['bPaymentCalendarList']['bCalendarItem']['bPastDueAmount']['cCurrency'];}else{$ContPayCalenderPastDueAmountCur=NULL;}
-			if($array['GetCustomReportResponse']['GetCustomReportResult']['aContracts']['bContractList']['bContract'][$y]['bPaymentCalendarList']['bCalendarItem']['bPastDueAmount']['cValue']<>NULL){$ContPayCalenderPastDueAmountVal=$array['GetCustomReportResponse']['GetCustomReportResult']['aContracts']['bContractList']['bContract']['0']['bPaymentCalendarList']['bCalendarItem']['bPastDueAmount']['cValue'];}else{$ContPayCalenderPastDueAmountVal=NULL;}
-		}else{
-			$ContPayCalenderPastDueAmountCur=NULL;
-			$ContPayCalenderPastDueAmountVal=NULL;
-		}
-		if($array['GetCustomReportResponse']['GetCustomReportResult']['aContracts']['bContractList']['bContract'][$y]['bPaymentCalendarList']['bCalendarItem']['bPastDueDays']<>NULL){$ContPayCalenderPastDueDays=$array['GetCustomReportResponse']['GetCustomReportResult']['aContracts']['bContractList']['bContract']['0']['bPaymentCalendarList']['bCalendarItem']['bPastDueDays'];}else{$ContPayCalenderPastDueDays=NULL;}
-		
-		$callContractPayCalenderList = "{call SP_INSERT_M_CONTRACT_PAYMENT_CALENDAR_LIST(?,?,?,?,?,?,?,?,?,?,?)}";
-		$paramsContractPayCalenderList = array(
-										array($mappingId, SQLSRV_PARAM_IN),
-										array($Contract_ID,SQLSRV_PARAM_IN),
-										array($ContPayCalenderDate,SQLSRV_PARAM_IN),
-										array($ContPayCalenderDeliqStatus,SQLSRV_PARAM_IN),
-										array(NULL,SQLSRV_PARAM_IN),//$ContPayCalenderIntRate
-										array($ContPayCalenderNegativeStat,SQLSRV_PARAM_IN),
-										array($ContPayCalenderOutstandingCur,SQLSRV_PARAM_IN),
-										array($ContPayCalenderOutstandingVal,SQLSRV_PARAM_IN),
-										array($ContPayCalenderPastDueAmountCur,SQLSRV_PARAM_IN),
-										array($ContPayCalenderPastDueAmountVal,SQLSRV_PARAM_IN),
-										array($ContPayCalenderPastDueDays,SQLSRV_PARAM_IN)												
-										);
-		$execContractPayCalenderList = sqlsrv_query($conn, $callContractPayCalenderList, $paramsContractPayCalenderList) or die ( print_r( sqlsrv_errors(),true));
-		$y++;
-	}else{
-		if(isset($array['GetCustomReportResponse']['GetCustomReportResult']['aContracts']['bContractList']['bContract'][$y]['bPaymentCalendarList']['bCalendarItem'])){
-			foreach($array['GetCustomReportResponse']['GetCustomReportResult']['aContracts']['bContractList']['bContract'][$y]['bPaymentCalendarList']['bCalendarItem'] as $ItemContPayCalenderList){
-				if($ItemContPayCalenderList['bDate']<>NULL){$ContPayCalenderDate=$ItemContPayCalenderList['bDate'];}else{$ContPayCalenderDate=NULL;}				
-				if($ItemContPayCalenderList['bDelinquencyStatus']<>NULL){$ContPayCalenderDeliqStatus=$ItemContPayCalenderList['bDelinquencyStatus'];}else{$ContPayCalenderDeliqStatus=NULL;}						
-				//if($ItemContPayCalenderList['bInterestRate']<>NULL){$ContPayCalenderIntRate=$ItemContPayCalenderList['bInterestRate'];}else{$ContPayCalenderIntRate=NULL;}						
-				if($ItemContPayCalenderList['bNegativeStatusOfContract']<>NULL){$ContPayCalenderNegativeStat=$ItemContPayCalenderList['bNegativeStatusOfContract'];}else{$ContPayCalenderNegativeStat=NULL;}						
-				if(isset($ItemContPayCalenderList['bOutstandingAmount']['cCurrency'])){	
-					if($ItemContPayCalenderList['bOutstandingAmount']['cCurrency']<>NULL){$ContPayCalenderOutstandingCur=$ItemContPayCalenderList['bOutstandingAmount']['cCurrency'];}else{$ContPayCalenderOutstandingCur=NULL;}						
-					if($ItemContPayCalenderList['bOutstandingAmount']['cValue']<>NULL){$ContPayCalenderOutstandingVal=$ItemContPayCalenderList['bOutstandingAmount']['cValue'];}else{$ContPayCalenderOutstandingVal=NULL;}			
+	if(isset($array['GetCustomReportResponse']['GetCustomReportResult']['aContracts']['bContractList']['bContract']['bPaymentCalendarList']['bCalendarItem']['bDate'])){
+				if($array['GetCustomReportResponse']['GetCustomReportResult']['aContracts']['bContractList']['bContract']['bPaymentCalendarList']['bCalendarItem']['bDate']<>NULL){$ContPayCalenderDate=$array['GetCustomReportResponse']['GetCustomReportResult']['aContracts']['bContractList']['bContract']['bPaymentCalendarList']['bCalendarItem']['bDate'];}else{$ContPayCalenderDate=NULL;}
+				if($array['GetCustomReportResponse']['GetCustomReportResult']['aContracts']['bContractList']['bContract']['bPaymentCalendarList']['bCalendarItem']['bDelinquencyStatus']<>NULL){$ContPayCalenderDeliqStatus=$array['GetCustomReportResponse']['GetCustomReportResult']['aContracts']['bContractList']['bContract']['bPaymentCalendarList']['bCalendarItem']['bDelinquencyStatus'];}else{$ContPayCalenderDeliqStatus=NULL;}
+				//if($array['GetCustomReportResponse']['GetCustomReportResult']['aContracts']['bContractList']['bContract'][$y]['bPaymentCalendarList']['bCalendarItem']['bInterestRate']<>NULL){$ContPayCalenderIntRate=$array['GetCustomReportResponse']['GetCustomReportResult']['aContracts']['bContractList']['bContract']['bPaymentCalendarList']['bCalendarItem']['bInterestRate'];}else{$ContPayCalenderIntRate=NULL;}
+				if($array['GetCustomReportResponse']['GetCustomReportResult']['aContracts']['bContractList']['bContract']['bPaymentCalendarList']['bCalendarItem']['bNegativeStatusOfContract']<>NULL){$ContPayCalenderNegativeStat=$array['GetCustomReportResponse']['GetCustomReportResult']['aContracts']['bContractList']['bContract']['bPaymentCalendarList']['bCalendarItem']['bNegativeStatusOfContract'];}else{$ContPayCalenderNegativeStat=NULL;}
+				if(isset($array['GetCustomReportResponse']['GetCustomReportResult']['aContracts']['bContractList']['bContract']['bPaymentCalendarList']['bCalendarItem']['bOutstandingAmount']['cCurrency'])){
+					if($array['GetCustomReportResponse']['GetCustomReportResult']['aContracts']['bContractList']['bContract']['bPaymentCalendarList']['bCalendarItem']['bOutstandingAmount']['cCurrency']<>NULL){$ContPayCalenderOutstandingCur=$array['GetCustomReportResponse']['GetCustomReportResult']['aContracts']['bContractList']['bContract']['bPaymentCalendarList']['bCalendarItem']['bOutstandingAmount']['cCurrency'];}else{$ContPayCalenderOutstandingCur=NULL;}
+					if($array['GetCustomReportResponse']['GetCustomReportResult']['aContracts']['bContractList']['bContract']['bPaymentCalendarList']['bCalendarItem']['bOutstandingAmount']['cValue']<>NULL){$ContPayCalenderOutstandingVal=$array['GetCustomReportResponse']['GetCustomReportResult']['aContracts']['bContractList']['bContract']['bPaymentCalendarList']['bCalendarItem']['bOutstandingAmount']['cValue'];}else{$ContPayCalenderOutstandingVal=NULL;}
 				}else{
 					$ContPayCalenderOutstandingCur=NULL;
 					$ContPayCalenderOutstandingVal=NULL;
 				}
-				if(isset($ItemContPayCalenderList['bPastDueAmount']['cCurrency'])){
-					if($ItemContPayCalenderList['bPastDueAmount']['cCurrency']<>NULL){$ContPayCalenderPastDueAmountCur=$ItemContPayCalenderList['bPastDueAmount']['cCurrency'];}else{$ContPayCalenderPastDueAmountCur=NULL;}				
-					if($ItemContPayCalenderList['bPastDueAmount']['cValue']<>NULL){$ContPayCalenderPastDueAmountVal=$ItemContPayCalenderList['bPastDueAmount']['cValue'];}else{$ContPayCalenderPastDueAmountVal=NULL;}			
+				if(isset($array['GetCustomReportResponse']['GetCustomReportResult']['aContracts']['bContractList']['bContract']['bPaymentCalendarList']['bCalendarItem']['bPastDueAmount']['cCurrency'])){
+					if($array['GetCustomReportResponse']['GetCustomReportResult']['aContracts']['bContractList']['bContract']['bPaymentCalendarList']['bCalendarItem']['bPastDueAmount']['cCurrency']<>NULL){$ContPayCalenderPastDueAmountCur=$array['GetCustomReportResponse']['GetCustomReportResult']['aContracts']['bContractList']['bContract']['bPaymentCalendarList']['bCalendarItem']['bPastDueAmount']['cCurrency'];}else{$ContPayCalenderPastDueAmountCur=NULL;}
+					if($array['GetCustomReportResponse']['GetCustomReportResult']['aContracts']['bContractList']['bContract']['bPaymentCalendarList']['bCalendarItem']['bPastDueAmount']['cValue']<>NULL){$ContPayCalenderPastDueAmountVal=$array['GetCustomReportResponse']['GetCustomReportResult']['aContracts']['bContractList']['bContract']['bPaymentCalendarList']['bCalendarItem']['bPastDueAmount']['cValue'];}else{$ContPayCalenderPastDueAmountVal=NULL;}
 				}else{
 					$ContPayCalenderPastDueAmountCur=NULL;
 					$ContPayCalenderPastDueAmountVal=NULL;
 				}
-				if($ItemContPayCalenderList['bPastDueDays']<>NULL){$ContPayCalenderPastDueDays=$ItemContPayCalenderList['bPastDueDays'];}else{$ContPayCalenderPastDueDays=NULL;}									
+				if($array['GetCustomReportResponse']['GetCustomReportResult']['aContracts']['bContractList']['bContract']['bPaymentCalendarList']['bCalendarItem']['bPastDueDays']<>NULL){$ContPayCalenderPastDueDays=$array['GetCustomReportResponse']['GetCustomReportResult']['aContracts']['bContractList']['bContract']['bPaymentCalendarList']['bCalendarItem']['bPastDueDays'];}else{$ContPayCalenderPastDueDays=NULL;}
 				
-				$callContractPayCalenderList = "{call SP_INSERT_M_CONTRACT_PAYMENT_CALENDAR_LIST(?,?,?,?,?,?,?,?,?,?,?)}";
+				$callContractPayCalenderList = "{call SP_INSERT_M_CONTRACT_PAYMENT_CALENDAR_LIST(?,?,?,?,?,?,?,?,?,?)}";
 				$paramsContractPayCalenderList = array(
-												array($mappingId, SQLSRV_PARAM_IN),
 												array($Contract_ID,SQLSRV_PARAM_IN),
 												array($ContPayCalenderDate,SQLSRV_PARAM_IN),
 												array($ContPayCalenderDeliqStatus,SQLSRV_PARAM_IN),
@@ -510,10 +471,50 @@
 												);
 				$execContractPayCalenderList = sqlsrv_query($conn, $callContractPayCalenderList, $paramsContractPayCalenderList) or die ( print_r( sqlsrv_errors(),true));
 				$y++;
+			}else{
+				if(isset($array['GetCustomReportResponse']['GetCustomReportResult']['aContracts']['bContractList']['bContract']['bPaymentCalendarList']['bCalendarItem'])){
+					foreach($array['GetCustomReportResponse']['GetCustomReportResult']['aContracts']['bContractList']['bContract']['bPaymentCalendarList']['bCalendarItem'] as $ItemContPayCalenderList){
+						$no++;
+						if($ItemContPayCalenderList['bDate']<>NULL){$ContPayCalenderDate=$ItemContPayCalenderList['bDate'];}else{$ContPayCalenderDate=NULL;}				
+						if($ItemContPayCalenderList['bDelinquencyStatus']<>NULL){$ContPayCalenderDeliqStatus=$ItemContPayCalenderList['bDelinquencyStatus'];}else{$ContPayCalenderDeliqStatus=NULL;}						
+						//if($ItemContPayCalenderList['bInterestRate']<>NULL){$ContPayCalenderIntRate=$ItemContPayCalenderList['bInterestRate'];}else{$ContPayCalenderIntRate=NULL;}						
+						if($ItemContPayCalenderList['bNegativeStatusOfContract']<>NULL){$ContPayCalenderNegativeStat=$ItemContPayCalenderList['bNegativeStatusOfContract'];}else{$ContPayCalenderNegativeStat=NULL;}						
+						if(isset($ItemContPayCalenderList['bOutstandingAmount']['cCurrency'])){	
+							if($ItemContPayCalenderList['bOutstandingAmount']['cCurrency']<>NULL){$ContPayCalenderOutstandingCur=$ItemContPayCalenderList['bOutstandingAmount']['cCurrency'];}else{$ContPayCalenderOutstandingCur=NULL;}						
+							if($ItemContPayCalenderList['bOutstandingAmount']['cValue']<>NULL){$ContPayCalenderOutstandingVal=$ItemContPayCalenderList['bOutstandingAmount']['cValue'];}else{$ContPayCalenderOutstandingVal=NULL;}			
+						}else{
+							$ContPayCalenderOutstandingCur=NULL;
+							$ContPayCalenderOutstandingVal=NULL;
+						}
+						if(isset($ItemContPayCalenderList['bPastDueAmount']['cCurrency'])){
+							if($ItemContPayCalenderList['bPastDueAmount']['cCurrency']<>NULL){$ContPayCalenderPastDueAmountCur=$ItemContPayCalenderList['bPastDueAmount']['cCurrency'];}else{$ContPayCalenderPastDueAmountCur=NULL;}				
+							if($ItemContPayCalenderList['bPastDueAmount']['cValue']<>NULL){$ContPayCalenderPastDueAmountVal=$ItemContPayCalenderList['bPastDueAmount']['cValue'];}else{$ContPayCalenderPastDueAmountVal=NULL;}			
+						}else{
+							$ContPayCalenderPastDueAmountCur=NULL;
+							$ContPayCalenderPastDueAmountVal=NULL;
+						}
+						if($ItemContPayCalenderList['bPastDueDays']<>NULL){$ContPayCalenderPastDueDays=$ItemContPayCalenderList['bPastDueDays'];}else{$ContPayCalenderPastDueDays=NULL;}									
+						
+						$callContractPayCalenderList = "{call SP_INSERT_M_CONTRACT_PAYMENT_CALENDAR_LIST(?,?,?,?,?,?,?,?,?,?,?)}";
+						$paramsContractPayCalenderList = array(
+														array($mappingId, SQLSRV_PARAM_IN),
+														array($Contract_ID,SQLSRV_PARAM_IN),
+														array($ContPayCalenderDate,SQLSRV_PARAM_IN),
+														array($ContPayCalenderDeliqStatus,SQLSRV_PARAM_IN),
+														array(NULL,SQLSRV_PARAM_IN),//$ContPayCalenderIntRate
+														array($ContPayCalenderNegativeStat,SQLSRV_PARAM_IN),
+														array($ContPayCalenderOutstandingCur,SQLSRV_PARAM_IN),
+														array($ContPayCalenderOutstandingVal,SQLSRV_PARAM_IN),
+														array($ContPayCalenderPastDueAmountCur,SQLSRV_PARAM_IN),
+														array($ContPayCalenderPastDueAmountVal,SQLSRV_PARAM_IN),
+														array($ContPayCalenderPastDueDays,SQLSRV_PARAM_IN)												
+														);
+						$execContractPayCalenderList = sqlsrv_query($conn, $callContractPayCalenderList, $paramsContractPayCalenderList) or die ( print_r( sqlsrv_errors(),true));
+						//$y++;
+					}
+				}
 			}
-		}
-	}
-	$y++;
+			$y++;
 	
 	/* Insert to related subject where contract id */
 	if(isset($array['GetCustomReportResponse']['GetCustomReportResult']['aContracts']['bContractList']['bContract'][$z]['bRelatedSubjectsList']['bRelatedSubject']['bExpectedEndDate'])){
@@ -969,7 +970,8 @@
 			}
 			$x++;*/
 			
-			$y=0;
+			//$y=0;
+			$no=0;
 			/* Insert to payment calendar list where contract id */
 			if(isset($array['GetCustomReportResponse']['GetCustomReportResult']['aContracts']['bContractList']['bContract'][$y]['bPaymentCalendarList']['bCalendarItem']['bDate'])){
 				if($array['GetCustomReportResponse']['GetCustomReportResult']['aContracts']['bContractList']['bContract'][$y]['bPaymentCalendarList']['bCalendarItem']['bDate']<>NULL){$ContPayCalenderDate=$array['GetCustomReportResponse']['GetCustomReportResult']['aContracts']['bContractList']['bContract']['0']['bPaymentCalendarList']['bCalendarItem']['bDate'];}else{$ContPayCalenderDate=NULL;}
@@ -1010,6 +1012,7 @@
 			}else{
 				if(isset($array['GetCustomReportResponse']['GetCustomReportResult']['aContracts']['bContractList']['bContract'][$y]['bPaymentCalendarList']['bCalendarItem'])){
 					foreach($array['GetCustomReportResponse']['GetCustomReportResult']['aContracts']['bContractList']['bContract'][$y]['bPaymentCalendarList']['bCalendarItem'] as $ItemContPayCalenderList){
+						$no++;
 						if($ItemContPayCalenderList['bDate']<>NULL){$ContPayCalenderDate=$ItemContPayCalenderList['bDate'];}else{$ContPayCalenderDate=NULL;}				
 						if($ItemContPayCalenderList['bDelinquencyStatus']<>NULL){$ContPayCalenderDeliqStatus=$ItemContPayCalenderList['bDelinquencyStatus'];}else{$ContPayCalenderDeliqStatus=NULL;}						
 						//if($ItemContPayCalenderList['bInterestRate']<>NULL){$ContPayCalenderIntRate=$ItemContPayCalenderList['bInterestRate'];}else{$ContPayCalenderIntRate=NULL;}						
@@ -1045,7 +1048,7 @@
 														array($ContPayCalenderPastDueDays,SQLSRV_PARAM_IN)												
 														);
 						$execContractPayCalenderList = sqlsrv_query($conn, $callContractPayCalenderList, $paramsContractPayCalenderList) or die ( print_r( sqlsrv_errors(),true));
-						$y++;
+						//$y++;
 					}
 				}
 			}

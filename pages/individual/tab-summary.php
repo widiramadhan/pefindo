@@ -8,6 +8,12 @@ $days_121_150=0;
 $days_151_180=0;
 $lebih180=0;
 
+$callCountFasilitas = "{call SP_GET_COUNT_FASILITAS(?)}";
+$optionsCountFasilitas =  array( "Scrollable" => "buffered" );
+$paramsCountFasilitas = array(array($id, SQLSRV_PARAM_IN));
+$execCountFasilitas = sqlsrv_query( $conn, $callCountFasilitas, $paramsCountFasilitas, $optionsCountFasilitas) or die( print_r( sqlsrv_errors(), true));
+$dataCountFasilitas = sqlsrv_fetch_array($execCountFasilitas);
+
 $callSummary = "{call SP_GET_TAB_SUMMARY(?)}";
 $optionsSummary =  array( "Scrollable" => "buffered" );
 $paramsSummary = array(array($id, SQLSRV_PARAM_IN));
@@ -17,24 +23,37 @@ while($dataSummary = sqlsrv_fetch_array($execSummary)){
 	$ktp=$dataSummary['KTP'];
 	$nama=$dataSummary['FULL_NAME'];
 	$duedays=$dataSummary['PASTDUE_DAYS'];
-	if($duedays == 0){
-		$lancar++;
-	}else if($duedays >= 1 && $duedays <= 30){
-		$days_1_30++;
-	}else if($duedays >= 31 && $duedays <= 60){
-		$days_31_60++;
-	}else if($duedays >= 61 && $duedays <= 90){
-		$days_61_90++;
-	}else if($duedays >= 91 && $duedays <= 120){
-		$days_91_120++;
-	}else if($duedays >= 121 && $duedays <= 150){
-		$days_121_150++;
-	}else if($duedays >= 151 && $duedays <= 180){
-		$days_151_180++;
-	}else if($duedays > 180){
-		$lebih180++;
+	$countFasilitas = $dataCountFasilitas['COUNT'];
+	
+	if($countFasilitas == 0){
+		$lancar=0;
+		$days_1_30=0;
+		$days_31_60=0;
+		$days_61_90=0;
+		$days_91_120=0;
+		$days_121_150=0;
+		$days_151_180=0;
+		$lebih180=0;
 	}else{
-		
+		if($duedays == 0){
+			$lancar++;
+		}else if($duedays >= 1 && $duedays <= 30){
+			$days_1_30++;
+		}else if($duedays >= 31 && $duedays <= 60){
+			$days_31_60++;
+		}else if($duedays >= 61 && $duedays <= 90){
+			$days_61_90++;
+		}else if($duedays >= 91 && $duedays <= 120){
+			$days_91_120++;
+		}else if($duedays >= 121 && $duedays <= 150){
+			$days_121_150++;
+		}else if($duedays >= 151 && $duedays <= 180){
+			$days_151_180++;
+		}else if($duedays > 180){
+			$lebih180++;
+		}else{
+			
+		}
 	}
 }	
 /* select table cip */
@@ -66,23 +85,6 @@ while($dataCONT2 = sqlsrv_fetch_array($execCONT2)){
 		<div class="row">
 			<div class="col-md-11">
 				<p class="name pull-left">Summary</p>
-				<?php
-					if($data3['CUST_TYPE'] == "PEMOHON"){
-				?>
-				<p class="pull-right">
-					<?php
-						if($numrowsPenjamin<>0){
-					?>
-					<a href="#" data-target="#dataDukcapilPenjamin" data-toggle="modal" class="btn btn-primary btn-sm" style="cursor:pointer;border:1px solid #035c7a;color:#035c7a;">
-						CHECK SCORING PENJAMIN
-					</a>
-					<?php }else{ ?>
-					<a href="#" disabled class="btn btn-primary btn-sm" style="border:1px solid #035c7a;color:#035c7a;" data-toggle="tooltip" title="Prospek ini tidak memiliki penjamin">
-						CHECK SCORING PENJAMIN
-					</a>
-					<?php } ?>
-				</p>
-				<?php } ?>
 			</div>
 		</div>
 	</div>
@@ -110,7 +112,7 @@ while($dataCONT2 = sqlsrv_fetch_array($execCONT2)){
 					<div class="content">
 						<center>
 							<div style="color:#AAA;">TOTAL FASILITAS</div>
-							<div style="font-size:36px;font-weight:bold;"><?php echo $numRowsSummary;?></div>
+							<div style="font-size:36px;font-weight:bold;"><?php echo $dataCountFasilitas['COUNT'];?></div>
 						</center>
 					</div>
 				</div>
@@ -196,8 +198,8 @@ while($dataCONT2 = sqlsrv_fetch_array($execCONT2)){
 						?>
 							<tr>
 								<td align="left"><?php echo $dataCONT['CREDITOR_TYPE'];?></td>
-								<td align="left"><a href="#"><?php echo $dataCONT['CONTRACT_TYPE'];?></a></td>
-								<td align="center"><?php echo $dataCONT['START_DATE']->format('Y-m-d');?></td>
+								<td align="left"><span class="text-custom"><?php echo $dataCONT['CONTRACT_TYPE'];?></span></td>
+								<td align="center"><?php if($dataCONT['START_DATE']<>NULL){echo $dataCONT['START_DATE']->format('Y-m-d');}?></td>
 								<td align="left"><?php echo $dataCONT['CONTRACT_STATUS'];?>
 								<td align="right"><?php echo $dataCONT['TOTAL_AMOUNT_CURRENCY']." ".number_format($dataCONT['TOTAL_AMOUNT_VALUE'],0,',','.');?></td>
 								<td align="right"><?php echo $dataCONT['OUTSTANDING_AMOUNT_CURRENCY']." ".number_format($dataCONT['OUTSTANDING_AMOUNT_VALUE'],0,',','.');?></td>

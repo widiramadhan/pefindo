@@ -1,0 +1,26 @@
+# Environment-specific config / credentials
+config/connection.php
+config/connection_cek.php
+web.config
+
+# Customer documents and uploaded data
+assets/ktp/
+assets/pdf/
+uploads/
+
+# Backups, archives, snapshots
+*.zip
+*.lnk
+h2h_*/
+*_bcp_*.php
+*_backup*.php
+* - Copy.php
+* - BU.php
+
+# Dependencies
+vendor/
+
+# Logs and local scratch
+*.log
+scratch_*.php
+patch_timing.py
